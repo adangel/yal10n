@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>yal10n - Report for $report.projectName</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../default.css" type="text/css" rel="stylesheet"/>
+  </head>
+  <body>
+    <h1>yal10n - Report for $report.projectName</h1>
+    
+    <p>Generation Date: $report.generationDate</p>
+    <p>Maven Coordinates: $report.mavenCoordinates</p>
+    <p>Base Path: $report.basePath</p>
+    <p>Base Name: $report.baseName</p>
+    
+    <h2>Summary</h2>
+    <table class="simple">
+      <tr>
+        <th>Language</th>
+        <th>Encoding</th>
+        <th>Count of Messages</th>
+        <th>Count of Not Translated Messages</th>
+        <th>Count of Missing Messages</th>
+        <th>Count of Additional Messages</th>
+      </tr>
+#foreach( $lang in $report.allLanguages)
+      <tr>
+        <td><a href="#$lang.name">$lang.name</a></td>
+        <td>$lang.encoding</td>
+        <td>$lang.countOfMessages</td>
+        <td>$lang.notTranslatedMessages.size()</td>
+        <td>$lang.missingMessages.size()</td>
+        <td>$lang.additionalMessages.size()</td>
+      </tr>
+#end
+    </table>
+    
+#foreach( $lang in $report.allLanguages)
+    <a name="$lang.name">
+    <h2>$lang.name</h2>
+    </a>
+    
+    <p>Encoding: $lang.encoding</p>
+    <p>Count of Messages: $lang.countOfMessages</p>
+    <p>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></p>
+    <p>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></p>
+    
+    
+    <h3>Not Translated Messages ($lang.notTranslatedMessages.size())</h3>
+    <ul>
+    #foreach ($key in $lang.notTranslatedMessages.keySet())
+      <li>$esc.html($key) = $esc.html($lang.notTranslatedMessages[$key])</li>
+    #end
+    </ul>
+
+    <h3>Missing Messages ($lang.missingMessages.size())</h3>
+    <ul>
+    #foreach ($key in $lang.missingMessages.keySet())
+      <li>$esc.html($key) = $esc.html($lang.missingMessages[$key])</li>
+    #end
+    </ul>
+
+    <h3>Additional Messages ($lang.additionalMessages.size())</h3>
+    <ul>
+    #foreach ($key in $lang.additionalMessages.keySet())
+      <li>$esc.html($key) = $esc.html($lang.additionalMessages[$key])</li>
+    #end
+    </ul>
+    
+    <h3>Issues ($lang.scoreLog.size())</h3>
+    <ul>
+    #foreach ($log in $lang.scoreLog)
+      <li>$esc.html($log)</li>
+    #end
+    </ul>
+
+#end
+    <hr>
+    &copy; Powered by yal10n $report.version
+  </body>
+</html>

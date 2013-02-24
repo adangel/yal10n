@@ -1,0 +1,30 @@
+h1, h2 {
+   border-radius: 5px;
+   padding: 3px;
+   border: 1px solid black;
+}
+h1 {
+   background-color: darkGrey;
+}
+h2 {
+   background-color: lightGrey;
+}
+table, td, th {
+   border: 1px solid black;
+   border-spacing: 0px;
+}
+tr:nth-child(even) {
+   background: lightGrey;
+}
+tr:nth-child(odd) {
+   background: white;
+}
+td.no-issues {
+   background: lightGreen;
+}
+td.severity-major {
+   background: lightCoral;
+}
+td.severity-minor {
+   background: lightYellow;
+}

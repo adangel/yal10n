@@ -1,0 +1,5 @@
+<FindBugsFilter>
+    <Match>
+        <Class name="net.sf.yal10n.HelpMojo" />
+    </Match>
+</FindBugsFilter>

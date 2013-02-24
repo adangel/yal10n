@@ -1,0 +1,88 @@
+ ------
+ Usage
+ ------
+ Andreas Dangel
+ ------
+ 2013-02-23
+ ------
+
+ ~~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~~ you may not use this file except in compliance with the License.
+ ~~ You may obtain a copy of the License at
+ ~~
+ ~~ http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing, software
+ ~~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~~ See the License for the specific language governing permissions and
+ ~~ limitations under the License.
+
+Usage
+
+  The yal10n plugin doesn't need a maven project (yet) to run. It is executed alongside the projects
+  that are analyzed.
+  
+  You usually start with a configuration file, which is called <<yal10n-settings.json>>. It is in JSON
+  format and defines the repositories to analyze:
+  
++------------------------------+
+{
+    "repoPrefix": "http://main.svn.server/svn/",
+    "viewvcPrefix": "http://main.svn.server/viewvc/",
+    "includes": [ "**/*essages*.properties" ],
+    "createTMX": true,
+    "languages": ["de", "fr", "ja", "nl"],
+    "repositories": [
+        {
+            "url": "repo1/trunk"
+        },
+        {
+            "url": "repo2/trunk"
+        }
+    ],
+    "checks": {
+        "percentageMissing": 10.0,
+        "checkFileHeaders": true,
+        "fileHeaderRegexp": "(^\\s*$\n)*^#$\n^# Copyright \\(C\\) \\d\\d\\d\\d MyCompany$\n^# All rights reserved.$\n^#$"
+    },
+    "notification": {
+        "smtpServer": "localhost",
+        "smtpPort": "25",
+        "subject": "[yal10n] changes in {{projectName}}",
+        "mailFrom": "do-not-reply@example.com",
+        "recipients": "translator1@example.com, translator2@example.com"
+    }
+}
++------------------------------+
+
+  The notification section is only needed for the detect-change mojo.
+  More information about the configuration file can be found in the {{{./apidocs/net/sf/yal10n/settings/DashboardConfiguration.html}javadocs}}
+
+* Dashboard
+
+  After the configuration is complete, you can generate the dashboard:
+  
++-----+
+mvn net.sf.yal10n:yal10n-maven-plugin:dashboard
++-----+
+
+  The mojo checks out the source code into the <<target/checkouts>> subdirectory and search for all
+  files that match the includes/excludes patterns.
+  
+  The dashboard is then created as the file <<dashboard.html>> in the <<target>> subdirectory.
+  
+* Detect Changes
+
+  The detect changes mojo can be run as follows:
+
++-----+
+mvn net.sf.yal10n:yal10n-maven-plugin:detect-changes
++-----+
+
+  It uses the same configuration file. When run the first time, it will create the file <<target/yal10n-status.json>>
+  in order to record the last revisions of each repository. This file is used the next time, to determine, whether
+  there has been any changes to the detected resource bundles. If so, an email with the diff and a link to the
+  ViewVC server will be sent.
+
+

@@ -1,0 +1,32 @@
+{
+    "repoPrefix": "./svnrepos/",
+    "viewvcPrefix": "http://svn/viewvc/",
+    "includes": [ "**/*essages*.properties" ],
+    "excludes": [ "**/src/test/**"],
+    "createTMX": true,
+    "languages": ["de", "fr", "ja", "nl"],
+    "ignoreKeys": ["ignore.this.message"],
+    "repositories": [
+        {
+            "url": "repo1/trunk"
+        },
+        {
+            "url": "repo1/a/trunk"
+        },
+        {
+            "url": "repo2/trunk"
+        }
+    ],
+    "checks": {
+        "percentageMissing": 10.0,
+        "checkFileHeaders": true,
+        "fileHeaderRegexp": "(^\\s*$\n)*^#$\n^# Copyright \\(C\\) \\d\\d\\d\\d MyCompany$\n^# All rights reserved.$\n^#$"
+    },
+    "notification": {
+        "smtpServer": "localhost",
+        "smtpPort": "25",
+        "subject": "[yal10n] changes in {{projectName}}",
+        "mailFrom": "andreas@polaris",
+        "recipients": "andreas@polaris, andreas@polaris"
+    }
+}

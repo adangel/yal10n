@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>yal10n dashboard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="default.css" type="text/css" rel="stylesheet"/>
+    </style>
+  </head>
+  <body>
+    <h1>yal10n Dashboard</h1>
+
+    <p>Generation Date: $dashboard.generationDate</p>
+
+    <table>
+      <tr>
+        <th>Project Name</th>
+        <th>default</th>
+#foreach( $lang in $dashboard.allLanguages)
+        <th>$lang</th>
+#end
+        <th>Report</th>
+#if ($dashboard.createTmx)
+        <th>Download TMX</th>
+#end
+      </tr>
+
+#foreach( $bundle in $dashboard.allBundles)
+      <tr>
+        <td>$bundle.projectName</td>
+#if ($bundle.base)
+        <td class="$bundle.base.issuesSeverityClass">
+          <a href="$bundle.base.svnUrl">default</a>
+#else
+        <td class="severity-major">
+          missing
+#end
+        </td>
+
+#foreach( $lang in $dashboard.allLanguages)
+#if ($bundle.getLanguage($lang))
+        <td class="$bundle.getLanguage($lang).issuesSeverityClass">
+          <a href="$bundle.getLanguage($lang).svnUrl">$lang</a>
+#else
+        <td class="severity-major">
+          missing
+#end
+        </td>
+#end
+
+        <td><a href="reports/$bundle.relativeReportUrl">report</a></td>
+
+#if ($dashboard.createTmx)
+        <td><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>
+#end
+      </tr>
+#end
+    </table>
+
+#if ($dashboard.createTmx)
+    <p>
+        <a href="all-translations.tmx">Download complete translation memory</a>
+    </p>
+#end
+
+    <hr>
+    &copy; Powered by yal10n $dashboard.version
+  </body>
+</html>

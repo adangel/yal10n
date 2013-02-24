@@ -1,0 +1,34 @@
+{
+    "repoPrefix": "file:///svnrepos/",
+    "viewvcPrefix": "http://svn/viewvc/",
+    "includes": [ "**/*essages*.properties" ],
+    "excludes": [ "**/src/test/**"],
+    "createTMX": true,
+    "languages": ["de", "fr", "ja", "nl"],
+    "ignoreKeys": ["to-be-ignored"],
+    "repositories": [
+        {
+            "url": "repo1/trunk",
+            "viewvcUrl": "repo1/trunk",
+            "type": "SVN"
+        },
+        {
+            "url": "repo1/a/trunk"
+        },
+        {
+            "url": "repo2/trunk"
+        }
+    ],
+    "checks": {
+        "percentageMissing": 10.0,
+        "checkFileHeaders": true,
+        "fileHeaderRegexp": "(^\\s*$\n)*^#$\n^# Copyright \\(C\\) \\d\\d\\d\\d MyCompany$\n^# All rights reserved.$\n^#$"
+    },
+    "notification": {
+        "smtpServer": "localhost",
+        "smtpPort": "25",
+        "subject": "[yal10n] test subject",
+        "recipients": "foo@bar.com, bar@foo.com",
+        "mailFrom": "foo@bar.com"
+    }
+}

@@ -1,0 +1,70 @@
+ ------
+ Introduction
+ ------
+ Andreas Dangel
+ ------
+ 2013-02-23
+ ------
+
+ ~~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~~ you may not use this file except in compliance with the License.
+ ~~ You may obtain a copy of the License at
+ ~~
+ ~~ http://www.apache.org/licenses/LICENSE-2.0
+ ~~
+ ~~ Unless required by applicable law or agreed to in writing, software
+ ~~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~~ See the License for the specific language governing permissions and
+ ~~ limitations under the License.
+
+yal10n Maven Plugin
+
+  The Yet Another Localization Maven Plugin helps in the localization process of software projects.
+
+* Goals Overview
+
+  This plugin has 2 goals:
+
+  * {{{./dashboard-mojo.html}yal10n:dashboard}} Creates a dashboard overview.
+
+  * {{{./detect-changes-mojo.html}yal10n:detect-changes}} Detects changes to resource bundles and sends notification
+  emails.
+
+
+* Usage
+
+  General instructions on how to use the Yal10n Plugin can be found on the {{{./usage.html}usage page}}.
+
+
+* Future ideas, missing features
+
+  * localize the dashboard itself
+
+  * better documentation (available checks, configuration, ...)
+
+  * report / detect changes based on the revision of the files or even with svn annotate, line-based check
+
+  * add a report mojo, to make it easy to include the report of a single project into a site
+  
+  * make the checks available as a project mojo, so you can fail the build, if something is wrong with the resource
+    bundles.
+
+  * pseudo language generation
+
+  * support other scms than subversion (e.g. git)
+
+  * more configuration options for TMX
+
+  * support other resources than message bundles (like templates), that need to be localized, too.
+  
+* References
+
+  * {{http://mojo.codehaus.org/l10n-maven-plugin/}}
+
+  * {{http://www.gala-global.org/oscarStandards/tmx/tmx14b.html}}
+
+  * {{https://sourceforge.net/projects/tmxjavabridge/}}
+
+  * {{https://sourceforge.net/projects/okapi/}}
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tmx version="1.4b">
+    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20130224T174104Z"></header>
+    <body>
+        <tu tuid="./svnrepos/repo1/a/trunk/messages:not.translated">
+            <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/messages</prop>
+            <prop type="x-key">not.translated</prop>
+            <tuv xml:lang="en">
+                <seg>this message is not translated</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>this message is not translated</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo1/a/trunk/messages:missing">
+            <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/messages</prop>
+            <prop type="x-key">missing</prop>
+            <tuv xml:lang="en">
+                <seg>this message is missing in the other languages</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo1/a/trunk/messages:no">
+            <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/messages</prop>
+            <prop type="x-key">no</prop>
+            <tuv xml:lang="en">
+                <seg>no</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>Nein</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo1/a/trunk/messages:yes">
+            <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/messages</prop>
+            <prop type="x-key">yes</prop>
+            <tuv xml:lang="en">
+                <seg>yes</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>Ja</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo1/a/trunk/messages:ignore.this.message">
+            <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/messages</prop>
+            <prop type="x-key">ignore.this.message</prop>
+            <tuv xml:lang="en">
+                <seg>this message is ignored</seg>
+            </tuv>
+            <tuv xml:lang="de">
+                <seg>this message is ignored</seg>
+            </tuv>
+        </tu>
+    </body>
+</tmx>
