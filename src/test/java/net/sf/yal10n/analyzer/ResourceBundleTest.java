@@ -147,4 +147,17 @@ public class ResourceBundleTest
         Assert.assertEquals( "messages", report.getBaseName() );
         Assert.assertEquals( 2, report.getAllLanguages().size() );
     }
+
+    /**
+     * Test whether the id can be used as a filename, e.g. the slash "/" is removed.
+     */
+    @Test
+    public void testGetId()
+    {
+        String localBasePath = "./target/test-classes/unit/testpom2";
+        ResourceBundle testBundle = new ResourceBundle( null, null, null, localBasePath, localBasePath );
+        String id = testBundle.getId();
+        Assert.assertFalse( id.contains( "/" ) );
+        Assert.assertTrue( id.startsWith( "Test_Sample_Project___With_a_Slash_" ) );
+    }
 }

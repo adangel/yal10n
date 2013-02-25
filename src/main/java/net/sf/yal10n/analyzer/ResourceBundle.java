@@ -275,7 +275,10 @@ public class ResourceBundle
         StringBuilder sb = new StringBuilder();
         for ( int i = 0; i <= count && i < paths.length; i++ )
         {
-            sb.append( File.separator );
+            if ( i > 0 )
+            {
+                sb.append( File.separator );
+            }
             sb.append( paths[i] );
         }
         return sb.toString();
@@ -320,7 +323,7 @@ public class ResourceBundle
      */
     public String getId()
     {
-        return getProjectName().replaceAll( " ", "_" ) + "_" + id;
+        return getProjectName().replaceAll( "[^_a-zA-Z0-9]", "_" ) + "_" + id;
     }
 
     private String getRelativeReportUrl()

@@ -133,13 +133,16 @@ public class ResourceAnalyzerTest
         analyzer.analyze( svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
 
         Map<String, ResourceBundle> bundles = analyzer.getBundles();
-        Assert.assertEquals( 2, bundles.size() );
-        
+        Assert.assertEquals( "Found too many bundles: " + bundles.keySet(), 3, bundles.size() );
+
         ResourceBundle bundle = bundles.get( dstPath + "/subdirectory2/bundle" );
         Assert.assertNotNull( bundle );
         Assert.assertEquals( "[de]", bundle.getLanguages().toString() );
 
         bundle = bundles.get( dstPath + "/testpom/pom" );
+        Assert.assertNotNull( bundle );
+
+        bundle = bundles.get( dstPath + "/testpom2/pom" );
         Assert.assertNotNull( bundle );
     }
 
