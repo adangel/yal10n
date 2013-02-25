@@ -50,7 +50,7 @@ public class DashboardMojo extends AbstractMojo
     private static final String ARTIFACT_ID = "yal10n-maven-plugin";
 
     /** The configuration of the dashboard is read from this file. The file format is json. */
-    @Parameter( required = true, property = "yal10n.settings", defaultValue = "./yal10n-settings.json" )
+    @Parameter( required = true, property = "yal10n.settings", defaultValue = "yal10n-settings.json" )
     private String yal10nSettings;
 
     /** Whether to update the local workspace checkouts or not. */
@@ -58,7 +58,7 @@ public class DashboardMojo extends AbstractMojo
     private boolean offline;
 
     /** The directory where the dashboard html files should be created. */
-    @Parameter( required = true, defaultValue = "${project.build.directory}" )
+    @Parameter( required = true, property = "yal10n.outputDirectory", defaultValue = "target" )
     private String outputDirectory;
 
     /**

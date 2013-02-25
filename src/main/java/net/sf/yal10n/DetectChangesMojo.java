@@ -53,17 +53,16 @@ import org.joda.time.DateTime;
 public class DetectChangesMojo extends AbstractMojo
 {
 
-    @Parameter( required = true, property = "yal10n.settings", defaultValue = "./yal10n-settings.json" )
+    @Parameter( required = true, property = "yal10n.settings", defaultValue = "yal10n-settings.json" )
     private String yal10nSettings;
     
-    @Parameter( required = true, property = "yal10n.status",
-            defaultValue = "${project.build.directory}/yal10n-status.json" )
+    @Parameter( required = true, property = "yal10n.status", defaultValue = "target/yal10n-status.json" )
     private String yal10nStatus;
     
     @Parameter( required = true, defaultValue = "${settings.offline}" )
     private boolean offline;
 
-    @Parameter( required = true, defaultValue = "${project.build.directory}" )
+    @Parameter( required = true, property = "yal10n.outputDirectory", defaultValue = "target" )
     private String outputDirectory;
 
     /**
