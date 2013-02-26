@@ -49,6 +49,10 @@ limitations under the License.
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <ciManagement>
+        <system>BuildHive Cloud Based Jenkins</system>
+        <url>https://buildhive.cloudbees.com/job/adangel/job/yal10n</url>
+    </ciManagement>
 
     <developers>
         <developer>
