@@ -65,9 +65,51 @@ public class SimpleEncodingDetectorTest
         File f = prepareFile( false, "This is a string with umlauts: äöüß encoded as latin-1", "ISO-8859-1" );
         EncodingResult encodingResult = detector.detectEncoding( f );
         Assert.assertEquals( Encoding.OTHER, encodingResult.getDetected() );
-        Assert.assertTrue ( encodingResult.getError().isMalformed() );
+        Assert.assertEquals( "MALFORMED[1]", encodingResult.getError() );
         final int expectedErrorPosition = 31;
         Assert.assertEquals( expectedErrorPosition, encodingResult.getErrorPosition() );
+    }
+
+    /**
+     * Test whether the error position is correctly given.
+     * @throws Exception any error
+     */
+    @Test
+    public void testErrors() throws Exception
+    {
+        File f = prepareFile( false, "This is a file\nwith multiple\nlines äää and umlauts\nbut wrongly encoded",
+                "ISO-8859-1" );
+        EncodingResult encodingResult = detector.detectEncoding( f );
+        Assert.assertEquals( Encoding.OTHER, encodingResult.getDetected() );
+        Assert.assertEquals( "MALFORMED[1]", encodingResult.getError() );
+        final int expectedErrorPosition = 35;
+        Assert.assertEquals( expectedErrorPosition, encodingResult.getErrorPosition() );
+        final int expectedLine = 3;
+        Assert.assertEquals( expectedLine, encodingResult.getErrorLine() );
+        final int expectedColumn = 7;
+        Assert.assertEquals( expectedColumn, encodingResult.getErrorColumn() );
+    }
+
+    /**
+     * Determine the file position of the error if the decoder loop needs
+     * to do more than one read - the file size is bigger than the buffer size.
+     * @throws Exception any error
+     */
+    @Test
+    public void testErrorsBigFile() throws Exception
+    {
+        final int fileSize = 1200;
+        File f = prepareBigFile( false, "Test File\nwith\nmultiple\nlines\nbut äää wrong encoding",
+                "ISO-8859-1", fileSize );
+        EncodingResult encodingResult = detector.detectEncoding( f );
+        Assert.assertEquals( Encoding.OTHER, encodingResult.getDetected() );
+        Assert.assertEquals( "MALFORMED[1]", encodingResult.getError() );
+        final int expectedErrorPosition = 34;
+        Assert.assertEquals( fileSize + expectedErrorPosition, encodingResult.getErrorPosition() );
+        final int expectedLine = 5;
+        Assert.assertEquals( expectedLine, encodingResult.getErrorLine() );
+        final int expectedColumn = 5;
+        Assert.assertEquals( expectedColumn, encodingResult.getErrorColumn() );
     }
 
     /**
@@ -94,16 +136,14 @@ public class SimpleEncodingDetectorTest
         File f = prepareFile( new byte[] { SimpleEncodingDetector.UTF8_BOM_BYTES[0], 'a', 'b', 'c' } );
         EncodingResult encodingResult = detector.detectEncoding( f );
         Assert.assertEquals( Encoding.OTHER, encodingResult.getDetected() );
-        Assert.assertTrue( encodingResult.getError().isMalformed() );
-        Assert.assertEquals( 1, encodingResult.getError().length() );
+        Assert.assertEquals( "MALFORMED[1]", encodingResult.getError() );
         Assert.assertEquals( 0, encodingResult.getErrorPosition() );
 
         f = prepareFile( new byte[] { SimpleEncodingDetector.UTF8_BOM_BYTES[0],
                 SimpleEncodingDetector.UTF8_BOM_BYTES[1], 'a', 'b', 'c' } );
         encodingResult = detector.detectEncoding( f );
         Assert.assertEquals( Encoding.OTHER, encodingResult.getDetected() );
-        Assert.assertTrue( encodingResult.getError().isMalformed() );
-        Assert.assertEquals( 2, encodingResult.getError().length() );
+        Assert.assertEquals( "MALFORMED[2]", encodingResult.getError() );
         Assert.assertEquals( 0, encodingResult.getErrorPosition() );
     }
 
@@ -138,6 +178,25 @@ public class SimpleEncodingDetectorTest
         if ( withBOM )
         {
             out.write( SimpleEncodingDetector.UTF8_BOM_BYTES );
+        }
+        out.write( text.getBytes( encoding ) );
+        out.close();
+        return f;
+    }
+
+    private File prepareBigFile( boolean withBOM, String text, String encoding, long fileSize ) throws IOException
+    {
+        File f = File.createTempFile( "yal10n", null );
+        f.deleteOnExit();
+
+        FileOutputStream out = new FileOutputStream( f );
+        if ( withBOM )
+        {
+            out.write( SimpleEncodingDetector.UTF8_BOM_BYTES );
+        }
+        for ( long i = 0; i < fileSize; i++ )
+        {
+            out.write( 'a' );
         }
         out.write( text.getBytes( encoding ) );
         out.close();

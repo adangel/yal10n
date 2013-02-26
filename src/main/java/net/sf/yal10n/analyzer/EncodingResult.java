@@ -14,7 +14,6 @@ package net.sf.yal10n.analyzer;
  * limitations under the License.
  */
 
-import java.nio.charset.CoderResult;
 
 /**
  * The result of a encoding detection.
@@ -22,8 +21,10 @@ import java.nio.charset.CoderResult;
 public class EncodingResult
 {
     private Encoding detected = Encoding.OTHER;
-    private CoderResult error;
-    private int errorPosition = -1;
+    private String error;
+    private long errorPosition = -1;
+    private int errorLine = -1;
+    private int errorColumn = -1;
 
     /**
      * Gets the detected encoding.
@@ -47,7 +48,7 @@ public class EncodingResult
      * Gets the last coding error or <code>null</code> if there was no error.
      * @return the last error or <code>null</code> if there was no error.
      */
-    public CoderResult getError()
+    public String getError()
     {
         return error;
     }
@@ -56,7 +57,7 @@ public class EncodingResult
      * Sets the last coding error.
      * @param error the last coding error.
      */
-    public void setError( CoderResult error )
+    public void setError( String error )
     {
         this.error = error;
     }
@@ -65,7 +66,7 @@ public class EncodingResult
      * Gets the error position if there is an error.
      * @return the error position.
      */
-    public int getErrorPosition()
+    public long getErrorPosition()
     {
         return errorPosition;
     }
@@ -74,8 +75,48 @@ public class EncodingResult
      * Sets the error position.
      * @param errorPosition the error position.
      */
-    public void setErrorPosition( int errorPosition )
+    public void setErrorPosition( long errorPosition )
     {
         this.errorPosition = errorPosition;
+    }
+
+    /**
+     * Gets the error line.
+     *
+     * @return the error line
+     */
+    public int getErrorLine()
+    {
+        return errorLine;
+    }
+
+    /**
+     * Sets the error line.
+     *
+     * @param errorLine the new error line
+     */
+    public void setErrorLine( int errorLine )
+    {
+        this.errorLine = errorLine;
+    }
+
+    /**
+     * Gets the error column.
+     *
+     * @return the error column
+     */
+    public int getErrorColumn()
+    {
+        return errorColumn;
+    }
+
+    /**
+     * Sets the error column.
+     *
+     * @param errorColumn the new error column
+     */
+    public void setErrorColumn( int errorColumn )
+    {
+        this.errorColumn = errorColumn;
     }
 }

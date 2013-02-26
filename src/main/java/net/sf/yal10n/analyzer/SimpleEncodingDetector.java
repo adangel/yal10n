@@ -14,9 +14,13 @@ package net.sf.yal10n.analyzer;
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
@@ -73,12 +77,18 @@ public class SimpleEncodingDetector
             utf8decoder.onMalformedInput( CodingErrorAction.REPORT );
             utf8decoder.onUnmappableCharacter( CodingErrorAction.REPORT );
 
-            ByteBuffer buffer = ByteBuffer.allocate( 1024 );
-            CharBuffer out = CharBuffer.allocate( 1024 );
+            final int bufferSize = 1024;
+            ByteBuffer buffer = ByteBuffer.allocate( bufferSize );
+            CharBuffer out = CharBuffer.allocate( bufferSize );
             CoderResult result = null;
-            while ( channel.read( buffer ) > -1 )
+            long decoderPosition = 0;
+            int bytesRead = -1;
+            while ( ( bytesRead = channel.read( buffer ) ) > -1 )
             {
+                buffer.position( 0 );
+                buffer.limit( bytesRead );
                 result = utf8decoder.decode( buffer, out, false );
+                decoderPosition += buffer.position();
                 if ( result.isError() )
                 {
                     break;
@@ -107,8 +117,9 @@ public class SimpleEncodingDetector
             }
             else
             {
-                encodingResult.setError( result );
-                encodingResult.setErrorPosition( buffer.position() );
+                encodingResult.setError( String.valueOf( result ) );
+                encodingResult.setErrorPosition( decoderPosition );
+                determineLineAndColumn( f, encodingResult );
             }
         }
         catch ( IOException e )
@@ -120,6 +131,54 @@ public class SimpleEncodingDetector
             IOUtil.close( in );
         }
         return encodingResult;
+    }
+
+    /**
+     * Takes the error position of the given encoding result and
+     * determines the line number and column number, where the
+     * error occurred.
+     * @param f the file
+     * @param encodingResult the result
+     */
+    private void determineLineAndColumn( File f, EncodingResult encodingResult )
+    {
+        BufferedReader in = null;
+        try
+        {
+            in = new BufferedReader( new InputStreamReader( new FileInputStream( f ), "ISO-8859-1" ) );
+            String line;
+            long position = 0;
+            int lineNumber = 0;
+            while ( ( line = in.readLine() ) != null )
+            {
+                lineNumber++;
+                position += line.length() + 1; // assumes 1 byte newline character
+                if ( position >= encodingResult.getErrorPosition() )
+                {
+                    long lineStartPosition = position - line.length() - 1;
+                    encodingResult.setErrorLine( lineNumber );
+                    int columnPosition = (int) ( encodingResult.getErrorPosition() - lineStartPosition + 1 );
+                    encodingResult.setErrorColumn( columnPosition );
+                    break;
+                }
+            }
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            throw new RuntimeException( e );
+        }
+        catch ( FileNotFoundException e )
+        {
+            throw new RuntimeException( e );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+        finally
+        {
+            IOUtil.close( in );
+        }
     }
 
     private boolean isBOM( byte[] bom )
