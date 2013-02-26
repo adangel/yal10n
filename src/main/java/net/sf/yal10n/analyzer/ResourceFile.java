@@ -254,10 +254,11 @@ public class ResourceFile
         model.setRelativeUrl( getRelativeCheckoutUrl() );
         model.setName( getLanguage() );
         SimpleEncodingDetector detector = new SimpleEncodingDetector();
-        Encoding detectedEncoding = detector.detectEncoding( new File( fullLocalPath ) ).getDetected();
-        model.setEncoding( detectedEncoding.name() );
+        EncodingResult detectedEncoding = detector.detectEncoding( new File( fullLocalPath ) );
+        model.setEncoding( detectedEncoding.getDetected().name() );
         model.setCountOfMessages( getProperties().size() );
         model.setExisting( true );
+        model.setVariant( isVariant() );
 
         Map<String, String> notTranslatedKeys = new HashMap<String, String>();
         Map<String, String> missingKeys = new HashMap<String, String>();
@@ -329,16 +330,19 @@ public class ResourceFile
         return model;
     }
 
-    private double executeChecks( Encoding detectedEncoding, Map<String, String> notTranslatedKeys,
+    private double executeChecks( EncodingResult detectedEncoding, Map<String, String> notTranslatedKeys,
             Map<String, String> missingKeys, Map<String, String> additionalKeys, ResourceFile defaultFile,
             double startScore, List<String> scoreLog )
     {
         double score = startScore;
         // wrong encoding
-        if ( detectedEncoding == Encoding.OTHER )
+        if ( detectedEncoding.getDetected() == Encoding.OTHER )
         {
             score += 1.0;
-            scoreLog.add( "Wrong Encoding (1.0)" );
+            scoreLog.add( "Wrong Encoding (1.0): "
+                    + detectedEncoding.getError()
+                    + " at line " + detectedEncoding.getErrorLine()
+                    + " , column " + detectedEncoding.getErrorColumn() );
         }
         // missing base file
         if ( defaultFile == null )
@@ -387,7 +391,7 @@ public class ResourceFile
             }
         }
 
-        if ( detectedEncoding == Encoding.UTF8_BOM )
+        if ( detectedEncoding.getDetected() == Encoding.UTF8_BOM )
         {
             BufferedReader reader = null;
             try

@@ -113,6 +113,8 @@ public class ResourceFileTest
             .getCanonicalPath();
         final String resourceFile2 = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" )
             .getCanonicalPath();
+        final String resourceFile3 = new File( "./target/test-classes/unit/subdirectory/messages_de_DE.properties" )
+            .getCanonicalPath();
         DashboardConfiguration config = new DashboardConfiguration();
         List<String> ignoreKeys = Arrays.asList( "ignored.message", "ignored.default.message" );
 
@@ -148,6 +150,13 @@ public class ResourceFileTest
         Assert.assertTrue( languageModel2.getAdditionalMessages().containsKey( "additional.message" ) );
         Assert.assertEquals( "severity-major", languageModel2.getIssuesSeverityClass() );
         Assert.assertEquals( 2, languageModel2.getScoreLog().size() );
+
+        ResourceFile file3 = new ResourceFile( config, new SVNUtilMock( resourceFile3 ), resourceFile3, null );
+        bundle.addFile( file3 );
+        LanguageModel languageModel3 = file3.toLanguageModel( ignoreKeys );
+        Assert.assertTrue( languageModel3.isVariant() );
+        Assert.assertEquals( "[Wrong Encoding (1.0): MALFORMED[1] at line 5 , column 114]",
+                languageModel3.getScoreLog().toString() );
     }
     
 }
