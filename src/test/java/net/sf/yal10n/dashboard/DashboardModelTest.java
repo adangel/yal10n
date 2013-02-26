@@ -43,7 +43,7 @@ public class DashboardModelTest
     public void testCreateModel() throws Exception
     {
         File propertiesFile = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" );
-        List<String> languages = Arrays.asList( "de" );
+        List<String> languages = Arrays.asList( "fr", "de_DE", "de" );
         Collection<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
         DashboardConfiguration config = new DashboardConfiguration();
         ResourceBundle bundle = new ResourceBundle( config, null, null, ".", "." );
@@ -54,10 +54,10 @@ public class DashboardModelTest
 
         DashboardModel model = DashboardModel.create( languages, bundles, true );
         Assert.assertEquals( DashboardMojo.getVersion(), model.getVersion() );
-        Assert.assertEquals( "[de]", model.getAllLanguages().toString() );
+        Assert.assertEquals( "[de, de_DE, fr]", model.getAllLanguages().toString() );
         Assert.assertEquals( 1, model.getAllBundles().size() );
         Assert.assertTrue( model.isCreateTmx() );
         BundleModel bundleModel = model.getAllBundles().get( 0 );
-        Assert.assertNotNull( bundleModel.getLanguage( "de" ) );
+        Assert.assertNotNull( bundleModel.getLanguages().get( 0 ) );
     }
 }

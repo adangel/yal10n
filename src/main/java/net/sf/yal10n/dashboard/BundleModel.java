@@ -14,8 +14,8 @@ package net.sf.yal10n.dashboard;
  * limitations under the License.
  */
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains the data necessary to render a summary report about a bundle.
@@ -27,22 +27,11 @@ public class BundleModel implements Comparable<BundleModel>
 
     private LanguageModel base;
 
-    private Map<String, LanguageModel> languages = new HashMap<String, LanguageModel>();
+    private List<LanguageModel> languages = new ArrayList<LanguageModel>();
 
     private String relativeReportUrl;
 
     private String relativeTmxUrl;
-
-    /**
-     * Gets the language.
-     *
-     * @param language the language
-     * @return the language
-     */
-    public LanguageModel getLanguage( String language )
-    {
-        return languages.get( language );
-    }
 
     /**
      * Gets the project name.
@@ -89,7 +78,7 @@ public class BundleModel implements Comparable<BundleModel>
      *
      * @return the languages
      */
-    public Map<String, LanguageModel> getLanguages()
+    public List<LanguageModel> getLanguages()
     {
         return languages;
     }
@@ -191,11 +180,10 @@ public class BundleModel implements Comparable<BundleModel>
     /**
      * Adds the language.
      *
-     * @param lang the lang
      * @param languageModel the language model
      */
-    public void addLanguage( String lang, LanguageModel languageModel )
+    public void addLanguage( LanguageModel languageModel )
     {
-        languages.put( lang, languageModel );
+        languages.add( languageModel );
     }
 }

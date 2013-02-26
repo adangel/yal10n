@@ -19,8 +19,10 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import net.sf.yal10n.DashboardMojo;
+import net.sf.yal10n.analyzer.ResourceFile;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,6 +50,9 @@ public class DashboardRendererTest
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/base\">default</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/de\">de</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/fr\">fr</a>" ) );
+        Assert.assertTrue( Pattern.compile( "<td>\\s*\n\\s*missing", Pattern.MULTILINE ).matcher( dashboard ).find() );
+        Assert.assertTrue( Pattern.compile( "<td class=\"severity-major\">\\s*\n\\s*missing", Pattern.MULTILINE )
+                .matcher( dashboard ).find() );
         Assert.assertTrue( dashboard.contains( "<a href=\"reports/bundle1\">report</a>" ) );
         Assert.assertTrue( dashboard.contains( "<td>Bundle 2</td>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle2/base\">default</a>" ) );
@@ -85,7 +90,7 @@ public class DashboardRendererTest
         BundleModel bundle2 = createBundleModel( "Bundle 2", "bundle2" );
 
         DashboardModel model = new DashboardModel();
-        model.setAllLanguages( Arrays.asList( "de", "fr" ) );
+        model.setAllLanguages( Arrays.asList( "de", "fr", "es", "de_DE" ) );
         model.setAllBundles( Arrays.asList( bundle1, bundle2 ) );
         model.setGenerationDate( new Date().toString() );
         model.setVersion( DashboardMojo.getVersion() );
@@ -98,15 +103,20 @@ public class DashboardRendererTest
         BundleModel bundle1 = new BundleModel();
         bundle1.setProjectName( projectName );
         bundle1.setRelativeReportUrl( reportUrl );
-        bundle1.setBase( createLanguageModel( reportUrl + "/base" ) );
-        bundle1.getLanguages().put( "de", createLanguageModel( reportUrl + "/de" ) );
-        bundle1.getLanguages().put( "fr", createLanguageModel( reportUrl + "/fr" ) );
+        bundle1.setBase( createLanguageModel( "default", reportUrl + "/base", true ) );
+        bundle1.addLanguage( createLanguageModel( "de", reportUrl + "/de", true ) );
+        bundle1.addLanguage( createLanguageModel( "fr", reportUrl + "/fr", true ) );
+        bundle1.addLanguage( createLanguageModel( "es", null, false ) );
+        bundle1.addLanguage( createLanguageModel( "de_DE", null, false ) );
         return bundle1;
     }
 
-    private LanguageModel createLanguageModel( String svnUrl )
+    private LanguageModel createLanguageModel( String name, String svnUrl, boolean existing )
     {
         LanguageModel base = new LanguageModel();
+        base.setExisting( existing );
+        base.setVariant( ResourceFile.isVariant( name ) );
+        base.setName( name );
         base.setSvnUrl( svnUrl );
         return base;
     }

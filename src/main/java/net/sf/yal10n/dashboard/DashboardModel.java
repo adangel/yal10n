@@ -112,13 +112,15 @@ public class DashboardModel
         List<BundleModel> bundleModels = new ArrayList<BundleModel>();
         for ( ResourceBundle bundle : bundles )
         {
-            bundleModels.add( bundle.toBundleModel() );
             allLanguages.addAll( bundle.getLanguages() );
         }
-
         ArrayList<String> allLanguagesSorted = new ArrayList<String>( allLanguages );
         Collections.sort( allLanguagesSorted, String.CASE_INSENSITIVE_ORDER );
 
+        for ( ResourceBundle bundle : bundles )
+        {
+            bundleModels.add( bundle.toBundleModel( allLanguagesSorted ) );
+        }
         Collections.sort( bundleModels );
 
         DashboardModel model = new DashboardModel();

@@ -176,7 +176,7 @@ public class TranslationMemoryRenderer
      */
     public void render( ResourceBundle bundle )
     {
-        BundleModel bundleModel = bundle.toBundleModel();
+        BundleModel bundleModel = bundle.toBundleModel( bundle.getLanguages() );
         FileOutputStream stream = null;
         try
         {

@@ -338,10 +338,11 @@ public class ResourceBundle
 
     /**
      * To bundle model.
+     * @param allLanguages the languages to include in the report
      *
      * @return the bundle model
      */
-    public BundleModel toBundleModel()
+    public BundleModel toBundleModel( List<String> allLanguages )
     {
         BundleModel model = new BundleModel();
 
@@ -354,9 +355,22 @@ public class ResourceBundle
         {
             model.setBase( defaultFile.toLanguageModel( config.getIgnoreKeys() ) );
         }
-        for ( String lang : getLanguages() )
+        for ( String lang : allLanguages )
         {
-            model.addLanguage( lang, getByLanguage( lang ).toLanguageModel( config.getIgnoreKeys() ) );
+            ResourceFile file = getByLanguage( lang );
+            LanguageModel langModel;
+            if ( file == null )
+            {
+                langModel = new LanguageModel();
+                langModel.setName( lang );
+                langModel.setExisting( false );
+                langModel.setVariant( ResourceFile.isVariant( lang ) );
+            }
+            else
+            {
+                langModel = file.toLanguageModel( config.getIgnoreKeys() );
+            }
+            model.addLanguage( langModel );
         }
         return model;
     }

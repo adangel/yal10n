@@ -15,8 +15,11 @@ package net.sf.yal10n.analyzer;
  */
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import net.sf.yal10n.dashboard.BundleModel;
+import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.report.ReportModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.svn.SVNUtilMock;
@@ -36,6 +39,7 @@ public class ResourceBundleTest
     private static ResourceFile file;
     private static ResourceFile fileDe;
     private static String svnUrl = "http://svn-url";
+    private static List<String> allLanguages = Arrays.asList( "de", "fr", "de_DE" );
 
     /**
      * Setup a resource bundle for testing.
@@ -127,14 +131,23 @@ public class ResourceBundleTest
     @Test
     public void testBundleModel()
     {
-        BundleModel bundleModel = bundle.toBundleModel();
+        BundleModel bundleModel = bundle.toBundleModel( allLanguages );
         Assert.assertNotNull( bundleModel.getBase() );
         Assert.assertEquals( "default", bundleModel.getBase().getName() );
-        Assert.assertEquals( 1, bundleModel.getLanguages().size() );
-        Assert.assertNotNull( bundleModel.getLanguage( "de" ) );
-        Assert.assertEquals( "de", bundleModel.getLanguage( "de" ).getName() );
         Assert.assertEquals( "Unknown_Project_0_0.html", bundleModel.getRelativeReportUrl() );
         Assert.assertEquals( "Unknown_Project_0_0.tmx", bundleModel.getRelativeTmxUrl() );
+        Assert.assertEquals( 3, bundleModel.getLanguages().size() );
+        assertLanguageModel( bundleModel.getLanguages().get( 0 ), "de", true, false );
+        assertLanguageModel( bundleModel.getLanguages().get( 1 ), "fr", false, false );
+        assertLanguageModel( bundleModel.getLanguages().get( 2 ), "de_DE", false, true );
+    }
+
+    private static void assertLanguageModel( LanguageModel model, String name, boolean existing, boolean variant )
+    {
+        Assert.assertNotNull( model );
+        Assert.assertEquals( name, model.getName() );
+        Assert.assertEquals( existing, model.isExisting() );
+        Assert.assertEquals( variant, model.isVariant() );
     }
 
     /**

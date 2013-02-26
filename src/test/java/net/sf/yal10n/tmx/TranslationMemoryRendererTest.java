@@ -56,7 +56,7 @@ public class TranslationMemoryRendererTest
         ResourceBundle bundle = createBundle().iterator().next();
         renderer.render( bundle  );
 
-        String relativeTmxUrl = bundle.toBundleModel().getRelativeTmxUrl();
+        String relativeTmxUrl = bundle.toBundleModel( bundle.getLanguages() ).getRelativeTmxUrl();
         Assert.assertTrue( new File( completeDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( completeDirectory, relativeTmxUrl ) ),
                 "UTF-8" );

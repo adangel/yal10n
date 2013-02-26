@@ -37,12 +37,15 @@
 #end
         </td>
 
-#foreach( $lang in $dashboard.allLanguages)
-#if ($bundle.getLanguage($lang))
-        <td class="$bundle.getLanguage($lang).issuesSeverityClass">
-          <a href="$bundle.getLanguage($lang).svnUrl">$lang</a>
-#else
+#foreach( $lang in $bundle.languages)
+#if ($lang.existing)
+        <td class="$lang.issuesSeverityClass">
+          <a href="$lang.svnUrl">$lang.name</a>
+#elseif (!$lang.existing && !$lang.variant)
         <td class="severity-major">
+          missing
+#else
+        <td>
           missing
 #end
         </td>

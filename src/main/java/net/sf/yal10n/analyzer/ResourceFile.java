@@ -199,7 +199,17 @@ public class ResourceFile
      */
     public boolean isVariant()
     {
-        return getLanguage().contains( "_" );
+        return isVariant( getLanguage() );
+    }
+
+    /**
+     * Utility method to check whether a given language code is a variant (e.g. de_DE).
+     * @param languageCode the code
+     * @return <code>true</code> if the code is a variant.
+     */
+    public static boolean isVariant( String languageCode )
+    {
+        return languageCode != null && languageCode.contains( "_" );
     }
 
     /**
@@ -247,6 +257,7 @@ public class ResourceFile
         Encoding detectedEncoding = detector.detectEncoding( new File( fullLocalPath ) ).getDetected();
         model.setEncoding( detectedEncoding.name() );
         model.setCountOfMessages( getProperties().size() );
+        model.setExisting( true );
 
         Map<String, String> notTranslatedKeys = new HashMap<String, String>();
         Map<String, String> missingKeys = new HashMap<String, String>();

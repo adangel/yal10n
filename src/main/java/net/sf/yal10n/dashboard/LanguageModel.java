@@ -35,6 +35,8 @@ public class LanguageModel
     private Map<String, String> additionalMessages = new HashMap<String, String>();
     private String issuesSeverityClass;
     private List<String> scoreLog;
+    private boolean variant;
+    private boolean existing;
 
     /**
      * Gets the svn url.
@@ -254,5 +256,41 @@ public class LanguageModel
     public void setIssuesSeverityClass( String issuesSeverityClass )
     {
         this.issuesSeverityClass = issuesSeverityClass;
+    }
+
+    /**
+     * Whether this language is a language variant (e.g. de_DE).
+     * @return <code>true</code> if this is a variant, <code>false</code> otherwise.
+     */
+    public boolean isVariant()
+    {
+        return variant;
+    }
+
+    /**
+     * Sets whether this language is a variant (e.g. de_DE).
+     * @param variant <code>true</code> if this is a variant.
+     */
+    public void setVariant( boolean variant )
+    {
+        this.variant = variant;
+    }
+
+    /**
+     * Whether a file exists for this language or not.
+     * @return <code>true</code> if the file exists, <code>false</code> if the file is completely missing.
+     */
+    public boolean isExisting()
+    {
+        return existing;
+    }
+
+    /**
+     * Sets whether a file exists for this language or not.
+     * @param existing <code>true</code> if the file exists.
+     */
+    public void setExisting( boolean existing )
+    {
+        this.existing = existing;
     }
 }
