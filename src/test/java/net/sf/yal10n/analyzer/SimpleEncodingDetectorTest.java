@@ -117,6 +117,18 @@ public class SimpleEncodingDetectorTest
         detector.detectEncoding( new File( "some file that does not exist" ) );
     }
 
+    /**
+     * Empty files should be detected as UTF-8.
+     * @throws Exception any error
+     */
+    @Test
+    public void testEmptyFile() throws Exception
+    {
+        File f = prepareFile( false, "", "UTF-8" );
+        EncodingResult result = detector.detectEncoding( f );
+        Assert.assertEquals( Encoding.UTF8, result.getDetected() );
+    }
+
     private File prepareFile( boolean withBOM, String text, String encoding ) throws IOException
     {
         File f = File.createTempFile( "yal10n", null );

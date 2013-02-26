@@ -43,6 +43,22 @@ public class SimpleEncodingDetector
      */
     public EncodingResult detectEncoding( File f )
     {
+        EncodingResult encodingResult;
+
+        if ( f.exists() && f.length() == 0 )
+        {
+            encodingResult = new EncodingResult();
+            encodingResult.setDetected( Encoding.UTF8 );
+        }
+        else
+        {
+            encodingResult = doDetect( f );
+        }
+        return encodingResult;
+    }
+
+    private EncodingResult doDetect( File f )
+    {
         EncodingResult encodingResult = new EncodingResult();
         FileInputStream in = null;
         try
