@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
@@ -108,6 +109,7 @@ public class ResourceFileTest
     @Test
     public void testLanguageModelConversion() throws Exception
     {
+        TimeZone.setDefault( TimeZone.getTimeZone( "UTC" ) );
         ResourceBundle bundle = new ResourceBundle( null, null, null, "test", "test" );
         final String resourceFile = new File( "./target/test-classes/unit/subdirectory/messages.properties" )
             .getCanonicalPath();
@@ -126,7 +128,7 @@ public class ResourceFileTest
         Assert.assertEquals( "default", languageModel.getName() );
         Assert.assertEquals( "/target/test-classes/unit/subdirectory/messages.properties",
                 languageModel.getRelativeUrl() );
-        Assert.assertEquals( "Revision 1 (Sat Feb 23 20:51:23 CET 2013)", languageModel.getSvnInfo() );
+        Assert.assertEquals( "Revision 1 (Sat Feb 23 19:51:23 UTC 2013)", languageModel.getSvnInfo() );
         Assert.assertEquals( 0, languageModel.getNotTranslatedMessages().size() );
         Assert.assertEquals( 0, languageModel.getMissingMessages().size() );
         Assert.assertEquals( 0, languageModel.getAdditionalMessages().size() );
@@ -141,7 +143,7 @@ public class ResourceFileTest
         Assert.assertEquals( "de", languageModel2.getName() );
         Assert.assertEquals( "/target/test-classes/unit/subdirectory/messages_de.properties",
                 languageModel2.getRelativeUrl() );
-        Assert.assertEquals( "Revision 1 (Sat Feb 23 20:51:23 CET 2013)", languageModel2.getSvnInfo() );
+        Assert.assertEquals( "Revision 1 (Sat Feb 23 19:51:23 UTC 2013)", languageModel2.getSvnInfo() );
         Assert.assertEquals( 1, languageModel2.getNotTranslatedMessages().size() );
         Assert.assertTrue( languageModel2.getNotTranslatedMessages().containsKey( "not.translated.same" ) );
         Assert.assertEquals( 1, languageModel2.getMissingMessages().size() );
