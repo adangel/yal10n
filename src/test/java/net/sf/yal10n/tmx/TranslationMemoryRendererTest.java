@@ -54,20 +54,28 @@ public class TranslationMemoryRendererTest
 
         TranslationMemoryRenderer renderer = new TranslationMemoryRenderer( outputDirectory.getCanonicalPath() );
         ResourceBundle bundle = createBundle().iterator().next();
-        renderer.render( bundle  );
+        renderer.render( bundle );
 
         String relativeTmxUrl = bundle.toBundleModel( bundle.getLanguages() ).getRelativeTmxUrl();
         Assert.assertTrue( new File( completeDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( completeDirectory, relativeTmxUrl ) ),
                 "UTF-8" );
-        Assert.assertTrue( fileData.contains( "tuid=\"http://svn/repo/messages:not.translated.missing\"" ) );
-        Assert.assertTrue( fileData.contains( "<prop type=\"x-key\">not.translated.missing</prop>" ) );
-        Assert.assertTrue( fileData.contains( "xml:lang=\"de\"" ) );
-        Assert.assertTrue( fileData.contains( "this is a sample for for unit testing in locale German" ) );
+        assertContains( "tuid=\"http://svn/repo/messages:not.translated.missing\"", fileData );
+        assertContains( "<prop type=\"x-key\">not.translated.missing</prop>", fileData );
+        assertContains( "xml:lang=\"de\"", fileData );
+        assertContains( "this is a sample for for unit testing in locale German", fileData );
+    }
+
+    private static void assertContains( String expected, String data )
+    {
+        if ( !data.contains( expected ) )
+        {
+            Assert.fail( "Expected to find \"" + expected + "\", but didn't. Full data:\n" + data );
+        }
     }
 
     /**
-     * Test to convert a colletion of bundles.
+     * Test to convert a collection of bundles.
      * @throws Exception any error
      */
     @Test
@@ -90,7 +98,7 @@ public class TranslationMemoryRendererTest
         Assert.assertTrue( new File( outputDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( outputDirectory, relativeTmxUrl ) ),
                 "UTF-8" );
-        Assert.assertTrue( fileData.contains( "http://svn/repo/messages:not.translated.same" ) );
+        assertContains( "http://svn/repo/messages:not.translated.same", fileData );
     }
 
     private Collection<ResourceBundle> createBundle() throws Exception
