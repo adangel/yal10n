@@ -15,8 +15,13 @@ package net.sf.yal10n.analyzer;
  */
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,12 +54,20 @@ public class ResourceAnalyzer
     }
 
     /**
-     * Gets the found resource bundles. The key of the Map is the base directory of the bundle.
-     * @return a map of the found resource bundles.
+     * Gets the found resource bundles sorted by project name.
+     * @return a list of the found resource bundles.
      */
-    public Map<String, ResourceBundle> getBundles()
+    public List<ResourceBundle> getBundles()
     {
-        return bundles;
+        List<ResourceBundle> result = new ArrayList<ResourceBundle>( bundles.values() );
+        Collections.sort( result, new Comparator<ResourceBundle>() {
+            @Override
+            public int compare( ResourceBundle o1, ResourceBundle o2 )
+            {
+                return o1.getLocaleBasePath().compareTo( o2.getLocaleBasePath() );
+            }
+        } );
+        return result;
     }
 
     /**
@@ -93,7 +106,9 @@ public class ResourceAnalyzer
         scanner.setIncludes( allIncludes.toArray( new String[allIncludes.size()] ) );
         scanner.setExcludes( allExcludes.toArray( new String[allExcludes.size()] ) );
         scanner.scan();
-        for ( String s : scanner.getIncludedFiles() )
+        String[] includedFiles = scanner.getIncludedFiles();
+        Arrays.sort( includedFiles );
+        for ( String s : includedFiles )
         {
             try
             {

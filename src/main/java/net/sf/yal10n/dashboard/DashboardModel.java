@@ -15,7 +15,6 @@ package net.sf.yal10n.dashboard;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -105,7 +104,7 @@ public class DashboardModel
      * @param createTmx the create tmx
      * @return the dashboard model
      */
-    public static DashboardModel create( List<String> languages, Collection<ResourceBundle> bundles, boolean createTmx )
+    public static DashboardModel create( List<String> languages, List<ResourceBundle> bundles, boolean createTmx )
     {
 
         Set<String> allLanguages = new HashSet<String>( languages );

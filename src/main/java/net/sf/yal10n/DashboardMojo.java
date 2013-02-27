@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.List;
 import java.util.Properties;
 
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
@@ -95,31 +95,28 @@ public class DashboardMojo extends AbstractMojo
             analyzer.analyze( svnUrl, dstPath, config, repo, repoId );
         }
 
-        Map<String, ResourceBundle> bundles = analyzer.getBundles();
-        getLog().info( "found " + bundles.size() + " bundles:" );
-        for ( String basePath : bundles.keySet() )
-        {
-            getLog().info( "  " + basePath );
-        }
+        List<ResourceBundle> bundles = analyzer.getBundles();
+        getLog().info( "Found " + bundles.size() + " bundles:" );
 
         new DashboardRenderer( outputDirectory )
-            .render( DashboardModel.create( config.getLanguages(), bundles.values(), config.isCreateTMX() ) );
+            .render( DashboardModel.create( config.getLanguages(), bundles, config.isCreateTMX() ) );
         ReportRenderer reportRenderer = new ReportRenderer( outputDirectory );
         File reportDirectory = new File( FileUtils.normalize( outputDirectory + "/reports" ) );
         if ( !reportDirectory.exists() && !reportDirectory.mkdirs() )
         {
             throw new MojoExecutionException( "Couldn't create directory: " + reportDirectory );
         }
-        for ( ResourceBundle bundle : bundles.values() )
+        for ( ResourceBundle bundle : bundles )
         {
+            getLog().info( "  " + bundle.getLocaleBasePath() );
             reportRenderer.render( bundle.getReport() );
         }
         
         if ( config.isCreateTMX() )
         {
             TranslationMemoryRenderer tmxRenderer = new TranslationMemoryRenderer( outputDirectory );
-            tmxRenderer.render( bundles.values() );
-            for ( ResourceBundle bundle : bundles.values() )
+            tmxRenderer.render( bundles );
+            for ( ResourceBundle bundle : bundles )
             {
                 tmxRenderer.render( bundle );
             }

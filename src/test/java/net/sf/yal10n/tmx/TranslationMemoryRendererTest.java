@@ -115,6 +115,6 @@ public class TranslationMemoryRendererTest
         analyzer.analyze( repo.getUrl(), new File( "./target/test-classes/unit/subdirectory/" ).getCanonicalPath(),
                 config, repo, repoId );
 
-        return analyzer.getBundles().values();
+        return analyzer.getBundles();
     }
 }

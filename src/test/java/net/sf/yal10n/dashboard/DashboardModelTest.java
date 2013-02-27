@@ -17,7 +17,6 @@ package net.sf.yal10n.dashboard;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -44,7 +43,7 @@ public class DashboardModelTest
     {
         File propertiesFile = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" );
         List<String> languages = Arrays.asList( "fr", "de_DE", "de" );
-        Collection<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
+        List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
         DashboardConfiguration config = new DashboardConfiguration();
         ResourceBundle bundle = new ResourceBundle( config, null, null, ".", "." );
         bundles.add( bundle );

@@ -16,7 +16,7 @@ package net.sf.yal10n.analyzer;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 import junit.framework.Assert;
 import net.sf.yal10n.settings.DashboardConfiguration;
@@ -64,19 +64,19 @@ public class ResourceAnalyzerTest
         String repoId = "repoId";
         analyzer.analyze( svnUrl, dstPath, config , repo, repoId  );
 
-        Map<String, ResourceBundle> bundles = analyzer.getBundles();
+        List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 3, bundles.size() );
 
-        ResourceBundle bundle = bundles.get( dstPath + "/subdirectory/messages" );
+        ResourceBundle bundle = bundles.get( 0 );
         Assert.assertNotNull( bundle );
         Assert.assertEquals( repoId, bundle.getRepoId() );
         Assert.assertEquals( "[de, de_DE, ja]", bundle.getLanguages().toString() );
 
-        bundle = bundles.get( dstPath + "/subdirectory2/messages" );
-        Assert.assertNotNull( bundle );
+        bundle = bundles.get( 1 );
+        Assert.assertNotNull( bundle.getLocaleBasePath() );
 
-        bundle = bundles.get( dstPath + "/subdirectory2/ValidationMessages" );
-        Assert.assertNotNull( bundle );
+        bundle = bundles.get( 2 );
+        Assert.assertNotNull( bundle.getLocaleBasePath() );
     }
 
     /**
@@ -93,7 +93,7 @@ public class ResourceAnalyzerTest
         String repoId = "repoId";
         analyzer.analyze( svnUrl, dstPath, config , repo, repoId  );
 
-        Map<String, ResourceBundle> bundles = analyzer.getBundles();
+        List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 0, bundles.size() );
     }
 
@@ -113,7 +113,7 @@ public class ResourceAnalyzerTest
         String repoId = "repoId";
         analyzer.analyze( svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
 
-        Map<String, ResourceBundle> bundles = analyzer.getBundles();
+        List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 3, bundles.size() );
     }
 
@@ -132,17 +132,17 @@ public class ResourceAnalyzerTest
         String repoId = "repoId";
         analyzer.analyze( svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
 
-        Map<String, ResourceBundle> bundles = analyzer.getBundles();
-        Assert.assertEquals( "Found too many bundles: " + bundles.keySet(), 3, bundles.size() );
+        List<ResourceBundle> bundles = analyzer.getBundles();
+        Assert.assertEquals( "Found too many bundles", 3, bundles.size() );
 
-        ResourceBundle bundle = bundles.get( dstPath + "/subdirectory2/bundle" );
+        ResourceBundle bundle = bundles.get( 0 );
         Assert.assertNotNull( bundle );
         Assert.assertEquals( "[de]", bundle.getLanguages().toString() );
 
-        bundle = bundles.get( dstPath + "/testpom/pom" );
+        bundle = bundles.get( 1 );
         Assert.assertNotNull( bundle );
 
-        bundle = bundles.get( dstPath + "/testpom2/pom" );
+        bundle = bundles.get( 2 );
         Assert.assertNotNull( bundle );
     }
 

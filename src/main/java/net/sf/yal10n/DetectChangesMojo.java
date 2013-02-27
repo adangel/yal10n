@@ -16,7 +16,7 @@ package net.sf.yal10n;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -118,12 +118,11 @@ public class DetectChangesMojo extends AbstractMojo
         
         if ( !firstRun )
         {
-            Map<String, ResourceBundle> bundles = analyzer.getBundles();
-            getLog().info( "found " + bundles.size() + " bundles:" );
-            for ( Map.Entry<String, ResourceBundle> entry : bundles.entrySet() )
+            List<ResourceBundle> bundles = analyzer.getBundles();
+            getLog().info( "Found " + bundles.size() + " bundles:" );
+            for ( ResourceBundle bundle : bundles )
             {
-                ResourceBundle bundle = entry.getValue();
-                getLog().info( "  " + entry.getKey() );
+                getLog().info( "  " + bundle.getLocaleBasePath() );
                 String repoId = bundle.getRepoId();
                 ResourceFile defaultFile = bundle.getDefaultFile();
                 if ( defaultFile != null && previousStatus.getRepoStatusById( repoId ) != null )

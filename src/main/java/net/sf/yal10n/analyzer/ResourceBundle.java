@@ -100,6 +100,16 @@ public class ResourceBundle
     }
 
     /**
+     * Gets the locale base path.
+     *
+     * @return the locale base path
+     */
+    public String getLocaleBasePath()
+    {
+        return localBasePath;
+    }
+
+    /**
      * Adds the file.
      *
      * @param file the file
