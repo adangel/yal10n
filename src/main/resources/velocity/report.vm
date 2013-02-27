@@ -77,6 +77,6 @@
 
 #end
     <hr>
-    &copy; Powered by yal10n $report.version
+    &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $report.version
   </body>
 </html>
