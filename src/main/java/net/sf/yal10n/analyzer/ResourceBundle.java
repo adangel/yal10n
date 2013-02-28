@@ -357,6 +357,11 @@ public class ResourceBundle
         BundleModel model = new BundleModel();
 
         model.setProjectName( getProjectName() );
+        if ( !files.isEmpty() )
+        {
+            ResourceFile firstFile = files.values().iterator().next();
+            model.setBundleName( firstFile.getBaseName() );
+        }
         model.setRelativeReportUrl( getRelativeReportUrl() );
         model.setRelativeTmxUrl( getRelativeTmxUrl() );
 

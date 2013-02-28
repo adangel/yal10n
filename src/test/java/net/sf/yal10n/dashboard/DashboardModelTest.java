@@ -59,4 +59,30 @@ public class DashboardModelTest
         BundleModel bundleModel = model.getAllBundles().get( 0 );
         Assert.assertNotNull( bundleModel.getLanguages().get( 0 ) );
     }
+
+    /**
+     * Verifies that duplicate project names are resolved.
+     * @throws Exception any error
+     */
+    @Test
+    public void testCreateModelDuplicateProjectName() throws Exception
+    {
+        String file1 = new File( "./target/test-classes/unit/subdirectory/messages.properties" ).getCanonicalPath();
+        String file2 = new File( "./target/test-classes/unit/subdirectory/someother.properties" ).getCanonicalPath();
+
+        DashboardConfiguration config = new DashboardConfiguration();
+        ResourceBundle bundle1 = new ResourceBundle( config, null, null, ".", "." );
+        bundle1.addFile( new ResourceFile( config, new SVNUtilMock( file1 ), file1, null ) );
+        ResourceBundle bundle2 = new ResourceBundle( config, null, null, ".", "." );
+        bundle2.addFile( new ResourceFile( config, new SVNUtilMock( file2 ), file2, null ) );
+
+        List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
+        bundles.add( bundle1 );
+        bundles.add( bundle2 );
+
+        DashboardModel model = DashboardModel.create( Arrays.asList( "de" ), bundles, false );
+        Assert.assertFalse( model.getAllBundles().get( 0 ).getProjectName().equals(
+                model.getAllBundles().get( 1 ).getProjectName() ) );
+        Assert.assertTrue( model.getAllBundles().get( 1 ).getProjectName().endsWith( " someother" ) );
+    }
 }

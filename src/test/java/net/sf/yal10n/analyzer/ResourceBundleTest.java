@@ -134,6 +134,7 @@ public class ResourceBundleTest
         BundleModel bundleModel = bundle.toBundleModel( allLanguages );
         Assert.assertNotNull( bundleModel.getBase() );
         Assert.assertEquals( "default", bundleModel.getBase().getName() );
+        Assert.assertEquals( "messages", bundleModel.getBundleName() );
         Assert.assertEquals( "Unknown_Project_0_0.html", bundleModel.getRelativeReportUrl() );
         Assert.assertEquals( "Unknown_Project_0_0.tmx", bundleModel.getRelativeTmxUrl() );
         Assert.assertEquals( 3, bundleModel.getLanguages().size() );

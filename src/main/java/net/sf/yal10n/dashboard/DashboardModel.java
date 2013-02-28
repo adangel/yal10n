@@ -120,7 +120,7 @@ public class DashboardModel
         {
             bundleModels.add( bundle.toBundleModel( allLanguagesSorted ) );
         }
-        Collections.sort( bundleModels );
+        resolveDuplicatedProjectNames( bundleModels );
 
         DashboardModel model = new DashboardModel();
         model.setAllBundles( bundleModels );
@@ -130,6 +130,20 @@ public class DashboardModel
         model.setCreateTmx( createTmx );
 
         return model;
+    }
+
+    private static void resolveDuplicatedProjectNames( List<BundleModel> bundleModels )
+    {
+        Collections.sort( bundleModels );
+        String lastProjectName = null;
+        for ( BundleModel bundle : bundleModels )
+        {
+            if ( lastProjectName != null && lastProjectName.equals( bundle.getProjectName() ) )
+            {
+                bundle.setProjectName( lastProjectName + " " + bundle.getBundleName() );
+            }
+            lastProjectName = bundle.getProjectName();
+        }
     }
 
     /**

@@ -25,6 +25,8 @@ public class BundleModel implements Comparable<BundleModel>
 
     private String projectName;
 
+    private String bundleName;
+
     private LanguageModel base;
 
     private List<LanguageModel> languages = new ArrayList<LanguageModel>();
@@ -185,5 +187,25 @@ public class BundleModel implements Comparable<BundleModel>
     public void addLanguage( LanguageModel languageModel )
     {
         languages.add( languageModel );
+    }
+
+    /**
+     * Gets the bundle name.
+     *
+     * @return the bundle name
+     */
+    public String getBundleName()
+    {
+        return bundleName;
+    }
+
+    /**
+     * Sets the bundle name.
+     *
+     * @param bundleName the new bundle name
+     */
+    public void setBundleName( String bundleName )
+    {
+        this.bundleName = bundleName;
     }
 }
