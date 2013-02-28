@@ -41,7 +41,7 @@
 #if ($lang.existing)
         <td class="$lang.issuesSeverityClass">
           <a href="$lang.svnUrl">$lang.name</a>
-#elseif (!$lang.existing && !$lang.variant)
+#elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
         <td class="severity-major">
           missing
 #else

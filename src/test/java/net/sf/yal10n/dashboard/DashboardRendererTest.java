@@ -46,6 +46,7 @@ public class DashboardRendererTest
 
         renderer.render( model, out );
         String dashboard = out.toString();
+
         Assert.assertTrue( dashboard.contains( "<td>Bundle 1</td>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/base\">default</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/de\">de</a>" ) );
@@ -86,8 +87,8 @@ public class DashboardRendererTest
 
     private DashboardModel createModel()
     {
-        BundleModel bundle1 = createBundleModel( "Bundle 1", "bundle1" );
-        BundleModel bundle2 = createBundleModel( "Bundle 2", "bundle2" );
+        BundleModel bundle1 = createBundleModel( "Bundle 1", "bundle1", true );
+        BundleModel bundle2 = createBundleModel( "Bundle 2", "bundle2", false );
 
         DashboardModel model = new DashboardModel();
         model.setAllLanguages( Arrays.asList( "de", "fr", "es", "de_DE" ) );
@@ -98,26 +99,28 @@ public class DashboardRendererTest
         return model;
     }
 
-    private BundleModel createBundleModel( String projectName, String reportUrl )
+    private BundleModel createBundleModel( String projectName, String reportUrl, boolean defaultHasMessages )
     {
+        int countOfMessages = defaultHasMessages ? 1 : 0;
         BundleModel bundle1 = new BundleModel();
         bundle1.setProjectName( projectName );
         bundle1.setRelativeReportUrl( reportUrl );
-        bundle1.setBase( createLanguageModel( "default", reportUrl + "/base", true ) );
-        bundle1.addLanguage( createLanguageModel( "de", reportUrl + "/de", true ) );
-        bundle1.addLanguage( createLanguageModel( "fr", reportUrl + "/fr", true ) );
-        bundle1.addLanguage( createLanguageModel( "es", null, false ) );
-        bundle1.addLanguage( createLanguageModel( "de_DE", null, false ) );
+        bundle1.setBase( createLanguageModel( "default", reportUrl + "/base", true, countOfMessages ) );
+        bundle1.addLanguage( createLanguageModel( "de", reportUrl + "/de", true, countOfMessages ) );
+        bundle1.addLanguage( createLanguageModel( "fr", reportUrl + "/fr", true, countOfMessages ) );
+        bundle1.addLanguage( createLanguageModel( "es", null, false, countOfMessages ) );
+        bundle1.addLanguage( createLanguageModel( "de_DE", null, false, countOfMessages ) );
         return bundle1;
     }
 
-    private LanguageModel createLanguageModel( String name, String svnUrl, boolean existing )
+    private LanguageModel createLanguageModel( String name, String svnUrl, boolean existing, int count )
     {
         LanguageModel base = new LanguageModel();
         base.setExisting( existing );
         base.setVariant( ResourceFile.isVariant( name ) );
         base.setName( name );
         base.setSvnUrl( svnUrl );
+        base.setCountOfMessages( count );
         return base;
     }
 }
