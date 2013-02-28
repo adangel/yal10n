@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -28,6 +29,15 @@ public class SimpleEncodingDetectorTest
 {
 
     SimpleEncodingDetector detector = new SimpleEncodingDetector();
+
+    /**
+     * Sets/Resets the default buffer size.
+     */
+    @Before
+    public void setup()
+    {
+        detector.setBufferSize( 1024 );
+    }
 
     /**
      * Test to detect UTF8_BOM.
@@ -110,6 +120,20 @@ public class SimpleEncodingDetectorTest
         Assert.assertEquals( expectedLine, encodingResult.getErrorLine() );
         final int expectedColumn = 5;
         Assert.assertEquals( expectedColumn, encodingResult.getErrorColumn() );
+    }
+
+    /**
+     * Verifies that the encoding is correctly detected, even if a 2-byte encoded character
+     * is just at the buffer size.
+     * @throws Exception any error
+     */
+    @Test
+    public void testEncodingBufferSizeWrap() throws Exception
+    {
+        detector.setBufferSize( 5 );
+        File f = prepareFile( false, "1234äää", "UTF-8" );
+        EncodingResult encodingResult = detector.detectEncoding( f );
+        Assert.assertEquals( Encoding.UTF8, encodingResult.getDetected() );
     }
 
     /**

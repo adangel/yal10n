@@ -40,6 +40,17 @@ public class SimpleEncodingDetector
     static final byte[] UTF8_BOM_BYTES = new byte[] { (byte) 0xef, (byte) 0xbb, (byte) 0xbf };
     private static final Charset UTF8 = Charset.forName( "UTF-8" );
 
+    private int bufferSize = 1024;
+
+    /**
+     * Sets the buffer size to use when reading files.
+     * @param bufferSize the buffer size in bytes
+     */
+    public void setBufferSize( int bufferSize )
+    {
+        this.bufferSize = bufferSize;
+    }
+
     /**
      * Determines the encoding of the given file.
      * @param f the file to check
@@ -77,28 +88,26 @@ public class SimpleEncodingDetector
             utf8decoder.onMalformedInput( CodingErrorAction.REPORT );
             utf8decoder.onUnmappableCharacter( CodingErrorAction.REPORT );
 
-            final int bufferSize = 1024;
             ByteBuffer buffer = ByteBuffer.allocate( bufferSize );
             CharBuffer out = CharBuffer.allocate( bufferSize );
             CoderResult result = null;
             long decoderPosition = 0;
-            int bytesRead = -1;
-            while ( ( bytesRead = channel.read( buffer ) ) > -1 )
+            while ( channel.read( buffer )  > -1 )
             {
-                buffer.position( 0 );
-                buffer.limit( bytesRead );
+                buffer.flip();
                 result = utf8decoder.decode( buffer, out, false );
                 decoderPosition += buffer.position();
                 if ( result.isError() )
                 {
                     break;
                 }
-                buffer.clear();
+                buffer.compact();
                 out.clear();
             }
             if ( result != null && !result.isError() )
             {
                 buffer.clear();
+                buffer.flip();
                 out.clear();
                 result = utf8decoder.decode( buffer, out, true );
                 out.clear();
