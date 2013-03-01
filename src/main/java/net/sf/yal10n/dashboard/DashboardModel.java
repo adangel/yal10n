@@ -135,14 +135,15 @@ public class DashboardModel
     private static void resolveDuplicatedProjectNames( List<BundleModel> bundleModels )
     {
         Collections.sort( bundleModels );
-        String lastProjectName = null;
+        BundleModel lastBundle = null;
         for ( BundleModel bundle : bundleModels )
         {
-            if ( lastProjectName != null && lastProjectName.equals( bundle.getProjectName() ) )
+            if ( lastBundle != null && lastBundle.getProjectName().equals( bundle.getProjectName() ) )
             {
-                bundle.setProjectName( lastProjectName + " " + bundle.getBundleName() );
+                lastBundle.setProjectName( lastBundle.getProjectName() + " " + lastBundle.getBundleName() );
+                bundle.setProjectName( bundle.getProjectName() + " " + bundle.getBundleName() );
             }
-            lastProjectName = bundle.getProjectName();
+            lastBundle = bundle;
         }
     }
 

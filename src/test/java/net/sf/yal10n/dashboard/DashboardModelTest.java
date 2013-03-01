@@ -83,6 +83,7 @@ public class DashboardModelTest
         DashboardModel model = DashboardModel.create( Arrays.asList( "de" ), bundles, false );
         Assert.assertFalse( model.getAllBundles().get( 0 ).getProjectName().equals(
                 model.getAllBundles().get( 1 ).getProjectName() ) );
+        Assert.assertTrue( model.getAllBundles().get( 0 ).getProjectName().endsWith( " messages" ) );
         Assert.assertTrue( model.getAllBundles().get( 1 ).getProjectName().endsWith( " someother" ) );
     }
 }
