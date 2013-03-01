@@ -97,16 +97,15 @@ public class SimpleEncodingDetector
                 buffer.flip();
                 result = utf8decoder.decode( buffer, out, false );
                 decoderPosition += buffer.position();
+                buffer.compact();
+                out.clear();
                 if ( result.isError() )
                 {
                     break;
                 }
-                buffer.compact();
-                out.clear();
             }
             if ( result != null && !result.isError() )
             {
-                buffer.clear();
                 buffer.flip();
                 out.clear();
                 result = utf8decoder.decode( buffer, out, true );

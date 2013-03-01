@@ -17,6 +17,7 @@ package net.sf.yal10n.analyzer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -123,6 +124,22 @@ public class SimpleEncodingDetectorTest
     }
 
     /**
+     * Test that an error is detected if the file ends with an illegal byte sequence.
+     * @throws Exception any error
+     */
+    @Test
+    public void testErrorAtEndOfFile() throws Exception
+    {
+        File f = prepareFile( Arrays.copyOf( "Test ä".getBytes( "UTF-8" ), 6 ) );
+        EncodingResult encodingResult = detector.detectEncoding( f );
+        Assert.assertEquals( Encoding.OTHER , encodingResult.getDetected() );
+        Assert.assertEquals( "MALFORMED[1]", encodingResult.getError() );
+        Assert.assertEquals( 5, encodingResult.getErrorPosition() );
+        Assert.assertEquals( 1, encodingResult.getErrorLine() );
+        Assert.assertEquals( 6, encodingResult.getErrorColumn() );
+    }
+
+    /**
      * Verifies that the encoding is correctly detected, even if a 2-byte encoded character
      * is just at the buffer size.
      * @throws Exception any error
@@ -134,6 +151,7 @@ public class SimpleEncodingDetectorTest
         File f = prepareFile( false, "1234äää", "UTF-8" );
         EncodingResult encodingResult = detector.detectEncoding( f );
         Assert.assertEquals( Encoding.UTF8, encodingResult.getDetected() );
+        Assert.assertNull( encodingResult.getError() );
     }
 
     /**
