@@ -182,9 +182,12 @@ public class UnifiedDiff
         final String lightGrey = "#d3d3d3";
         final String darkCyan = "#008b8b";
 
+        final String firstColumnStyle = " style=\"padding: 0 0.5em 0 0.5em; text-align: right;\"";
+
         StringBuilder out = new StringBuilder();
+        out.append( "<div style=\"margin: 10px; border: 1px #aaaaaa solid; border-radius: 10px; padding: 5px;\">\n" );
         out.append( "<table border=\"0\" width=\"100%\" cellspacing=\"0\">\n" );
-        out.append( "<tr><td>&nbsp;</td>" );
+        out.append( "<tr><td" ).append( firstColumnStyle ).append( ">&nbsp;</td>" );
         out.append( "<td><strong>" ).append( escapeTool.html( originalName ) ).append( "</strong></td>" );
         out.append( "<td><strong>" ).append( escapeTool.html( newName ) ).append( "</strong></td>" );
         out.append( "</tr>\n" );
@@ -192,7 +195,7 @@ public class UnifiedDiff
         for ( Hunk hunk : hunks )
         {
             out.append( "<tr style=\"background: " ).append( darkCyan ).append( ";\")>" );
-            out.append( "<td>#</td>" );
+            out.append( "<td" ).append( firstColumnStyle ).append( ">#</td>" );
             out.append( "<td><strong>Line " ).append( hunk.firstLineNumber ).append( "</td>" );
             out.append( "<td><strong>Line " ).append( hunk.firstLineNumber ).append( "</td>" );
             out.append( "</tr>" );
@@ -218,7 +221,7 @@ public class UnifiedDiff
                 }
 
                 out.append( "<tr>" );
-                out.append( "<td>" ).append( i ).append( "</td>" );
+                out.append( "<td" ).append( firstColumnStyle ).append( ">" ).append( i ).append( "</td>" );
                 switch ( indicator )
                 {
                 case '-':
@@ -248,8 +251,8 @@ public class UnifiedDiff
         }
         out.append( "</table>\n" );
 
-        out.append( "<hr/>\n" );
-        out.append( "<table border=\"0\" cellspacing=\"0\" style=\"border: 1px black solid\">\n" );
+        out.append( "<hr style=\"border: 1px #aaaaaa solid;\"/>\n" );
+        out.append( "<table border=\"0\" cellspacing=\"0\" style=\"border: 1px #aaaaaa solid\">\n" );
         out.append( "<colgroup>\n" );
         out.append( "    <col width=\"50%\" />\n" );
         out.append( "    <col width=\"50%\" />\n" );
@@ -262,6 +265,7 @@ public class UnifiedDiff
         out.append( "<tr><td style=\"background: " ).append( lightGrey ).append( ";\">&nbsp;</td>" )
             .append( "<td style=\"background: " ).append( lightGreen ).append( ";\">added</td></tr>\n" );
         out.append( "</table>\n" );
+        out.append( "</div>\n" );
 
         return out.toString();
     }

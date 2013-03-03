@@ -172,7 +172,7 @@ public class UnifiedDiffTest
         Assert.assertEquals( 2, unifiedDiff.getHunks().size() );
 
         String html = unifiedDiff.asHtmlSnippet();
-        Assert.assertTrue( html.startsWith( "<table" ) );
+        Assert.assertTrue( html.contains( "<table" ) );
         Assert.assertTrue( html.contains( "myfile (old)" ) );
         Assert.assertTrue( html.contains( "myfile (new)" ) );
         Assert.assertTrue( html.contains( "Line 1" ) );
