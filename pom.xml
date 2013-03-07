@@ -35,8 +35,9 @@ limitations under the License.
     <url>http://yal10n.sf.net</url>
     <scm>
         <connection>scm:git:git://git.code.sf.net/p/yal10n/code</connection>
-        <developerConnection>scm:git:ssh://adangel@git.code.sf.net/p/yal10n/code</developerConnection>
+        <developerConnection>scm:git:ssh://git.code.sf.net/p/yal10n/code</developerConnection>
         <url>https://sourceforge.net/p/yal10n/code</url>
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <url>https://sourceforge.net/p/yal10n/tickets/</url>
@@ -177,6 +178,16 @@ limitations under the License.
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <localCheckout>true</localCheckout>
+                    <pushChanges>false</pushChanges>
+                    <tagNameFormat>releases/@{project.version}</tagNameFormat>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
