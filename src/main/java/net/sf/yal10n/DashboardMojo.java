@@ -99,7 +99,7 @@ public class DashboardMojo extends AbstractMojo
         getLog().info( "Found " + bundles.size() + " bundles:" );
 
         new DashboardRenderer( outputDirectory )
-            .render( DashboardModel.create( config.getLanguages(), bundles, config.isCreateTMX() ) );
+            .render( DashboardModel.create( config, bundles ) );
         ReportRenderer reportRenderer = new ReportRenderer( outputDirectory );
         File reportDirectory = new File( FileUtils.normalize( outputDirectory + "/reports" ) );
         if ( !reportDirectory.exists() && !reportDirectory.mkdirs() )

@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.yal10n.dashboard.LanguageComparator;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -35,6 +36,7 @@ public class DashboardConfiguration
     private List<String> excludes = new ArrayList<String>();
     private boolean createTMX;
     private List<String> languages = new ArrayList<String>();
+    private LanguageComparator languageComparator = LanguageComparator.ALPHABETICAL_VARIANTS_LAST;
     private List<String> ignoreKeys = new ArrayList<String>();
     private CheckConfiguration checks = new CheckConfiguration();
     private Notification notification = new Notification();
@@ -168,6 +170,25 @@ public class DashboardConfiguration
     public void setLanguages( List<String> languages )
     {
         this.languages = languages;
+    }
+
+    /**
+     * Gets the comparator to be used for the languages in the dashboard.
+     * Default is: {@link LanguageComparator#ALPHABETICAL_VARIANTS_LAST}
+     * @return the language comparator
+     */
+    public LanguageComparator getLanguageComparator()
+    {
+        return languageComparator;
+    }
+
+    /**
+     * Sets the comparator to be used for the languages in the dashboard.
+     * @param languageComparator the language comparator
+     */
+    public void setLanguageComparator( LanguageComparator languageComparator )
+    {
+        this.languageComparator = languageComparator;
     }
 
     /**

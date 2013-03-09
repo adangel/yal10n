@@ -4,7 +4,7 @@
     "includes": [ "**/*essages*.properties" ],
     "excludes": [ "**/src/test/**"],
     "createTMX": true,
-    "languages": ["de", "fr", "ja", "nl"],
+    "languages": ["de", "de_DE", "fr", "ja", "nl"],
     "ignoreKeys": ["ignore.this.message"],
     "repositories": [
         {

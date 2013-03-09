@@ -45,13 +45,16 @@ public class DashboardModelTest
         List<String> languages = Arrays.asList( "fr", "de_DE", "de" );
         List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
         DashboardConfiguration config = new DashboardConfiguration();
+        config.setCreateTMX( true );
+        config.setLanguages( languages );
+        config.setLanguageComparator( LanguageComparator.ALPHABETICAL );
         ResourceBundle bundle = new ResourceBundle( config, null, null, ".", "." );
         bundles.add( bundle );
         ResourceFile file = new ResourceFile( config, new SVNUtilMock( propertiesFile.getCanonicalPath() ),
                 propertiesFile.getCanonicalPath(), null );
         bundle.addFile( file );
 
-        DashboardModel model = DashboardModel.create( languages, bundles, true );
+        DashboardModel model = DashboardModel.create( config, bundles );
         Assert.assertEquals( DashboardMojo.getVersion(), model.getVersion() );
         Assert.assertEquals( "[de, de_DE, fr]", model.getAllLanguages().toString() );
         Assert.assertEquals( 1, model.getAllBundles().size() );
@@ -71,6 +74,8 @@ public class DashboardModelTest
         String file2 = new File( "./target/test-classes/unit/subdirectory/someother.properties" ).getCanonicalPath();
 
         DashboardConfiguration config = new DashboardConfiguration();
+        config.setCreateTMX( false );
+        config.setLanguages( Arrays.asList( "de" ) );
         ResourceBundle bundle1 = new ResourceBundle( config, null, null, ".", "." );
         bundle1.addFile( new ResourceFile( config, new SVNUtilMock( file1 ), file1, null ) );
         ResourceBundle bundle2 = new ResourceBundle( config, null, null, ".", "." );
@@ -80,7 +85,7 @@ public class DashboardModelTest
         bundles.add( bundle1 );
         bundles.add( bundle2 );
 
-        DashboardModel model = DashboardModel.create( Arrays.asList( "de" ), bundles, false );
+        DashboardModel model = DashboardModel.create( config, bundles );
         Assert.assertFalse( model.getAllBundles().get( 0 ).getProjectName().equals(
                 model.getAllBundles().get( 1 ).getProjectName() ) );
         Assert.assertTrue( model.getAllBundles().get( 0 ).getProjectName().endsWith( " messages" ) );

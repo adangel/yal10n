@@ -23,6 +23,7 @@ import java.util.Set;
 
 import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.analyzer.ResourceBundle;
+import net.sf.yal10n.settings.DashboardConfiguration;
 
 /**
  * This is the overall model for rendering the dashboard overview.
@@ -99,14 +100,14 @@ public class DashboardModel
     /**
      * Creates a Dashboard model based on the given {@link ResourceBundle}s.
      *
-     * @param languages the languages
+     * @param config the configuration
      * @param bundles the bundles
-     * @param createTmx the create tmx
      * @return the dashboard model
      */
-    public static DashboardModel create( List<String> languages, List<ResourceBundle> bundles, boolean createTmx )
+    public static DashboardModel create( DashboardConfiguration config, List<ResourceBundle> bundles )
     {
-
+        List<String> languages = config.getLanguages();
+        boolean createTmx = config.isCreateTMX();
         Set<String> allLanguages = new HashSet<String>( languages );
         List<BundleModel> bundleModels = new ArrayList<BundleModel>();
         for ( ResourceBundle bundle : bundles )
@@ -114,7 +115,7 @@ public class DashboardModel
             allLanguages.addAll( bundle.getLanguages() );
         }
         ArrayList<String> allLanguagesSorted = new ArrayList<String>( allLanguages );
-        Collections.sort( allLanguagesSorted, String.CASE_INSENSITIVE_ORDER );
+        Collections.sort( allLanguagesSorted, config.getLanguageComparator() );
 
         for ( ResourceBundle bundle : bundles )
         {
