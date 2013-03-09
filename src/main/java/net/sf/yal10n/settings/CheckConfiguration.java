@@ -14,6 +14,9 @@ package net.sf.yal10n.settings;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Configures various aspects of messages.properties file checks.
  */
@@ -22,6 +25,7 @@ public class CheckConfiguration
     private double percentageMissing = 10.0d;
     private boolean checkFileHeaders = false;
     private String fileHeaderRegexp = "";
+    private List<String> ignoreKeys = new ArrayList<String>();
 
     /**
      * Determines how many messages are allowed to be missing (missing or not translated)
@@ -81,5 +85,23 @@ public class CheckConfiguration
     public void setFileHeaderRegexp( String fileHeaderRegexp )
     {
         this.fileHeaderRegexp = fileHeaderRegexp;
+    }
+
+    /**
+     * Gets the list of messages keys, that should be ignored in any statistic.
+     * @return the list of keys that should be ignored.
+     */
+    public List<String> getIgnoreKeys()
+    {
+        return ignoreKeys;
+    }
+
+    /**
+     * Sets the list of messages keys, that should be ignored in any statistic.
+     * @param ignoreKeys the list of keys that should be ignored.
+     */
+    public void setIgnoreKeys( List<String> ignoreKeys )
+    {
+        this.ignoreKeys = ignoreKeys;
     }
 }

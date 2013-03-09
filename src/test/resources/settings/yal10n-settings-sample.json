@@ -5,7 +5,6 @@
     "excludes": [ "**/src/test/**"],
     "createTMX": true,
     "languages": ["de", "fr", "ja", "nl"],
-    "ignoreKeys": ["to-be-ignored"],
     "repositories": [
         {
             "url": "repo1/trunk",
@@ -20,6 +19,7 @@
         }
     ],
     "checks": {
+        "ignoreKeys": ["to-be-ignored"],
         "percentageMissing": 10.0,
         "checkFileHeaders": true,
         "fileHeaderRegexp": "(^\\s*$\n)*^#$\n^# Copyright \\(C\\) \\d\\d\\d\\d MyCompany$\n^# All rights reserved.$\n^#$"

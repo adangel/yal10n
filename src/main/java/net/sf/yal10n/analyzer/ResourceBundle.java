@@ -306,12 +306,12 @@ public class ResourceBundle
         String baseName = null;
         if ( defaultFile != null )
         {
-            allLanguages.add( defaultFile.toLanguageModel( config.getIgnoreKeys() ) );
+            allLanguages.add( defaultFile.toLanguageModel( config.getChecks().getIgnoreKeys() ) );
             baseName = defaultFile.getBaseName();
         }
         for ( String lang : getLanguages() )
         {
-            allLanguages.add( getByLanguage( lang ).toLanguageModel( config.getIgnoreKeys() ) );
+            allLanguages.add( getByLanguage( lang ).toLanguageModel( config.getChecks().getIgnoreKeys() ) );
         }
 
         ReportModel model = new ReportModel();
@@ -368,7 +368,7 @@ public class ResourceBundle
         ResourceFile defaultFile = getDefaultFile();
         if ( defaultFile != null )
         {
-            model.setBase( defaultFile.toLanguageModel( config.getIgnoreKeys() ) );
+            model.setBase( defaultFile.toLanguageModel( config.getChecks().getIgnoreKeys() ) );
         }
         for ( String lang : allLanguages )
         {
@@ -383,7 +383,7 @@ public class ResourceBundle
             }
             else
             {
-                langModel = file.toLanguageModel( config.getIgnoreKeys() );
+                langModel = file.toLanguageModel( config.getChecks().getIgnoreKeys() );
             }
             model.addLanguage( langModel );
         }

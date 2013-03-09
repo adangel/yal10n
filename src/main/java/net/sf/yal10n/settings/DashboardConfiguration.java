@@ -37,7 +37,6 @@ public class DashboardConfiguration
     private boolean createTMX;
     private List<String> languages = new ArrayList<String>();
     private LanguageComparator languageComparator = LanguageComparator.ALPHABETICAL_VARIANTS_LAST;
-    private List<String> ignoreKeys = new ArrayList<String>();
     private CheckConfiguration checks = new CheckConfiguration();
     private Notification notification = new Notification();
 
@@ -189,24 +188,6 @@ public class DashboardConfiguration
     public void setLanguageComparator( LanguageComparator languageComparator )
     {
         this.languageComparator = languageComparator;
-    }
-
-    /**
-     * Gets the list of messages keys, that should be ignored in any statistic.
-     * @return the list of keys that should be ignored.
-     */
-    public List<String> getIgnoreKeys()
-    {
-        return ignoreKeys;
-    }
-
-    /**
-     * Sets the list of messages keys, that should be ignored in any statistic.
-     * @param ignoreKeys the list of keys that should be ignored.
-     */
-    public void setIgnoreKeys( List<String> ignoreKeys )
-    {
-        this.ignoreKeys = ignoreKeys;
     }
 
     /**
