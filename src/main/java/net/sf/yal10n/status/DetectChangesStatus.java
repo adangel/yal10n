@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -82,6 +83,7 @@ public class DetectChangesStatus
             if ( f.exists() )
             {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.configure( Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
                 status = mapper.reader( DetectChangesStatus.class ).readValue( f );
             }
             else

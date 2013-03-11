@@ -4,6 +4,7 @@
     "includes": [ "**/*essages*.properties" ],
     "excludes": [ "**/src/test/**"],
     "createTMX": true,
+    "thisIsAUnknownProperty": "yal10n should not fail",
     "languages": ["de", "fr", "ja", "nl"],
     "repositories": [
         {

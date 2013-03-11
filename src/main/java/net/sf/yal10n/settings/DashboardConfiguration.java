@@ -21,6 +21,7 @@ import java.util.List;
 import net.sf.yal10n.dashboard.LanguageComparator;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -256,6 +257,7 @@ public class DashboardConfiguration
         {
             File f = new File( file ).getCanonicalFile();
             ObjectMapper mapper = new ObjectMapper();
+            mapper.configure( Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
             DashboardConfiguration config = mapper.reader( DashboardConfiguration.class ).readValue( f );
             return config;
         }
