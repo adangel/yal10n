@@ -122,7 +122,7 @@ public class ResourceFileTest
 
         ResourceFile file = new ResourceFile( config, new SVNUtilMock( resourceFile ), resourceFile, null );
         bundle.addFile( file );
-        LanguageModel languageModel = file.toLanguageModel( ignoreKeys );
+        LanguageModel languageModel = file.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel.getEncoding() );
         Assert.assertEquals( "default", languageModel.getName() );
@@ -137,7 +137,7 @@ public class ResourceFileTest
 
         ResourceFile file2 = new ResourceFile( config, new SVNUtilMock( resourceFile2 ), resourceFile2, null );
         bundle.addFile( file2 );
-        LanguageModel languageModel2 = file2.toLanguageModel( ignoreKeys );
+        LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel2.getEncoding() );
         Assert.assertEquals( "de", languageModel2.getName() );
@@ -155,7 +155,7 @@ public class ResourceFileTest
 
         ResourceFile file3 = new ResourceFile( config, new SVNUtilMock( resourceFile3 ), resourceFile3, null );
         bundle.addFile( file3 );
-        LanguageModel languageModel3 = file3.toLanguageModel( ignoreKeys );
+        LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertTrue( languageModel3.isVariant() );
         Assert.assertEquals( "[Wrong Encoding (1.0): MALFORMED[1] at line 5 , column 114]",
                 languageModel3.getScoreLog().toString() );

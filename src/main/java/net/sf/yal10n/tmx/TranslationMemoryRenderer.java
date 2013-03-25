@@ -29,6 +29,8 @@ import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.dashboard.BundleModel;
 
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.joda.time.DateTime;
@@ -39,25 +41,16 @@ import org.joda.time.format.DateTimeFormatter;
 /**
  * Creates a translation memory exchange file from one or more {@link ResourceBundle}s.
  */
+@Component( role = TranslationMemoryRenderer.class, hint = "TranslationMemoryRenderer" )
 public class TranslationMemoryRenderer
 {
-    private String outputDirectory;
-
-    /**
-     * Instantiates a new translation memory renderer.
-     *
-     * @param outputDirectory the output directory
-     */
-    public TranslationMemoryRenderer( String outputDirectory )
-    {
-        this.outputDirectory = outputDirectory;
-    }
-
     /**
      * Creates one file which contains all bundles.
+     *
      * @param bundles the bundles to convert.
+     * @param outputDirectory the output directory
      */
-    public void render( Collection<ResourceBundle> bundles )
+    public void render( Collection<ResourceBundle> bundles, String outputDirectory )
     {
         FileOutputStream stream = null;
         try
@@ -172,11 +165,14 @@ public class TranslationMemoryRenderer
 
     /**
      * Creates one file which contains only the one given bundle.
+     *
+     * @param log the log
      * @param bundle the bundle
+     * @param outputDirectory the output directory
      */
-    public void render( ResourceBundle bundle )
+    public void render( Log log, ResourceBundle bundle, String outputDirectory )
     {
-        BundleModel bundleModel = bundle.toBundleModel( bundle.getLanguages() );
+        BundleModel bundleModel = bundle.toBundleModel( log, bundle.getLanguages() );
         FileOutputStream stream = null;
         try
         {

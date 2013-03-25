@@ -50,7 +50,7 @@ public class ReportRendererTest
         allLanguages.add( lm );
         model.setAllLanguages( allLanguages );
 
-        ReportRenderer renderer = new ReportRenderer( "." );
+        ReportRenderer renderer = new ReportRenderer();
         StringWriter out = new StringWriter();
         renderer.render( model, out );
 
@@ -85,8 +85,8 @@ public class ReportRendererTest
         model.setRelativeReportUrl( expectedFilename );
 
         
-        ReportRenderer renderer = new ReportRenderer( expectedOutputPath.getCanonicalPath() );
-        renderer.render( model );
+        ReportRenderer renderer = new ReportRenderer();
+        renderer.render( model, expectedOutputPath.getCanonicalPath() );
 
         Assert.assertTrue( "report was not created",
                 new File( completeExpectedOutputPath, expectedFilename ).exists() );

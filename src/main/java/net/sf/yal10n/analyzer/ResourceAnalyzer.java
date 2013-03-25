@@ -30,27 +30,36 @@ import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * The {@link ResourceAnalyzer} scans a directory for resource bundles.
  */
+@Component( role = ResourceAnalyzer.class, hint = "ResourceAnalyzer" )
 public class ResourceAnalyzer
 {
-    private Log log;
+    @Requirement
     private SVNUtil svn;
     private Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
 
     /**
+     * Instantiates a new resource analyzer.
+     */
+    public ResourceAnalyzer()
+    {
+        super();
+    }
+
+    /**
      * Creates a new resource analyzer.
      * @param svn the svn utility
-     * @param log the logger
      */
-    public ResourceAnalyzer( SVNUtil svn, Log log )
+    public ResourceAnalyzer( SVNUtil svn )
     {
         this.svn = svn;
-        this.log = log;
     }
 
     /**
@@ -73,13 +82,15 @@ public class ResourceAnalyzer
     /**
      * Analyzes the given dstPath and adds any resource bundles found.
      *
+     * @param log the log
      * @param svnUrl the svn url
      * @param dstPath the dst path
      * @param config the config
      * @param repo the repo
      * @param repoId the repo id
      */
-    public void analyze( String svnUrl, String dstPath, DashboardConfiguration config, Repository repo, String repoId )
+    public void analyze( Log log, String svnUrl, String dstPath, DashboardConfiguration config, Repository repo,
+            String repoId )
     {
         DirectoryScanner scanner = new DirectoryScanner();
 

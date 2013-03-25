@@ -24,44 +24,27 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.util.Collection;
 
-import junit.framework.Assert;
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
-import net.sf.yal10n.analyzer.ResourceBundle;
-import net.sf.yal10n.dashboard.DashboardModel;
-import net.sf.yal10n.dashboard.DashboardRenderer;
-import net.sf.yal10n.report.ReportModel;
-import net.sf.yal10n.report.ReportRenderer;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtil;
-import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
 /**
- * Unit test for {@link DashboardMojo}.
+ * @author Andreas Dangel
+ *
  */
-public class DashboardMojoTest
+public class DetectChangesMojoTest
 {
 
     /**
-     * Tests the version.
+     * Test execution of the detect changes mojo.
+     *
+     * @throws Exception the exception
      */
-    @Test
-    public void testVersion()
-    {
-        String version = DashboardMojo.getVersion();
-        Assert.assertNotNull( version );
-    }
-
-    /**
-     * Tests the interaction between {@link DashboardMojo#execute()} and the renderers.
-     * @throws Exception any error
-     */
-    @SuppressWarnings( "unchecked" )
     @Test
     public void testExecute() throws Exception
     {
@@ -71,30 +54,20 @@ public class DashboardMojoTest
         doNothing().when( analyzer ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(),
                 (Repository) anyObject(), anyString() );
-        DashboardRenderer dashboardRenderer = mock( DashboardRenderer.class );
-        ReportRenderer reportRenderer = mock( ReportRenderer.class );
-        when( reportRenderer.prepareOutputDirectory( anyString() ) ).thenReturn( true );
-        TranslationMemoryRenderer tmxRenderer = mock( TranslationMemoryRenderer.class );
         File settings = new File( "target/test-classes/settings/yal10n-settings-sample.json" );
-        
-        DashboardMojo mojo = new DashboardMojo( svn, analyzer,
-                dashboardRenderer,
-                reportRenderer,
-                tmxRenderer );
+        File status = new File( "target/test-classes/status/yal10n-status-sample.json" );
+
+        DetectChangesMojo mojo = new DetectChangesMojo( svn, analyzer );
         mojo.setYal10nSettings( settings.getAbsolutePath() );
         mojo.setOutputDirectory( System.getProperty( "java.io.tmpdir" ) );
+        mojo.setYal10nStatus( status.getAbsolutePath() );
         mojo.execute();
 
         verify( svn, times( 3 ) ).checkout( (Log) anyObject(), anyString(), anyString() );
         verify( analyzer, times( 3 ) ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(), (Repository) anyObject(), anyString() );
         verify( analyzer, times( 1 ) ).getBundles();
-        verify( dashboardRenderer, times( 1 ) ).render( (DashboardModel) anyObject(), anyString() );
-        verify( reportRenderer, times( 1 ) ).prepareOutputDirectory( anyString() );
-        verify( reportRenderer, times( 0 ) ).render( (ReportModel) anyObject(), anyString() );
-        verify( tmxRenderer, times( 1 ) ).render( (Collection<ResourceBundle>) anyObject(), anyString() );
-        verify( tmxRenderer, times( 0 ) ).render( (Log) anyObject(), (ResourceBundle) anyObject(), anyString() );
 
-        verifyNoMoreInteractions( svn, analyzer, dashboardRenderer, reportRenderer, tmxRenderer );
+        verifyNoMoreInteractions( svn, analyzer );
     }
 }

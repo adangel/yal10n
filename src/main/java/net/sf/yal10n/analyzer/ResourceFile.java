@@ -33,6 +33,7 @@ import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.tmatesoft.svn.core.wc.SVNInfo;
@@ -244,10 +245,11 @@ public class ResourceFile
     /**
      * To language model.
      *
+     * @param log the log
      * @param ignoreKeys the ignore keys
      * @return the language model
      */
-    public LanguageModel toLanguageModel( List<String> ignoreKeys )
+    public LanguageModel toLanguageModel( Log log, List<String> ignoreKeys )
     {
         LanguageModel model = new LanguageModel();
         model.setSvnUrl( fullSvnPath );
@@ -301,7 +303,7 @@ public class ResourceFile
         model.setMissingMessages( missingKeys );
         model.setAdditionalMessages( additionalKeys );
 
-        SVNInfo svnInfo = svn.checkFile( fullLocalPath );
+        SVNInfo svnInfo = svn.checkFile( log, fullLocalPath );
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 

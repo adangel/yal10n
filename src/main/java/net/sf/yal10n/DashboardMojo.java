@@ -14,7 +14,6 @@ package net.sf.yal10n;
  * limitations under the License.
  */
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,11 +31,10 @@ import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtil;
 import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
@@ -44,22 +42,47 @@ import org.codehaus.plexus.util.IOUtil;
  * This mojo creates a dashboard like overview of all resource bundles.
  */
 @Mojo( name = "dashboard", requiresProject = false )
-public class DashboardMojo extends AbstractMojo
+public class DashboardMojo extends BaseMojo
 {
     private static final String GROUP_ID = "net.sf.yal10n";
     private static final String ARTIFACT_ID = "yal10n-maven-plugin";
 
-    /** The configuration of the dashboard is read from this file. The file format is json. */
-    @Parameter( required = true, property = "yal10n.settings", defaultValue = "yal10n-settings.json" )
-    private String yal10nSettings;
+    /** The dashboard renderer. */
+    @Component
+    private DashboardRenderer dashboardRenderer;
+    /** The report renderer. */
+    @Component
+    private ReportRenderer reportRenderer;
+    /** The tmx renderer. */
+    @Component
+    private TranslationMemoryRenderer tmxRenderer;
 
-    /** Whether to update the local workspace checkouts or not. */
-    @Parameter( required = true, defaultValue = "${settings.offline}" )
-    private boolean offline;
+    /**
+     * Instantiates a new dashboard mojo.
+     */
+    public DashboardMojo()
+    {
+        super();
+    }
 
-    /** The directory where the dashboard html files should be created. */
-    @Parameter( required = true, property = "yal10n.outputDirectory", defaultValue = "target" )
-    private String outputDirectory;
+    /**
+     * Creates a new DashboardMojo using the given components.
+     *
+     * @param svn the svn utility to use
+     * @param analyzer the analyzer to use
+     * @param dashboardRenderer the dashboard renderer
+     * @param reportRenderer the report renderer
+     * @param tmxRenderer the tmx renderer
+     */
+    DashboardMojo( SVNUtil svn, ResourceAnalyzer analyzer, DashboardRenderer dashboardRenderer,
+            ReportRenderer reportRenderer, TranslationMemoryRenderer tmxRenderer )
+    {
+        this.svn = svn;
+        this.analyzer = analyzer;
+        this.dashboardRenderer = dashboardRenderer;
+        this.reportRenderer = reportRenderer;
+        this.tmxRenderer = tmxRenderer;
+    }
 
     /**
      * {@inheritDoc}
@@ -67,11 +90,7 @@ public class DashboardMojo extends AbstractMojo
     public final void execute() throws MojoExecutionException,
         MojoFailureException
     {
-
-        SVNUtil svn = new SVNUtil( getLog() );
         DashboardConfiguration config = DashboardConfiguration.readFromFile( yal10nSettings );
-
-        ResourceAnalyzer analyzer = new ResourceAnalyzer( svn, getLog() );
 
         int repoNumber = 0;
         for ( Repository repo : config.getRepositories() )
@@ -89,36 +108,32 @@ public class DashboardMojo extends AbstractMojo
             }
             else
             {
-                svn.checkout( svnUrl, dstPath );
+                svn.checkout( getLog(), svnUrl, dstPath );
             }
 
-            analyzer.analyze( svnUrl, dstPath, config, repo, repoId );
+            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
         }
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         getLog().info( "Found " + bundles.size() + " bundles:" );
 
-        new DashboardRenderer( outputDirectory )
-            .render( DashboardModel.create( config, bundles ) );
-        ReportRenderer reportRenderer = new ReportRenderer( outputDirectory );
-        File reportDirectory = new File( FileUtils.normalize( outputDirectory + "/reports" ) );
-        if ( !reportDirectory.exists() && !reportDirectory.mkdirs() )
+        dashboardRenderer.render( DashboardModel.create( getLog(), config, bundles ), outputDirectory );
+        if ( !reportRenderer.prepareOutputDirectory( outputDirectory ) )
         {
-            throw new MojoExecutionException( "Couldn't create directory: " + reportDirectory );
+            throw new MojoExecutionException( "Couldn't create directory: " + reportRenderer.getReportDirectory() );
         }
         for ( ResourceBundle bundle : bundles )
         {
             getLog().info( "  " + bundle.getLocaleBasePath() );
-            reportRenderer.render( bundle.getReport() );
+            reportRenderer.render( bundle.getReport( getLog() ), outputDirectory );
         }
         
         if ( config.isCreateTMX() )
         {
-            TranslationMemoryRenderer tmxRenderer = new TranslationMemoryRenderer( outputDirectory );
-            tmxRenderer.render( bundles );
+            tmxRenderer.render( bundles, outputDirectory );
             for ( ResourceBundle bundle : bundles )
             {
-                tmxRenderer.render( bundle );
+                tmxRenderer.render( getLog(), bundle, outputDirectory );
             }
         }
         else
@@ -170,5 +185,4 @@ public class DashboardMojo extends AbstractMojo
         }
         return result;
     }
-
 }

@@ -16,6 +16,7 @@ package net.sf.yal10n.svn;
 
 import java.util.Date;
 
+import org.apache.maven.plugin.logging.Log;
 import org.junit.Assert;
 import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -40,12 +41,11 @@ public class SVNUtilMock extends SVNUtil
      */
     public SVNUtilMock( String expectedFile )
     {
-        super( null );
         this.expectedFile = expectedFile;
     }
 
     @Override
-    public SVNInfo checkFile( String fullFilePath )
+    public SVNInfo checkFile( Log log, String fullFilePath )
     {
         if ( expectedFile != null )
         {

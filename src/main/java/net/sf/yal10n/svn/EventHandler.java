@@ -32,12 +32,36 @@ public class EventHandler implements ISVNEventHandler
 
     /**
      * Instantiates a new event handler.
-     *
-     * @param log the log
      */
-    public EventHandler( Log log )
+    public EventHandler()
+    {
+        super();
+    }
+
+    /**
+     * Sets the log.
+     *
+     * @param log the new log
+     */
+    public void setLog( Log log )
     {
         this.log = log;
+    }
+
+    private void logDebug( String message )
+    {
+        if ( log != null )
+        {
+            log.debug( message );
+        }
+    }
+
+    private void logInfo( String message )
+    {
+        if ( log != null )
+        {
+            log.info( message );
+        }
     }
 
     /**
@@ -55,11 +79,11 @@ public class EventHandler implements ISVNEventHandler
     @Override
     public void handleEvent( SVNEvent event, double progress ) throws SVNException
     {
-        log.debug( "SVN Event: " + event );
+        logDebug( "SVN Event: " + event );
 
         if ( event.getAction() == SVNEventAction.UPDATE_COMPLETED )
         {
-            log.info( "At revision " + event.getRevision() );
+            logInfo( "At revision " + event.getRevision() );
             lastUpdateCompletedRevision = event.getRevision();
         }
     }

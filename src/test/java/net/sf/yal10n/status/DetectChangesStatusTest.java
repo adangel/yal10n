@@ -65,4 +65,18 @@ public class DetectChangesStatusTest
         Assert.assertEquals( "myId", repo2.getId() );
         Assert.assertEquals( revision, repo2.getRevision() );
     }
+
+    /**
+     * Test reading of the status json file.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testRead() throws Exception
+    {
+        File f = new File( "target/test-classes/status/yal10n-status-sample.json" );
+        DetectChangesStatus status = DetectChangesStatus.readFromFile( f.getCanonicalPath() );
+        Assert.assertNotNull( status.getLastDetection() );
+        Assert.assertEquals( 3, status.getRepos().size() );
+    }
 }

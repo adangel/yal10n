@@ -21,6 +21,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import net.sf.yal10n.DashboardMojo;
+import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.analyzer.ResourceFile;
 import net.sf.yal10n.settings.DashboardConfiguration;
@@ -54,7 +55,7 @@ public class DashboardModelTest
                 propertiesFile.getCanonicalPath(), null );
         bundle.addFile( file );
 
-        DashboardModel model = DashboardModel.create( config, bundles );
+        DashboardModel model = DashboardModel.create( new NullLog(), config, bundles );
         Assert.assertEquals( DashboardMojo.getVersion(), model.getVersion() );
         Assert.assertEquals( "[de, de_DE, fr]", model.getAllLanguages().toString() );
         Assert.assertEquals( 1, model.getAllBundles().size() );
@@ -85,7 +86,7 @@ public class DashboardModelTest
         bundles.add( bundle1 );
         bundles.add( bundle2 );
 
-        DashboardModel model = DashboardModel.create( config, bundles );
+        DashboardModel model = DashboardModel.create( new NullLog(), config, bundles );
         Assert.assertFalse( model.getAllBundles().get( 0 ).getProjectName().equals(
                 model.getAllBundles().get( 1 ).getProjectName() ) );
         Assert.assertTrue( model.getAllBundles().get( 0 ).getProjectName().endsWith( " messages" ) );

@@ -23,26 +23,16 @@ import java.util.Properties;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
  * Renders the dashboard overview. It contains links to the more detailed language reports.
  */
+@Component( role = DashboardRenderer.class, hint = "DashboardRenderer" )
 public class DashboardRenderer
 {
-
-    private String outputDirectory;
-
-    /**
-     * Instantiates a new dashboard renderer.
-     *
-     * @param outputDirectory the output directory
-     */
-    public DashboardRenderer( String outputDirectory )
-    {
-        this.outputDirectory = outputDirectory;
-    }
 
     void render( DashboardModel model, Writer out )
     {
@@ -63,8 +53,9 @@ public class DashboardRenderer
      * Renders the dashboard.
      *
      * @param model the model
+     * @param outputDirectory the output directory
      */
-    public void render( DashboardModel model )
+    public void render( DashboardModel model, String outputDirectory )
     {
         Writer out = null;
         try

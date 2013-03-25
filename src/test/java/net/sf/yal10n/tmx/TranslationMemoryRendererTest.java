@@ -52,11 +52,11 @@ public class TranslationMemoryRendererTest
         }
         Assert.assertTrue( "Not a directory: " + completeDirectory, completeDirectory.isDirectory() );
 
-        TranslationMemoryRenderer renderer = new TranslationMemoryRenderer( outputDirectory.getCanonicalPath() );
+        TranslationMemoryRenderer renderer = new TranslationMemoryRenderer();
         ResourceBundle bundle = createBundle().iterator().next();
-        renderer.render( bundle );
+        renderer.render( new NullLog(), bundle, outputDirectory.getCanonicalPath() );
 
-        String relativeTmxUrl = bundle.toBundleModel( bundle.getLanguages() ).getRelativeTmxUrl();
+        String relativeTmxUrl = bundle.toBundleModel( new NullLog(), bundle.getLanguages() ).getRelativeTmxUrl();
         Assert.assertTrue( new File( completeDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( completeDirectory, relativeTmxUrl ) ),
                 "UTF-8" );
@@ -90,9 +90,9 @@ public class TranslationMemoryRendererTest
         }
         Assert.assertTrue( "Not a directory: " + completeDirectory, completeDirectory.isDirectory() );
 
-        TranslationMemoryRenderer renderer = new TranslationMemoryRenderer( outputDirectory.getCanonicalPath() );
+        TranslationMemoryRenderer renderer = new TranslationMemoryRenderer();
         Collection<ResourceBundle> bundle = createBundle();
-        renderer.render( bundle  );
+        renderer.render( bundle, outputDirectory.getCanonicalPath() );
 
         String relativeTmxUrl = "all-translations.tmx";
         Assert.assertTrue( new File( outputDirectory, relativeTmxUrl ).exists() );
@@ -104,7 +104,7 @@ public class TranslationMemoryRendererTest
     private Collection<ResourceBundle> createBundle() throws Exception
     {
         SVNUtil svnUtil = new SVNUtilMock( null );
-        ResourceAnalyzer analyzer = new ResourceAnalyzer( svnUtil, new NullLog() );
+        ResourceAnalyzer analyzer = new ResourceAnalyzer( svnUtil );
         DashboardConfiguration config = new DashboardConfiguration();
         Repository repo = new Repository();
         repo.setUrl( "http://svn/repo" );
@@ -112,7 +112,8 @@ public class TranslationMemoryRendererTest
         String repoId = SVNUtil.toRepoId( "", repo.getUrl() );
         config.getRepositories().add( repo );
 
-        analyzer.analyze( repo.getUrl(), new File( "./target/test-classes/unit/subdirectory/" ).getCanonicalPath(),
+        analyzer.analyze( new NullLog(), repo.getUrl(),
+                new File( "./target/test-classes/unit/subdirectory/" ).getCanonicalPath(),
                 config, repo, repoId );
 
         return analyzer.getBundles();

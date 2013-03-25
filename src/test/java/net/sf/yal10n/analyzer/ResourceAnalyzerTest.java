@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 
-import org.apache.maven.plugin.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +32,6 @@ public class ResourceAnalyzerTest
 {
     /** location of the test files. */
     private static final String TARGET_TEST_CLASSES_UNIT = "./target/test-classes/unit/";
-    private Log log;
     private ResourceAnalyzer analyzer;
     private String dstPath;
 
@@ -44,8 +42,7 @@ public class ResourceAnalyzerTest
     @Before
     public void setup() throws Exception
     {
-        log = new NullLog();
-        analyzer = new ResourceAnalyzer( null, log );
+        analyzer = new ResourceAnalyzer( null );
         dstPath = new File( TARGET_TEST_CLASSES_UNIT ).getCanonicalPath();
     }
     
@@ -62,7 +59,7 @@ public class ResourceAnalyzerTest
         config.setExcludes( Arrays.asList( "**/someother.properties" ) );
         Repository repo = new Repository();
         String repoId = "repoId";
-        analyzer.analyze( svnUrl, dstPath, config , repo, repoId  );
+        analyzer.analyze( new NullLog(), svnUrl, dstPath, config , repo, repoId  );
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 3, bundles.size() );
@@ -91,7 +88,7 @@ public class ResourceAnalyzerTest
         config.setIncludes( null );
         Repository repo = new Repository();
         String repoId = "repoId";
-        analyzer.analyze( svnUrl, dstPath, config , repo, repoId  );
+        analyzer.analyze( new NullLog(), svnUrl, dstPath, config , repo, repoId  );
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 0, bundles.size() );
@@ -111,7 +108,7 @@ public class ResourceAnalyzerTest
         repo.setIncludes( Arrays.asList( "**/*.properties" ) );
         repo.setExcludes( Arrays.asList( "**/someother.prop*" ) );
         String repoId = "repoId";
-        analyzer.analyze( svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
+        analyzer.analyze( new NullLog(), svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( 3, bundles.size() );
@@ -130,7 +127,7 @@ public class ResourceAnalyzerTest
         config.setExcludes( Arrays.asList( "**/*.properties" ) );
         Repository repo = new Repository();
         String repoId = "repoId";
-        analyzer.analyze( svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
+        analyzer.analyze( new NullLog(), svnUrl, TARGET_TEST_CLASSES_UNIT, config , repo, repoId  );
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         Assert.assertEquals( "Found too many bundles", 3, bundles.size() );
@@ -159,6 +156,6 @@ public class ResourceAnalyzerTest
         config.setIncludes( Arrays.asList( "**/*.properties" ) );
         Repository repo = new Repository();
         String repoId = "repoId";
-        analyzer.analyze( svnUrl, notExistingDstPath, config , repo, repoId  );
+        analyzer.analyze( new NullLog(), svnUrl, notExistingDstPath, config , repo, repoId  );
     }
 }

@@ -131,7 +131,7 @@ public class ResourceBundleTest
     @Test
     public void testBundleModel()
     {
-        BundleModel bundleModel = bundle.toBundleModel( allLanguages );
+        BundleModel bundleModel = bundle.toBundleModel( new NullLog(), allLanguages );
         Assert.assertNotNull( bundleModel.getBase() );
         Assert.assertEquals( "default", bundleModel.getBase().getName() );
         Assert.assertEquals( "messages", bundleModel.getBundleName() );
@@ -157,7 +157,7 @@ public class ResourceBundleTest
     @Test
     public void testReportModel()
     {
-        ReportModel report = bundle.getReport();
+        ReportModel report = bundle.getReport( new NullLog() );
         Assert.assertEquals( "messages", report.getBaseName() );
         Assert.assertEquals( 2, report.getAllLanguages().size() );
     }

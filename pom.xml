@@ -70,6 +70,7 @@ limitations under the License.
         <mavenCheckstyleVersion>2.10</mavenCheckstyleVersion>
         <mavenPmdVersion>3.0</mavenPmdVersion>
         <mavenFindbugsVersion>2.5.2</mavenFindbugsVersion>
+        <plexusVersion>1.5.5</plexusVersion>
     </properties>
 
     <dependencies>
@@ -119,6 +120,16 @@ limitations under the License.
             <version>1.4.6-rc1</version>
         </dependency>
         <dependency>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-annotations</artifactId>
+          <version>${plexusVersion}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-container-default</artifactId>
+          <version>${plexusVersion}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
             <version>3.2</version>
@@ -134,6 +145,12 @@ limitations under the License.
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>3.2.0.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -175,6 +192,25 @@ limitations under the License.
                         <id>help-goal</id>
                         <goals>
                             <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-component-metadata</artifactId>
+                <version>${plexusVersion}</version>
+                <executions>
+                    <execution>
+                        <id>process-classes</id>
+                        <goals>
+                            <goal>generate-metadata</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>process-test-classes</id>
+                        <goals>
+                            <goal>generate-test-metadata</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -268,6 +304,7 @@ limitations under the License.
                         <id>pmd</id>
                         <goals>
                             <goal>check</goal>
+                            <goal>cpd-check</goal>
                         </goals>
                     </execution>
                 </executions>

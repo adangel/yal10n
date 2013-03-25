@@ -1,0 +1,16 @@
+{
+  "lastDetection" : "2013-03-25T20:14:49.075+01:00",
+  "repos" : [ {
+    "id" : "988ca054179a22a2ed4b9f9a8c3a9b6d",
+    "completeRepoUrl" : "file:///svnrepos/repo1/trunk",
+    "revision" : 1
+  }, {
+    "id" : "c411e4c9f72be79a4278f6f2ffd58a34",
+    "completeRepoUrl" : "file:///svnrepos/repo1/a/trunk",
+    "revision" : 1
+  }, {
+    "id" : "591f88bd5610f1a8c631264f3ee621a9",
+    "completeRepoUrl" : "file:///svnrepos/repo2/trunk",
+    "revision" : 1
+  } ]
+}

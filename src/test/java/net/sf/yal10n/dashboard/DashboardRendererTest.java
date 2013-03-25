@@ -40,7 +40,7 @@ public class DashboardRendererTest
     public void testDashboardRenderer()
     {
         StringWriter out = new StringWriter();
-        DashboardRenderer renderer = new DashboardRenderer( "." );
+        DashboardRenderer renderer = new DashboardRenderer();
 
         DashboardModel model = createModel();
 
@@ -79,8 +79,8 @@ public class DashboardRendererTest
                 expectedOutputDirectory.isDirectory() );
 
         DashboardModel model = new DashboardModel();
-        DashboardRenderer renderer = new DashboardRenderer( expectedOutputDirectory.getCanonicalPath() );
-        renderer.render( model );
+        DashboardRenderer renderer = new DashboardRenderer();
+        renderer.render( model, expectedOutputDirectory.getCanonicalPath() );
 
         Assert.assertTrue( expectedFile.exists() );
     }

@@ -37,6 +37,7 @@ import net.sf.yal10n.settings.DashboardConfiguration;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -297,21 +298,22 @@ public class ResourceBundle
     /**
      * Gets the report.
      *
+     * @param log the log
      * @return the report
      */
-    public ReportModel getReport()
+    public ReportModel getReport( Log log )
     {
         List<LanguageModel> allLanguages = new ArrayList<LanguageModel>();
         ResourceFile defaultFile = getDefaultFile();
         String baseName = null;
         if ( defaultFile != null )
         {
-            allLanguages.add( defaultFile.toLanguageModel( config.getChecks().getIgnoreKeys() ) );
+            allLanguages.add( defaultFile.toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
             baseName = defaultFile.getBaseName();
         }
         for ( String lang : getLanguages() )
         {
-            allLanguages.add( getByLanguage( lang ).toLanguageModel( config.getChecks().getIgnoreKeys() ) );
+            allLanguages.add( getByLanguage( lang ).toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
         }
 
         ReportModel model = new ReportModel();
@@ -348,11 +350,12 @@ public class ResourceBundle
 
     /**
      * To bundle model.
-     * @param allLanguages the languages to include in the report
      *
+     * @param log the log
+     * @param allLanguages the languages to include in the report
      * @return the bundle model
      */
-    public BundleModel toBundleModel( List<String> allLanguages )
+    public BundleModel toBundleModel( Log log, List<String> allLanguages )
     {
         BundleModel model = new BundleModel();
 
@@ -368,7 +371,7 @@ public class ResourceBundle
         ResourceFile defaultFile = getDefaultFile();
         if ( defaultFile != null )
         {
-            model.setBase( defaultFile.toLanguageModel( config.getChecks().getIgnoreKeys() ) );
+            model.setBase( defaultFile.toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
         }
         for ( String lang : allLanguages )
         {
@@ -383,7 +386,7 @@ public class ResourceBundle
             }
             else
             {
-                langModel = file.toLanguageModel( config.getChecks().getIgnoreKeys() );
+                langModel = file.toLanguageModel( log, config.getChecks().getIgnoreKeys() );
             }
             model.addLanguage( langModel );
         }

@@ -38,7 +38,6 @@ import net.sf.yal10n.status.RepoStatus;
 import net.sf.yal10n.svn.SVNLogChange;
 import net.sf.yal10n.svn.SVNUtil;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -50,20 +49,31 @@ import org.joda.time.DateTime;
  * Mojo to detect changes between the current and the previous run of this mojo.
  */
 @Mojo( name = "detect-changes", requiresProject = false )
-public class DetectChangesMojo extends AbstractMojo
+public class DetectChangesMojo extends BaseMojo
 {
 
-    @Parameter( required = true, property = "yal10n.settings", defaultValue = "yal10n-settings.json" )
-    private String yal10nSettings;
-    
     @Parameter( required = true, property = "yal10n.status", defaultValue = "target/yal10n-status.json" )
     private String yal10nStatus;
     
-    @Parameter( required = true, defaultValue = "${settings.offline}" )
-    private boolean offline;
+    /**
+     * Instantiates a new detect changes mojo.
+     */
+    public DetectChangesMojo()
+    {
+        super();
+    }
 
-    @Parameter( required = true, property = "yal10n.outputDirectory", defaultValue = "target" )
-    private String outputDirectory;
+    /**
+     * Instantiates a new detect changes mojo.
+     *
+     * @param svn the svn
+     * @param analyzer the analyzer
+     */
+    DetectChangesMojo( SVNUtil svn, ResourceAnalyzer analyzer )
+    {
+        this.svn = svn;
+        this.analyzer = analyzer;
+    }
 
     /**
      * {@inheritDoc}
@@ -76,13 +86,10 @@ public class DetectChangesMojo extends AbstractMojo
             throw new MojoFailureException( "Can't work in offline mode." );
         }
 
-        SVNUtil svn = new SVNUtil( getLog() );
-        ResourceAnalyzer analyzer = new ResourceAnalyzer( svn, getLog() );
-        
         DashboardConfiguration config = DashboardConfiguration.readFromFile( yal10nSettings );
-        
+
         DetectChangesStatus previousStatus = DetectChangesStatus.readFromFile( yal10nStatus );
-        
+
         boolean firstRun = true;
         if ( previousStatus.getLastDetection() != null )
         {
@@ -104,7 +111,7 @@ public class DetectChangesMojo extends AbstractMojo
             String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
             
             String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
-            long revision = svn.checkout( svnUrl, dstPath );
+            long revision = svn.checkout( getLog(), svnUrl, dstPath );
             
             RepoStatus status = new RepoStatus();
             status.setId( repoId );
@@ -112,7 +119,7 @@ public class DetectChangesMojo extends AbstractMojo
             status.setCompleteRepoUrl( svnUrl );
             newStatus.getRepos().add( status );
             
-            analyzer.analyze( svnUrl, dstPath, config, repo, repoId );
+            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
         }
         newStatus.writeToFile( yal10nStatus );
         
@@ -149,9 +156,10 @@ public class DetectChangesMojo extends AbstractMojo
                     
                     if ( oldRevision < newRevision )
                     {
-                        SVNLogChange changesFound = svn.log( fullLocalPath, oldRevision + 1, newRevision, 10 );
+                        SVNLogChange changesFound = svn.log( getLog(),
+                                fullLocalPath, oldRevision + 1, newRevision, 10 );
                         
-                        String diff = svn.diff( dstPath, fullLocalPath, oldRevision, newRevision );
+                        String diff = svn.diff( getLog(), dstPath, fullLocalPath, oldRevision, newRevision );
                         
                         getLog().debug( "    Changes found: " + changesFound );
                         if ( changesFound == SVNLogChange.MODIFICATION )
@@ -230,5 +238,15 @@ public class DetectChangesMojo extends AbstractMojo
     {
         String svnPath = fullSvnPath.substring( svnUrl.length() );
         return viewvcUrl + svnPath;
+    }
+
+    /**
+     * Sets the yal10n status.
+     *
+     * @param yal10nStatus the new yal10n status
+     */
+    public void setYal10nStatus( String yal10nStatus )
+    {
+        this.yal10nStatus = yal10nStatus;
     }
 }

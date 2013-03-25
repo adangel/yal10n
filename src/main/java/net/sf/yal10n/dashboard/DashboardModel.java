@@ -25,6 +25,8 @@ import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.settings.DashboardConfiguration;
 
+import org.apache.maven.plugin.logging.Log;
+
 /**
  * This is the overall model for rendering the dashboard overview.
  */
@@ -100,11 +102,12 @@ public class DashboardModel
     /**
      * Creates a Dashboard model based on the given {@link ResourceBundle}s.
      *
+     * @param log the log
      * @param config the configuration
      * @param bundles the bundles
      * @return the dashboard model
      */
-    public static DashboardModel create( DashboardConfiguration config, List<ResourceBundle> bundles )
+    public static DashboardModel create( Log log, DashboardConfiguration config, List<ResourceBundle> bundles )
     {
         List<String> languages = config.getLanguages();
         boolean createTmx = config.isCreateTMX();
@@ -119,7 +122,7 @@ public class DashboardModel
 
         for ( ResourceBundle bundle : bundles )
         {
-            bundleModels.add( bundle.toBundleModel( allLanguagesSorted ) );
+            bundleModels.add( bundle.toBundleModel( log, allLanguagesSorted ) );
         }
         resolveDuplicatedProjectNames( bundleModels );
 

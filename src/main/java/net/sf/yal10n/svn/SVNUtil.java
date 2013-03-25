@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.FileUtils;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
@@ -40,11 +41,11 @@ import org.tmatesoft.svn.core.wc.SVNWCClient;
 /**
  * Simple SVN utility for checking out files from subversion.
  */
+@Component( role = SVNUtil.class, hint = "SVNUtil" )
 public class SVNUtil
 {
     private static final int BYTE_MASK = 0xff;
 
-    private Log log;
     private EventHandler eventHandler;
     private SVNClientManager svn;
     private SVNUpdateClient updateClient;
@@ -54,13 +55,10 @@ public class SVNUtil
 
     /**
      * Instantiates a new SVN util.
-     *
-     * @param log the log
      */
-    public SVNUtil( Log log )
+    public SVNUtil()
     {
-        this.log = log;
-        eventHandler = new EventHandler( log );
+        eventHandler = new EventHandler( );
         svn = SVNClientManager.newInstance();
         updateClient = svn.getUpdateClient();
         updateClient.setEventHandler( eventHandler );
@@ -90,15 +88,17 @@ public class SVNUtil
     /**
      * Checkout from the given svn url to the destination directory.
      *
+     * @param log the log
      * @param svnUrl the svn url
      * @param destination the destination
      * @return the long
      */
-    public long checkout( String svnUrl, String destination )
+    public long checkout( Log log, String svnUrl, String destination )
     {
         SVNURL url;
         try
         {
+            eventHandler.setLog( log );
             url = getUrl( svnUrl );
             File dstPath = new File( destination );
             if ( dstPath.exists() )
@@ -117,13 +117,16 @@ public class SVNUtil
 
     /**
      * Gets the information about a file in a local working directory.
+     *
+     * @param log the log
      * @param fullFilePath the file
      * @return the svn information like revision.
      */
-    public SVNInfo checkFile( String fullFilePath )
+    public SVNInfo checkFile( Log log, String fullFilePath )
     {
         try
         {
+            eventHandler.setLog( log );
             SVNInfo info = wcClient.doInfo( new File( fullFilePath ), SVNRevision.WORKING );
             return info;
         }
@@ -135,13 +138,15 @@ public class SVNUtil
 
     /**
      * Determines whether a given file has been modified between two revisions.
+     *
+     * @param log the log
      * @param fullLocalPath the file to check
      * @param baseRevision the old revision
      * @param newRevision the new revision
      * @param limit how many revisions should be checked
      * @return the change type, e.g. ADD, MODIFICATION or NONE
      */
-    public SVNLogChange log( String fullLocalPath, long baseRevision, long newRevision, long limit )
+    public SVNLogChange log( Log log, String fullLocalPath, long baseRevision, long newRevision, long limit )
     {
         try
         {
@@ -158,6 +163,7 @@ public class SVNUtil
                     }
                 }
             };
+            eventHandler.setLog( log );
             logClient.doLog( new File[] { new File( fullLocalPath ) }, SVNRevision.create( baseRevision ),
                     SVNRevision.create( newRevision ), false, true, limit, handler );
 
@@ -185,16 +191,19 @@ public class SVNUtil
 
     /**
      * Retrieves a unified diff for a given file and revision.
+     *
+     * @param log the log
      * @param basePath the base path that should be stripped of from the fullLocalPath in the diff output
      * @param fullLocalPath the file
      * @param baseRevision the old revision
      * @param newRevision the new revision
      * @return the diff as a string
      */
-    public String diff( String basePath, String fullLocalPath, long baseRevision, long newRevision )
+    public String diff( Log log, String basePath, String fullLocalPath, long baseRevision, long newRevision )
     {
         try
         {
+            eventHandler.setLog( log );
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             diffClient.getDiffGenerator().setBasePath( new File( basePath ) );
             diffClient.doDiff( new File( fullLocalPath ), SVNRevision.create( newRevision ),
