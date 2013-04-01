@@ -38,7 +38,45 @@ public class UnifiedDiff
      */
     public UnifiedDiff( String diffString )
     {
-        parse( diffString );
+        this( diffString, false, null );
+    }
+
+    /**
+     * Creates a new {@link UnifiedDiff} with the given diff.
+     * If the flag <code>newFile</code> is true, then not a diff is assumed,
+     * simply the content of the new file is expected.
+     * @param diffString the diff data or file content
+     * @param newFile if <code>false</code>, a real diff is expected.
+     * @param filename the file name. Only needed if not a real diff is provided.
+     */
+    public UnifiedDiff( String diffString, boolean newFile, String filename )
+    {
+        if ( !newFile )
+        {
+            parse( diffString );
+        }
+        else
+        {
+            parseNewFile( diffString, filename );
+        }
+    }
+
+    private void parseNewFile( String content, String filename )
+    {
+        String[] lines = content.split( "\n" );
+        int lineNumber = 1;
+        Hunk hunk = new Hunk();
+        hunk.firstLineNumber = lineNumber;
+        for ( String line : lines )
+        {
+            hunk.newLines.put( lineNumber, line );
+            hunk.indicators.put( lineNumber, '+' );
+            lineNumber++;
+        }
+        hunk.lastLineNumber = lineNumber;
+        hunks.add( hunk );
+        originalName = "--";
+        newName = String.valueOf( filename );
     }
 
     private void parse( String diff )

@@ -201,6 +201,22 @@ public class UnifiedDiffTest
     }
 
     /**
+     * Test the new file mode.
+     */
+    @Test
+    public void testDiffFileContentNewFile()
+    {
+        String diff = "This\nis\na\nnew\nfile\n";
+        UnifiedDiff unifiedDiff = new UnifiedDiff( diff, true, "the filename.txt" );
+        Assert.assertEquals( 1, unifiedDiff.getHunks().size() );
+        Hunk hunk = unifiedDiff.getHunks().get( 0 );
+        Assert.assertEquals( "This", hunk.newLines.get( 1 ) );
+        Assert.assertEquals( '+', hunk.indicators.get( 1 ).charValue() );
+        Assert.assertEquals( 1, hunk.firstLineNumber );
+        Assert.assertEquals( 6, hunk.lastLineNumber );
+    }
+
+    /**
      * Some garbage lines before the first hunk
      */
     @Test

@@ -14,6 +14,11 @@ package net.sf.yal10n;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +48,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 import org.joda.time.DateTime;
 
 /**
@@ -167,14 +173,18 @@ public class DetectChangesMojo extends BaseMojo
                             String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
                             viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
                             getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                            sendEmail( config, bundle.getProjectName(), viewvcDiff, diff );
+                            sendEmail( config, bundle.getProjectName(), viewvcDiff, new UnifiedDiff( diff ) );
                         }
                         else if ( changesFound == SVNLogChange.ADD )
                         {
                             String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
                             viewvcDiff += "?view=markup";
                             getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                            sendEmail( config, bundle.getProjectName(), viewvcDiff, diff );
+
+                            String filename = fullLocalPath.substring( dstPath.length() );
+                            String fileContent = readFile( fullLocalPath );
+                            UnifiedDiff unifiedDiff = new UnifiedDiff( fileContent, true, filename );
+                            sendEmail( config, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                         }
                     }
                     else
@@ -190,7 +200,29 @@ public class DetectChangesMojo extends BaseMojo
         }
     }
 
-    private void sendEmail( DashboardConfiguration config, String projectName, String viewvcDiff, String diff )
+    private String readFile( String fullLocalPath )
+    {
+        Reader r = null;
+        String result = null;
+        try
+        {
+            File f = new File( fullLocalPath );
+            r = new InputStreamReader( new FileInputStream( f ), "UTF-8" );
+            result = IOUtil.toString( r );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+        finally
+        {
+            IOUtil.close( r );
+        }
+        return result;
+    }
+
+    private void sendEmail( DashboardConfiguration config, String projectName, String viewvcDiff,
+            UnifiedDiff unifiedDiff )
     {
         Properties props = new Properties();
         props.put( "mail.smtp.host", config.getNotification().getSmtpServer() );
@@ -199,7 +231,6 @@ public class DetectChangesMojo extends BaseMojo
 
         try
         {
-            UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
             String from = config.getNotification().getMailFrom();
             String recipients = config.getNotification().getRecipients();
             String subject = config.getNotification().getSubject()
