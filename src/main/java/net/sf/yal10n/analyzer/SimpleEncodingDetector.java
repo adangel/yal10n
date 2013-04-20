@@ -98,11 +98,20 @@ public class SimpleEncodingDetector
                 result = utf8decoder.decode( buffer, out, false );
                 decoderPosition += buffer.position();
                 buffer.compact();
-                out.clear();
                 if ( result.isError() )
                 {
                     break;
                 }
+                out.flip();
+                String decodedString = out.toString();
+                int replacementPosition = decodedString.indexOf( utf8decoder.replacement() );
+                if ( replacementPosition > -1 )
+                {
+                    decoderPosition = decoderPosition - decodedString.length() + replacementPosition;
+                    result = CoderResult.unmappableForLength( 1 );
+                    break;
+                }
+                out.clear();
             }
             if ( result != null && !result.isError() )
             {

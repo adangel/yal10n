@@ -211,6 +211,23 @@ public class SimpleEncodingDetectorTest
         Assert.assertEquals( Encoding.UTF8, result.getDetected() );
     }
 
+    /**
+     * Files, that have broken characters in them, should be detected.
+     * @throws Exception any error
+     */
+    @Test
+    public void testMalformedEncoding() throws Exception
+    {
+        detector.setBufferSize( 4 );
+        File f = prepareFile( false, "Norwegian (Bokmï¿½l)", "ISO-8859-1" );
+        EncodingResult result = detector.detectEncoding( f );
+        Assert.assertNotNull( result.getError() );
+        Assert.assertEquals( "UNMAPPABLE[1]", result.getError() );
+        Assert.assertEquals( Encoding.OTHER, result.getDetected() );
+        final int expectedErrorPosition = 17;
+        Assert.assertEquals( expectedErrorPosition, result.getErrorPosition() );
+    }
+
     private File prepareFile( boolean withBOM, String text, String encoding ) throws IOException
     {
         File f = File.createTempFile( "yal10n", null );
