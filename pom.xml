@@ -68,7 +68,7 @@ limitations under the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mavenPluginVersion>3.2</mavenPluginVersion>
         <mavenCheckstyleVersion>2.10</mavenCheckstyleVersion>
-        <mavenPmdVersion>3.0</mavenPmdVersion>
+        <mavenPmdVersion>3.0.1</mavenPmdVersion>
         <mavenFindbugsVersion>2.5.2</mavenFindbugsVersion>
         <plexusVersion>1.5.5</plexusVersion>
     </properties>
@@ -163,6 +163,35 @@ limitations under the License.
                 <version>2.4</version>
             </extension>
         </extensions>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-pmd-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>check</goal>
+                                            <goal>cpd-check</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
