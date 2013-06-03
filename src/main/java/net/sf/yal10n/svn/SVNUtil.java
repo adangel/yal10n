@@ -140,16 +140,18 @@ public class SVNUtil
      * Determines whether a given file has been modified between two revisions.
      *
      * @param log the log
+     * @param baseLocalPath the base path where the repository has been checked out
      * @param fullLocalPath the file to check
      * @param baseRevision the old revision
      * @param newRevision the new revision
-     * @param limit how many revisions should be checked
      * @return the change type, e.g. ADD, MODIFICATION or NONE
      */
-    public SVNLogChange log( Log log, String fullLocalPath, long baseRevision, long newRevision, long limit )
+    public SVNLogChange log( Log log, String baseLocalPath, String fullLocalPath,
+            long baseRevision, long newRevision )
     {
         try
         {
+            final String relativePath = fullLocalPath.substring( baseLocalPath.length() );
             final Set<String> changeTypes = new HashSet<String>();
             ISVNLogEntryHandler handler = new ISVNLogEntryHandler()
             {
@@ -159,13 +161,16 @@ public class SVNUtil
                 {
                     for ( SVNLogEntryPath p : logEntry.getChangedPaths().values() )
                     {
-                        changeTypes.add( String.valueOf( p.getType() ) );
+                        if ( relativePath.equals( p.getPath() ) )
+                        {
+                            changeTypes.add( String.valueOf( p.getType() ) );
+                        }
                     }
                 }
             };
             eventHandler.setLog( log );
             logClient.doLog( new File[] { new File( fullLocalPath ) }, SVNRevision.create( baseRevision ),
-                    SVNRevision.create( newRevision ), false, true, limit, handler );
+                    SVNRevision.create( newRevision ), false, true, 0, handler );
 
             SVNLogChange result;
             if ( changeTypes.isEmpty() )

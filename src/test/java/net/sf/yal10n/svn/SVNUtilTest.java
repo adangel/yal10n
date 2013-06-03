@@ -14,8 +14,12 @@ package net.sf.yal10n.svn;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
+import java.io.File;
 
+import junit.framework.Assert;
+import net.sf.yal10n.analyzer.NullLog;
+
+import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 
 /**
@@ -45,5 +49,24 @@ public class SVNUtilTest
         Assert.assertEquals( "http://svn/repo/trunk", SVNUtil.toCompleteUrl( "http://svn", "/repo/trunk" ) );
         Assert.assertEquals( "http://svn/repo/trunk", SVNUtil.toCompleteUrl( "http://svn/", "/repo/trunk" ) );
         Assert.assertEquals( "http://svn/repo/trunk", SVNUtil.toCompleteUrl( "http://svn", "/repo/trunk/" ) );
+    }
+
+    /**
+     * Checks whether the change is correctly detected as modification
+     * instead of adding.
+     */
+    @Test
+    public void testIssue24DetectChanges()
+    {
+        SVNUtil svnUtil = new SVNUtil();
+        Log log = new NullLog();
+
+        String svnUrl = "file://" + new File( "./src/test/resources/svnrepos/issue24-detectchanges" ).getAbsolutePath();
+        String destination = new File( "./target/svnrepos/issue24-detectchanges" ).getAbsolutePath();
+
+        svnUtil.checkout( log, svnUrl, destination );
+        SVNLogChange result = svnUtil.log( log, destination, destination + "/messages.properties",
+                2, 2 );
+        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
 }

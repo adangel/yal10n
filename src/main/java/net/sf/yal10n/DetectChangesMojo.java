@@ -162,8 +162,8 @@ public class DetectChangesMojo extends BaseMojo
                     
                     if ( oldRevision < newRevision )
                     {
-                        SVNLogChange changesFound = svn.log( getLog(),
-                                fullLocalPath, oldRevision + 1, newRevision, 10 );
+                        SVNLogChange changesFound = svn.log( getLog(), dstPath,
+                                fullLocalPath, oldRevision + 1, newRevision );
                         
                         String diff = svn.diff( getLog(), dstPath, fullLocalPath, oldRevision, newRevision );
                         
