@@ -64,9 +64,9 @@ public class SVNUtilTest
         String svnUrl = "file://" + new File( "./src/test/resources/svnrepos/issue24-detectchanges" ).getAbsolutePath();
         String destination = new File( "./target/svnrepos/issue24-detectchanges" ).getAbsolutePath();
 
-        svnUtil.checkout( log, svnUrl, destination );
-        SVNLogChange result = svnUtil.log( log, destination, destination + "/messages.properties",
-                2, 2 );
+        svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        SVNLogChange result = svnUtil.log( log, destination + "/messages.properties",
+                3, 3 );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
 }
