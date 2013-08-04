@@ -170,10 +170,18 @@ public class DetectChangesMojo extends BaseMojo
                         getLog().debug( "    Changes found: " + changesFound );
                         if ( changesFound == SVNLogChange.MODIFICATION )
                         {
-                            String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
-                            viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
-                            getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                            sendEmail( config, bundle.getProjectName(), viewvcDiff, new UnifiedDiff( diff ) );
+                            UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+                            if ( unifiedDiff.getHunks().isEmpty() )
+                            {
+                                getLog().info( "    There were no changes to the file content of " + fullSvnPath );
+                            }
+                            else
+                            {
+                                String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
+                                viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
+                                getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
+                                sendEmail( config, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                            }
                         }
                         else if ( changesFound == SVNLogChange.ADD )
                         {

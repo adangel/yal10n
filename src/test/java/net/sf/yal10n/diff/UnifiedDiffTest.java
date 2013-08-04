@@ -232,4 +232,47 @@ public class UnifiedDiffTest
         UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
         Assert.assertEquals( 1, unifiedDiff.getHunks().size() );
     }
+
+    /**
+     * Tests that that property changes are ignored part 1.
+     */
+    @Test
+    public void testDiffWithPropertyChanges()
+    {
+        String diff = "Index: testfile.txt\n"
+                + "===================================================================\n"
+                + "--- testfile.txt    (revision 3)\n"
+                + "+++ testfile.txt    (revision 4)\n"
+                + "@@ -1,3 +1,5 @@\n"
+                + " Test file\n"
+                + " Some real change.\n"
+                + "+Another change.\n"
+                + "+\n"
+                + " \n"
+                + "\n"
+                + "Property changes on: testfile.txt\n"
+                + "___________________________________________________________________\n"
+                + "Modified: testproperty\n"
+                + "   - test\n"
+                + "   + changed\n"
+                + "\n";
+        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertEquals( 1, unifiedDiff.getHunks().size() );
+    }
+
+    /**
+     * Tests that that property changes are ignored part 2.
+     */
+    @Test
+    public void testDiffWithOnlyPropertyChanges()
+    {
+        String diff = "\n"
+                + "Property changes on: testfile.txt\n"
+                + "___________________________________________________________________\n"
+                + "Added: testproperty\n"
+                + "   + test\n"
+                + "\n";
+        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertEquals( 0, unifiedDiff.getHunks().size() );
+    }
 }

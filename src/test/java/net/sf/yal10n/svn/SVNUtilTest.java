@@ -69,4 +69,42 @@ public class SVNUtilTest
                 3, 3 );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
+
+    /**
+     * Test various diffs with and without property changes.
+     * @throws Exception any error
+     */
+    @Test
+    public void testChangedPropertiesOnly() throws Exception
+    {
+        SVNUtil svnUtil = new SVNUtil();
+        Log log = new NullLog();
+
+        String svnUrl = "file://" + new File( "./src/test/resources/svnrepos/detectchanges-props-only" )
+            .getCanonicalPath();
+        String destination = new File( "./target/svnrepos/detectchanges-props-only" ).getCanonicalPath();
+
+        svnUtil.checkout( log, svnUrl + "/trunk", destination );
+
+        // revision 2: only prop change
+        SVNLogChange result = svnUtil.log( log, destination + "/testfile.txt", 2, 2 );
+        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
+        String diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 1, 2 );
+        Assert.assertTrue( diff.contains( "Property changes on: " ) );
+        Assert.assertFalse( diff.contains( "Index: " ) );
+
+        // revision 3: only file change (real diff)
+        result = svnUtil.log( log, destination + "/testfile.txt", 3, 3 );
+        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
+        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 2, 3 );
+        Assert.assertFalse( diff.contains( "Property changes on: " ) );
+        Assert.assertTrue( diff.contains( "Index: " ) );
+
+        // revision 4: combined change of file and property
+        result = svnUtil.log( log, destination + "/testfile.txt", 4, 4 );
+        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
+        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 3, 4 );
+        Assert.assertTrue( diff.contains( "Property changes on: " ) );
+        Assert.assertTrue( diff.contains( "Index: " ) );
+    }
 }

@@ -1,0 +1,58 @@
+PLAIN
+K 12
+testproperty
+V 4
+test
+END
+ENDREP
+id: 4-1.0.r2/44
+type: file
+pred: 4-1.0.r1/36
+count: 1
+text: 1 0 23 11 11c73b5e6e86bb47ca3d3590ddc282a4 22303c8dd8a79267e61951581ff38971b23980ba 0-0/_6
+props: 2 0 31 0 e048349740c92dacf8fe9c457b2a237c
+cpath: /trunk/testfile.txt
+copyroot: 0 /
+
+PLAIN
+K 12
+testfile.txt
+V 16
+file 4-1.0.r2/44
+END
+ENDREP
+id: 3-1.0.r2/343
+type: dir
+pred: 3-1.0.r1/268
+count: 1
+text: 2 286 44 44 d86c8e0e4ea37d612c6a14227ede2124
+cpath: /trunk
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 16
+dir 0-1.0.r1/384
+K 4
+tags
+V 16
+dir 2-1.0.r1/452
+K 5
+trunk
+V 16
+dir 3-1.0.r2/343
+END
+ENDREP
+id: 0.0.r2/593
+type: dir
+pred: 0.0.r1/631
+count: 2
+text: 2 478 102 102 5e0c96b263d8fec398e09d66665704fb
+cpath: /
+copyroot: 0 /
+
+4-1.0.t1-1 modify-file false true /trunk/testfile.txt
+
+
+593 721

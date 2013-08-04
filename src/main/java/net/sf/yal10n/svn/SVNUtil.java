@@ -215,7 +215,8 @@ public class SVNUtil
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             diffClient.getDiffGenerator().setBasePath( new File( basePath ) );
             diffClient.doDiff( new File( fullLocalPath ), SVNRevision.create( newRevision ),
-                    SVNRevision.create( baseRevision ), SVNRevision.HEAD, SVNDepth.EMPTY, false, result, null );
+                    SVNRevision.create( baseRevision ), SVNRevision.create( newRevision ),
+                    SVNDepth.EMPTY, false, result, null );
             return result.toString( "UTF-8" );
         }
         catch ( Exception e )

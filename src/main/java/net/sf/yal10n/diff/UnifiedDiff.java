@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.tools.generic.EscapeTool;
 
 /**
@@ -102,19 +103,29 @@ public class UnifiedDiff
             {
                 nextLine = lines[i + 1];
             }
+            if ( StringUtils.isEmpty( nextLine ) )
+            {
+                nextLine = "\\\\";
+            }
 
             Matcher m = HUNK_START_PATTERN.matcher( line );
-            if ( m.find() )
+            boolean newHunkStarted = m.find();
+            if ( newHunkStarted || StringUtils.isEmpty( line ) )
             {
 
                 if ( currentHunk != null )
                 {
                     currentHunk.lastLineNumber = currentLineNumber;
                     hunks.add( currentHunk );
+                    currentHunk = null;
                 }
-                currentHunk = new Hunk();
-                currentLineNumber = Math.min( Integer.parseInt( m.group( 1 ) ), Integer.parseInt( m.group( 3 ) ) );
-                currentHunk.firstLineNumber = currentLineNumber;
+
+                if ( newHunkStarted )
+                {
+                    currentHunk = new Hunk();
+                    currentLineNumber = Math.min( Integer.parseInt( m.group( 1 ) ), Integer.parseInt( m.group( 3 ) ) );
+                    currentHunk.firstLineNumber = currentLineNumber;
+                }
             }
             else
             {
