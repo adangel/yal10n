@@ -44,7 +44,6 @@ import net.sf.yal10n.status.RepoStatus;
 import net.sf.yal10n.svn.SVNLogChange;
 import net.sf.yal10n.svn.SVNUtil;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -108,31 +107,10 @@ public class DetectChangesMojo extends BaseMojo
         DetectChangesStatus newStatus = new DetectChangesStatus();
         newStatus.setLastDetection( DateTime.now().toString() );
         newStatus.setRepos( new ArrayList<RepoStatus>() );
-        
-        int repoNumber = 0;
-        for ( Repository repo : config.getRepositories() )
-        {
-            repoNumber++;
-            getLog().debug( repoNumber + " url: " + repo.getUrl() );
 
-            String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
-            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
-            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
-            String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
-            
-            String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
-            long revision = svn.checkout( getLog(), svnCheckoutUrl, dstPath );
-            
-            RepoStatus status = new RepoStatus();
-            status.setId( repoId );
-            status.setRevision( revision );
-            status.setCompleteRepoUrl( svnUrl );
-            newStatus.getRepos().add( status );
-            
-            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
-        }
+        checkout( config, newStatus );
         newStatus.writeToFile( yal10nStatus );
-        
+
         if ( !firstRun )
         {
             List<ResourceBundle> bundles = analyzer.getBundles();

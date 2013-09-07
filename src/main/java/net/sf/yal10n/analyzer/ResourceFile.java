@@ -427,11 +427,6 @@ public class ResourceFile
         return score;
     }
 
-    /**
-     * @param key
-     * @param ignoreKeys
-     * @return
-     */
     private boolean isIgnoreKey( String key, List<String> ignoreKeys )
     {
         if ( ignoreKeys != null )

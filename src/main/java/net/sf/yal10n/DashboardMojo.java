@@ -27,11 +27,9 @@ import net.sf.yal10n.dashboard.DashboardModel;
 import net.sf.yal10n.dashboard.DashboardRenderer;
 import net.sf.yal10n.report.ReportRenderer;
 import net.sf.yal10n.settings.DashboardConfiguration;
-import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtil;
 import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -93,29 +91,7 @@ public class DashboardMojo extends BaseMojo
     {
         DashboardConfiguration config = DashboardConfiguration.readFromFile( yal10nSettings );
 
-        int repoNumber = 0;
-        for ( Repository repo : config.getRepositories() )
-        {
-            repoNumber++;
-            getLog().debug( repoNumber + " url: " + repo.getUrl() );
-
-            String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
-            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
-            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
-            String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
-            String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
-
-            if ( offline )
-            {
-                getLog().info( "Offline mode - not updating repo: " + svnUrl );
-            }
-            else
-            {
-                svn.checkout( getLog(), svnCheckoutUrl, dstPath );
-            }
-
-            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
-        }
+        checkout( config, null );
 
         List<ResourceBundle> bundles = analyzer.getBundles();
         getLog().info( "Found " + bundles.size() + " bundles:" );

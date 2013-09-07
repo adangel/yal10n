@@ -15,11 +15,17 @@ package net.sf.yal10n;
  */
 
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
+import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.settings.Repository;
+import net.sf.yal10n.status.DetectChangesStatus;
+import net.sf.yal10n.status.RepoStatus;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Base class for the mojos.
@@ -71,5 +77,46 @@ public abstract class BaseMojo extends AbstractMojo
     public void setOutputDirectory( String outputDirectory )
     {
         this.outputDirectory = outputDirectory;
+    }
+
+    /**
+     * Performs the svn checkout and collects the new revision status.
+     * @param config the configuration with all the repositories
+     * @param newStatus the new status. Can be <code>null</code>.
+     */
+    protected void checkout( DashboardConfiguration config, DetectChangesStatus newStatus )
+    {
+        int repoNumber = 0;
+        for ( Repository repo : config.getRepositories() )
+        {
+            repoNumber++;
+            getLog().debug( repoNumber + " url: " + repo.getUrl() );
+
+            String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
+            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
+            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
+            String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
+
+            String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
+            if ( offline )
+            {
+                getLog().info( "Offline mode - not updating repo: " + svnUrl );
+            }
+            else
+            {
+                long revision = svn.checkout( getLog(), svnCheckoutUrl, dstPath );
+
+                if ( newStatus != null )
+                {
+                    RepoStatus status = new RepoStatus();
+                    status.setId( repoId );
+                    status.setRevision( revision );
+                    status.setCompleteRepoUrl( svnUrl );
+                    newStatus.getRepos().add( status );
+                }
+            }
+
+            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
+        }
     }
 }
