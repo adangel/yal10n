@@ -15,6 +15,7 @@ package net.sf.yal10n.settings;
  */
 
 import java.io.File;
+import java.util.List;
 
 import javax.mail.Address;
 
@@ -54,11 +55,11 @@ public class DashboardConfigurationTest
         Assert.assertEquals( "[yal10n] test subject", config.getNotification().getSubject() );
 
         Assert.assertEquals( "foo@bar.com, bar@foo.com; baz@foo.com", config.getNotification().getRecipients() );
-        Address[] recipientsAddresses = config.getNotification().getRecipientsAddresses();
-        Assert.assertEquals( 3, recipientsAddresses.length );
-        Assert.assertEquals( "foo@bar.com", recipientsAddresses[0].toString() );
-        Assert.assertEquals( "bar@foo.com", recipientsAddresses[1].toString() );
-        Assert.assertEquals( "baz@foo.com", recipientsAddresses[2].toString() );
+        List<Address> recipientsAddresses = config.getNotification().getRecipientsAddresses();
+        Assert.assertEquals( 3, recipientsAddresses.size() );
+        Assert.assertEquals( "foo@bar.com", recipientsAddresses.get( 0 ).toString() );
+        Assert.assertEquals( "bar@foo.com", recipientsAddresses.get( 1 ).toString() );
+        Assert.assertEquals( "baz@foo.com", recipientsAddresses.get( 2 ).toString() );
 
         Assert.assertEquals( "foo@bar.com", config.getNotification().getMailFrom() );
         Assert.assertEquals( "[de, fr, ja, nl]", config.getLanguages().toString() );
@@ -66,5 +67,19 @@ public class DashboardConfigurationTest
         Assert.assertEquals( "**/*essages*.properties", config.getIncludes().get( 0 ) );
         Assert.assertEquals( 1, config.getExcludes().size() );
         Assert.assertEquals( "**/src/test/**", config.getExcludes().get( 0 ) );
+    }
+
+    /**
+     * Allow to configure notification settings per repository.
+     * @throws Exception any error
+     */
+    @Test
+    public void testReadIssue25() throws Exception
+    {
+        File file = new File( "./target/test-classes/settings/yal10n-settings-sample-issue25.json" );
+        DashboardConfiguration config = DashboardConfiguration.readFromFile( file.getCanonicalPath() );
+
+        Repository repo2 = config.getRepositories().get( 1 );
+        Assert.assertEquals( "bar@baz.com", repo2.getNotification().getRecipientsAddresses().get( 0 ).toString() );
     }
 }

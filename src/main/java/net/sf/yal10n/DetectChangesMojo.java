@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -182,7 +181,7 @@ public class DetectChangesMojo extends BaseMojo
                                 String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
                                 viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
                                 getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                                sendEmail( config, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                                sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                             }
                         }
                         else if ( changesFound == SVNLogChange.ADD )
@@ -194,7 +193,7 @@ public class DetectChangesMojo extends BaseMojo
                             String filename = fullLocalPath.substring( dstPath.length() );
                             String fileContent = readFile( fullLocalPath );
                             UnifiedDiff unifiedDiff = new UnifiedDiff( fileContent, true, filename );
-                            sendEmail( config, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                            sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                         }
                     }
                     else
@@ -231,7 +230,7 @@ public class DetectChangesMojo extends BaseMojo
         return result;
     }
 
-    private void sendEmail( DashboardConfiguration config, String projectName, String viewvcDiff,
+    private void sendEmail( DashboardConfiguration config, Repository repo, String projectName, String viewvcDiff,
             UnifiedDiff unifiedDiff )
     {
         Properties props = new Properties();
@@ -242,13 +241,14 @@ public class DetectChangesMojo extends BaseMojo
         try
         {
             String from = config.getNotification().getMailFrom();
-            Address[] recipients = config.getNotification().getRecipientsAddresses();
+            List<Address> recipients = config.getNotification().getRecipientsAddresses();
+            recipients.addAll( repo.getNotification().getRecipientsAddresses() );
             String subject = config.getNotification().getSubject()
                     .replaceAll( Pattern.quote( "{{projectName}}" ), projectName );
 
             MimeMessage msg = new MimeMessage( session );
             msg.setFrom( new InternetAddress( from ) );
-            msg.setRecipients( Message.RecipientType.TO, recipients );
+            msg.setRecipients( Message.RecipientType.TO, recipients.toArray( new Address[recipients.size()] ) );
             msg.setSubject( subject );
             msg.setSentDate( new Date() );
 
@@ -261,7 +261,7 @@ public class DetectChangesMojo extends BaseMojo
             
             Transport.send( msg );
 
-            getLog().info( "Email sent for project " + projectName + " to " + Arrays.toString( recipients ) );
+            getLog().info( "Email sent for project " + projectName + " to " + recipients );
         }
         catch ( MessagingException mex )
         {

@@ -27,6 +27,7 @@ public class Repository
     private String viewvcUrl;
     private List<String> includes;
     private List<String> excludes;
+    private Notification notification = new Notification();
 
     /**
      * Gets the URL from where the repository can be checked out. Read-only access is necessary.
@@ -116,5 +117,25 @@ public class Repository
     public void setType( ScmType type )
     {
         this.type = type;
+    }
+
+    /**
+     * Gets the notification.
+     *
+     * @return the notification
+     */
+    public Notification getNotification()
+    {
+        return notification;
+    }
+
+    /**
+     * Sets the notification.
+     *
+     * @param notification the new notification
+     */
+    public void setNotification( Notification notification )
+    {
+        this.notification = notification;
     }
 }

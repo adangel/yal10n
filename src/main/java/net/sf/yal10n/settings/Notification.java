@@ -14,6 +14,9 @@ package net.sf.yal10n.settings;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -101,7 +104,7 @@ public class Notification
      * @return the recipients addresses
      * @throws AddressException the address exception
      */
-    public Address[] getRecipientsAddresses() throws AddressException
+    public List<Address> getRecipientsAddresses() throws AddressException
     {
         String[] addresses;
         if ( recipients != null )
@@ -113,10 +116,10 @@ public class Notification
             addresses = new String[]{};
         }
 
-        Address[] result = new Address[addresses.length];
-        for ( int i = 0; i < addresses.length; i++ )
+        List<Address> result = new ArrayList<Address>( addresses.length );
+        for ( String address : addresses )
         {
-            result[i] = new InternetAddress( addresses[i] );
+            result.add( new InternetAddress( address ) );
         }
         return result;
     }
