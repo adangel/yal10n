@@ -16,8 +16,9 @@ package net.sf.yal10n.settings;
 
 import java.io.File;
 
-import junit.framework.Assert;
+import javax.mail.Address;
 
+import junit.framework.Assert;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.junit.Test;
@@ -51,7 +52,14 @@ public class DashboardConfigurationTest
         Assert.assertEquals( "localhost", config.getNotification().getSmtpServer() );
         Assert.assertEquals( "25", config.getNotification().getSmtpPort() );
         Assert.assertEquals( "[yal10n] test subject", config.getNotification().getSubject() );
-        Assert.assertEquals( "foo@bar.com, bar@foo.com", config.getNotification().getRecipients() );
+
+        Assert.assertEquals( "foo@bar.com, bar@foo.com; baz@foo.com", config.getNotification().getRecipients() );
+        Address[] recipientsAddresses = config.getNotification().getRecipientsAddresses();
+        Assert.assertEquals( 3, recipientsAddresses.length );
+        Assert.assertEquals( "foo@bar.com", recipientsAddresses[0].toString() );
+        Assert.assertEquals( "bar@foo.com", recipientsAddresses[1].toString() );
+        Assert.assertEquals( "baz@foo.com", recipientsAddresses[2].toString() );
+
         Assert.assertEquals( "foo@bar.com", config.getNotification().getMailFrom() );
         Assert.assertEquals( "[de, fr, ja, nl]", config.getLanguages().toString() );
         Assert.assertEquals( 1, config.getIncludes().size() );

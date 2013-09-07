@@ -29,7 +29,7 @@
         "smtpServer": "localhost",
         "smtpPort": "25",
         "subject": "[yal10n] test subject",
-        "recipients": "foo@bar.com, bar@foo.com",
+        "recipients": "foo@bar.com, bar@foo.com; baz@foo.com",
         "mailFrom": "foo@bar.com"
     }
 }

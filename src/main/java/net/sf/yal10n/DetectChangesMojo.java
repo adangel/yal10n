@@ -20,11 +20,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -240,7 +242,7 @@ public class DetectChangesMojo extends BaseMojo
         try
         {
             String from = config.getNotification().getMailFrom();
-            String recipients = config.getNotification().getRecipients();
+            Address[] recipients = config.getNotification().getRecipientsAddresses();
             String subject = config.getNotification().getSubject()
                     .replaceAll( Pattern.quote( "{{projectName}}" ), projectName );
 
@@ -259,7 +261,7 @@ public class DetectChangesMojo extends BaseMojo
             
             Transport.send( msg );
 
-            getLog().info( "Email sent for project " + projectName + " to " + recipients );
+            getLog().info( "Email sent for project " + projectName + " to " + Arrays.toString( recipients ) );
         }
         catch ( MessagingException mex )
         {

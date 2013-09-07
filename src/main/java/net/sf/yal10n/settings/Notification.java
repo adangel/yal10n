@@ -14,6 +14,10 @@ package net.sf.yal10n.settings;
  * limitations under the License.
  */
 
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 /**
  * The configuration about the notification for changes in the messages files.
  */
@@ -82,13 +86,39 @@ public class Notification
     }
 
     /**
-     * Gets the recipients. A comma-separated list of email addresses.
+     * Gets the recipients. A comma or semicolon separated list of email addresses.
      *
      * @return the recipients
      */
     public String getRecipients()
     {
         return recipients;
+    }
+
+    /**
+     * Gets the recipients addresses already parsed.
+     *
+     * @return the recipients addresses
+     * @throws AddressException the address exception
+     */
+    public Address[] getRecipientsAddresses() throws AddressException
+    {
+        String[] addresses;
+        if ( recipients != null )
+        {
+            addresses = recipients.split( ",|;" );
+        }
+        else
+        {
+            addresses = new String[]{};
+        }
+
+        Address[] result = new Address[addresses.length];
+        for ( int i = 0; i < addresses.length; i++ )
+        {
+            result[i] = new InternetAddress( addresses[i] );
+        }
+        return result;
     }
 
     /**
