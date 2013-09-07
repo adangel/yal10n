@@ -31,6 +31,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class DashboardConfiguration
 {
     private String repoPrefix = "";
+    private String mirrorPrefix = "";
     private String viewvcPrefix = "";
     private List<Repository> repositories = new ArrayList<Repository>();
     private List<String> includes = new ArrayList<String>();
@@ -43,7 +44,7 @@ public class DashboardConfiguration
 
 
     /**
-     * Gets the URL prefix, that should be used for every repository url.
+     * Gets the URL prefix, that should be used for every repository url. This is like a base url.
      * @return the prefix
      */
     public String getRepoPrefix()
@@ -58,6 +59,24 @@ public class DashboardConfiguration
     public void setRepoPrefix( String repoPrefix )
     {
         this.repoPrefix = repoPrefix;
+    }
+
+    /**
+     * Gets the mirror prefix, that should be used when a mirror url is defined in the repositories.
+     * @return the mirror prefix
+     */
+    public String getMirrorPrefix()
+    {
+        return mirrorPrefix;
+    }
+
+    /**
+     * Sets the mirror prefix.
+     * @param mirrorPrefix the new mirror prefix
+     */
+    public void setMirrorPrefix( String mirrorPrefix )
+    {
+        this.mirrorPrefix = mirrorPrefix;
     }
 
     /**

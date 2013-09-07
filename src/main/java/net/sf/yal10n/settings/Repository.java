@@ -23,6 +23,7 @@ import java.util.List;
 public class Repository
 {
     private String url;
+    private String mirrorUrl;
     private ScmType type = ScmType.SVN;
     private String viewvcUrl;
     private List<String> includes;
@@ -31,6 +32,8 @@ public class Repository
 
     /**
      * Gets the URL from where the repository can be checked out. Read-only access is necessary.
+     * If additionally a {@link #getMirrorUrl()} is defined, then this url will only be used
+     * in the reports, but for the actual checkout, the mirror url is used.
      * @return the url
      */
     public String getUrl()
@@ -45,6 +48,25 @@ public class Repository
     public void setUrl( String url )
     {
         this.url = url;
+    }
+
+    /**
+     * Gets the mirror url that is used to checkout the code. Read-only access is necessary.
+     * This is optional and can be <code>null</code>.
+     * @return the mirror url
+     */
+    public String getMirrorUrl()
+    {
+        return mirrorUrl;
+    }
+
+    /**
+     * Sets the mirror url.
+     * @param mirrorUrl the new mirror url
+     */
+    public void setMirrorUrl( String mirrorUrl )
+    {
+        this.mirrorUrl = mirrorUrl;
     }
 
     /**

@@ -44,6 +44,7 @@ import net.sf.yal10n.status.RepoStatus;
 import net.sf.yal10n.svn.SVNLogChange;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -115,10 +116,12 @@ public class DetectChangesMojo extends BaseMojo
             getLog().debug( repoNumber + " url: " + repo.getUrl() );
 
             String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
+            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
+            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
             String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
             
             String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
-            long revision = svn.checkout( getLog(), svnUrl, dstPath );
+            long revision = svn.checkout( getLog(), svnCheckoutUrl, dstPath );
             
             RepoStatus status = new RepoStatus();
             status.setId( repoId );

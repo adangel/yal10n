@@ -31,6 +31,7 @@ import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtil;
 import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -99,6 +100,8 @@ public class DashboardMojo extends BaseMojo
             getLog().debug( repoNumber + " url: " + repo.getUrl() );
 
             String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
+            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
+            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
             String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
             String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
 
@@ -108,7 +111,7 @@ public class DashboardMojo extends BaseMojo
             }
             else
             {
-                svn.checkout( getLog(), svnUrl, dstPath );
+                svn.checkout( getLog(), svnCheckoutUrl, dstPath );
             }
 
             analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
