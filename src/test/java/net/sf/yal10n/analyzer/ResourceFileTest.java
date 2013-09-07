@@ -120,7 +120,8 @@ public class ResourceFileTest
         DashboardConfiguration config = new DashboardConfiguration();
         List<String> ignoreKeys = Arrays.asList( "ignored.message", "ignored.default.message" );
 
-        ResourceFile file = new ResourceFile( config, new SVNUtilMock( resourceFile ), resourceFile, null );
+        ResourceFile file = new ResourceFile( config, new SVNUtilMock( resourceFile ), resourceFile,
+                "http://svn.foo.com/svn/test-project/subdirectory/messages.properties" );
         bundle.addFile( file );
         LanguageModel languageModel = file.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel.getCountOfMessages() );
@@ -134,6 +135,7 @@ public class ResourceFileTest
         Assert.assertEquals( 0, languageModel.getAdditionalMessages().size() );
         Assert.assertEquals( "no-issues", languageModel.getIssuesSeverityClass() );
         Assert.assertEquals( 0, languageModel.getScoreLog().size() );
+        Assert.assertEquals( "http://svn.foo.com/svn/test-project/subdirectory/", languageModel.getSvnCheckoutUrl() );
 
         ResourceFile file2 = new ResourceFile( config, new SVNUtilMock( resourceFile2 ), resourceFile2, null );
         bundle.addFile( file2 );

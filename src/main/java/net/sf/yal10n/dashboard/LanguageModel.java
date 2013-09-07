@@ -25,6 +25,7 @@ public class LanguageModel
 {
 
     private String svnUrl;
+    private String svnCheckoutUrl;
     private String relativeUrl;
     private String svnInfo;
     private String name;
@@ -56,6 +57,26 @@ public class LanguageModel
     public void setSvnUrl( String svnUrl )
     {
         this.svnUrl = svnUrl;
+    }
+
+    /**
+     * Gets the svn checkout url.
+     *
+     * @return the svn checkout url
+     */
+    public String getSvnCheckoutUrl()
+    {
+        return svnCheckoutUrl;
+    }
+
+    /**
+     * Sets the svn checkout url.
+     *
+     * @param svnCheckoutUrl the new svn checkout url
+     */
+    public void setSvnCheckoutUrl( String svnCheckoutUrl )
+    {
+        this.svnCheckoutUrl = svnCheckoutUrl;
     }
 
     /**

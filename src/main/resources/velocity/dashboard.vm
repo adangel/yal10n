@@ -20,6 +20,7 @@
         <th>$lang</th>
 #end
         <th>Report</th>
+        <th>Checkout SVN</th>
 #if ($dashboard.createTmx)
         <th>Download TMX</th>
 #end
@@ -52,6 +53,7 @@
 #end
 
         <td><a href="reports/$bundle.relativeReportUrl">report</a></td>
+        <td><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
 
 #if ($dashboard.createTmx)
         <td><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>

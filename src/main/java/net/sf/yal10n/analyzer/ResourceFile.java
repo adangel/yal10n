@@ -253,6 +253,7 @@ public class ResourceFile
     {
         LanguageModel model = new LanguageModel();
         model.setSvnUrl( fullSvnPath );
+        model.setSvnCheckoutUrl( fullSvnPath != null ? FileUtils.dirname( fullSvnPath ) + "/" : null );
         model.setRelativeUrl( getRelativeCheckoutUrl() );
         model.setName( getLanguage() );
         SimpleEncodingDetector detector = new SimpleEncodingDetector();
