@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmx version="1.4b">
-    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20130224T174104Z"></header>
+    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20130907T171240Z"></header>
     <body>
+        <tu tuid="./svnrepos/repo1/trunk/messages:key">
+            <prop type="x-svn-base-path">./svnrepos/repo1/trunk/messages</prop>
+            <prop type="x-key">key</prop>
+            <tuv xml:lang="en">
+                <seg>a different project</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo2/trunk/messages:info">
+            <prop type="x-svn-base-path">./svnrepos/repo2/trunk/messages</prop>
+            <prop type="x-key">info</prop>
+            <tuv xml:lang="en">
+                <seg>this is not a maven project - so the project name is unknown.</seg>
+            </tuv>
+        </tu>
         <tu tuid="./svnrepos/repo1/a/trunk/ValidationMessages:issues">
             <prop type="x-svn-base-path">./svnrepos/repo1/a/trunk/ValidationMessages</prop>
             <prop type="x-key">issues</prop>
@@ -14,13 +28,6 @@
             <prop type="x-key">anotherFile</prop>
             <tuv xml:lang="en">
                 <seg>in the same project</seg>
-            </tuv>
-        </tu>
-        <tu tuid="./svnrepos/repo2/trunk/messages:info">
-            <prop type="x-svn-base-path">./svnrepos/repo2/trunk/messages</prop>
-            <prop type="x-key">info</prop>
-            <tuv xml:lang="en">
-                <seg>this is not a maven project - so the project name is unknown.</seg>
             </tuv>
         </tu>
         <tu tuid="./svnrepos/repo1/a/trunk/messages:not.translated">
@@ -68,13 +75,6 @@
             </tuv>
             <tuv xml:lang="de">
                 <seg>this message is ignored</seg>
-            </tuv>
-        </tu>
-        <tu tuid="./svnrepos/repo1/trunk/messages:key">
-            <prop type="x-svn-base-path">./svnrepos/repo1/trunk/messages</prop>
-            <prop type="x-key">key</prop>
-            <tuv xml:lang="en">
-                <seg>a different project</seg>
             </tuv>
         </tu>
     </body>

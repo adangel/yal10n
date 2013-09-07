@@ -1,3 +1,15 @@
+body {
+   color: black;
+   font-family: sans-serif;
+   margin: 15px;
+   padding: 10px;
+   padding-top: 0px;
+   border: 2px #aaaaaa solid;
+   border-radius: 10px;
+}
+hr {
+   border: 1px solid #aaaaaa;
+}
 h1, h2 {
    border-radius: 5px;
    padding: 3px;
@@ -10,14 +22,21 @@ h2 {
    background-color: lightGrey;
 }
 table, td, th {
-   border: 1px solid black;
-   border-spacing: 0px;
+   border-collapse: collapse;
+}
+th {
+   background-color: #dddddd;
+   text-align: center;
+}
+th, td {
+   border: 1px solid #aaaaaa;
+   padding: 0.4em;
 }
 tr:nth-child(even) {
-   background: lightGrey;
+   background: white;
 }
 tr:nth-child(odd) {
-   background: white;
+   background: #eeeeee;
 }
 td.no-issues {
    background: lightGreen;
@@ -26,5 +45,5 @@ td.severity-major {
    background: lightCoral;
 }
 td.severity-minor {
-   background: lightYellow;
+   background: yellow;
 }

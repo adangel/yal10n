@@ -2,11 +2,11 @@
 <tmx version="1.4b">
     <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20130907T171240Z"></header>
     <body>
-        <tu tuid="./svnrepos/repo2/trunk/messages:info">
-            <prop type="x-svn-base-path">./svnrepos/repo2/trunk/messages</prop>
-            <prop type="x-key">info</prop>
+        <tu tuid="./svnrepos/repo1/trunk/messages:key">
+            <prop type="x-svn-base-path">./svnrepos/repo1/trunk/messages</prop>
+            <prop type="x-key">key</prop>
             <tuv xml:lang="en">
-                <seg>this is not a maven project - so the project name is unknown.</seg>
+                <seg>a different project</seg>
             </tuv>
         </tu>
     </body>
