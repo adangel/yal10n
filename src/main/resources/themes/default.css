@@ -32,6 +32,9 @@ th, td {
    border: 1px solid #aaaaaa;
    padding: 0.4em;
 }
+tr:hover td {
+   background: lightblue;
+}
 tr:nth-child(even) {
    background: white;
 }
@@ -41,9 +44,18 @@ tr:nth-child(odd) {
 td.no-issues {
    background: lightGreen;
 }
+tr:hover td.no-issues {
+   background: #73BE73;
+}
 td.severity-major {
    background: lightCoral;
 }
+tr:hover td.severity-major {
+   background: #C06666;
+}
 td.severity-minor {
    background: yellow;
+}
+tr:hover td.severity-minor {
+   background: #CCCC00;
 }
