@@ -17,8 +17,10 @@ package net.sf.yal10n.dashboard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sf.yal10n.DashboardMojo;
@@ -35,7 +37,7 @@ public class DashboardModel
 
     private String generationDate;
     private List<String> allLanguages;
-    private List<BundleModel> allBundles;
+    private List<ProjectModel> projects;
     private boolean createTmx;
     private String version;
 
@@ -80,26 +82,6 @@ public class DashboardModel
     }
 
     /**
-     * Gets the all bundles.
-     *
-     * @return the all bundles
-     */
-    public List<BundleModel> getAllBundles()
-    {
-        return allBundles;
-    }
-
-    /**
-     * Sets the all bundles.
-     *
-     * @param allBundles the new all bundles
-     */
-    public void setAllBundles( List<BundleModel> allBundles )
-    {
-        this.allBundles = allBundles;
-    }
-
-    /**
      * Creates a Dashboard model based on the given {@link ResourceBundle}s.
      *
      * @param log the log
@@ -112,7 +94,6 @@ public class DashboardModel
         List<String> languages = config.getLanguages();
         boolean createTmx = config.isCreateTMX();
         Set<String> allLanguages = new HashSet<String>( languages );
-        List<BundleModel> bundleModels = new ArrayList<BundleModel>();
         for ( ResourceBundle bundle : bundles )
         {
             allLanguages.addAll( bundle.getLanguages() );
@@ -120,14 +101,26 @@ public class DashboardModel
         ArrayList<String> allLanguagesSorted = new ArrayList<String>( allLanguages );
         Collections.sort( allLanguagesSorted, config.getLanguageComparator() );
 
+        Map<String, List<BundleModel>> projects = new HashMap<String, List<BundleModel>>();
         for ( ResourceBundle bundle : bundles )
         {
+            List<BundleModel> bundleModels = projects.get( bundle.getRepoId() );
+            if ( bundleModels == null )
+            {
+                bundleModels = new ArrayList<BundleModel>();
+                projects.put( bundle.getRepoId(), bundleModels );
+            }
             bundleModels.add( bundle.toBundleModel( log, allLanguagesSorted ) );
         }
-        resolveDuplicatedProjectNames( bundleModels );
+        List<ProjectModel> projectModels = new ArrayList<ProjectModel>();
+        for ( List<BundleModel> bundleModels : projects.values() )
+        {
+            resolveDuplicatedProjectNames( bundleModels );
+            projectModels.add( new ProjectModel( bundleModels ) );
+        }
 
         DashboardModel model = new DashboardModel();
-        model.setAllBundles( bundleModels );
+        model.setProjects( projectModels );
         model.setAllLanguages( allLanguagesSorted );
         model.setGenerationDate( new Date().toString() );
         model.setVersion( DashboardMojo.getVersion() );
@@ -189,5 +182,25 @@ public class DashboardModel
     public void setVersion( String version )
     {
         this.version = version;
+    }
+
+    /**
+     * Gets the projects.
+     *
+     * @return the projects
+     */
+    public List<ProjectModel> getProjects()
+    {
+        return projects;
+    }
+
+    /**
+     * Sets the projects.
+     *
+     * @param projects the new projects
+     */
+    public void setProjects( List<ProjectModel> projects )
+    {
+        this.projects = projects;
     }
 }

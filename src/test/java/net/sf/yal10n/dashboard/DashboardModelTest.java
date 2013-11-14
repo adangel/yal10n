@@ -58,9 +58,10 @@ public class DashboardModelTest
         DashboardModel model = DashboardModel.create( new NullLog(), config, bundles );
         Assert.assertEquals( DashboardMojo.getVersion(), model.getVersion() );
         Assert.assertEquals( "[de, de_DE, fr]", model.getAllLanguages().toString() );
-        Assert.assertEquals( 1, model.getAllBundles().size() );
+        Assert.assertEquals( 1, model.getProjects().size() );
+        Assert.assertEquals( 1, model.getProjects().get( 0 ).getAllBundles().size() );
         Assert.assertTrue( model.isCreateTmx() );
-        BundleModel bundleModel = model.getAllBundles().get( 0 );
+        BundleModel bundleModel = model.getProjects().get( 0 ).getAllBundles().get( 0 );
         Assert.assertNotNull( bundleModel.getLanguages().get( 0 ) );
     }
 
@@ -87,9 +88,11 @@ public class DashboardModelTest
         bundles.add( bundle2 );
 
         DashboardModel model = DashboardModel.create( new NullLog(), config, bundles );
-        Assert.assertFalse( model.getAllBundles().get( 0 ).getProjectName().equals(
-                model.getAllBundles().get( 1 ).getProjectName() ) );
-        Assert.assertTrue( model.getAllBundles().get( 0 ).getProjectName().endsWith( " messages" ) );
-        Assert.assertTrue( model.getAllBundles().get( 1 ).getProjectName().endsWith( " someother" ) );
+        Assert.assertFalse( model.getProjects().get( 0 ).getAllBundles().get( 0 ).getProjectName().equals(
+                model.getProjects().get( 0 ).getAllBundles().get( 1 ).getProjectName() ) );
+        Assert.assertTrue( model.getProjects().get( 0 ).getAllBundles()
+                .get( 0 ).getProjectName().endsWith( " messages" ) );
+        Assert.assertTrue( model.getProjects().get( 0 ).getAllBundles()
+                .get( 1 ).getProjectName().endsWith( " someother" ) );
     }
 }

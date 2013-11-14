@@ -32,7 +32,7 @@ th, td {
    border: 1px solid #aaaaaa;
    padding: 0.4em;
 }
-tr:hover td {
+tr:hover td.highlight {
    background: lightblue;
 }
 tr:nth-child(even) {
@@ -58,4 +58,10 @@ td.severity-minor {
 }
 tr:hover td.severity-minor {
    background: #CCCC00;
+}
+td.project-col {
+   border-right: none;
+}
+td.project-row {
+   border-left: none;
 }

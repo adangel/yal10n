@@ -47,16 +47,17 @@ public class DashboardRendererTest
         renderer.render( model, out );
         String dashboard = out.toString();
 
-        Assert.assertTrue( dashboard.contains( "<td>Bundle 1</td>" ) );
+        Assert.assertTrue( dashboard.contains( "<td class=\"highlight\">Bundle 1</td>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/base\">default</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/de\">de</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/fr\">fr</a>" ) );
-        Assert.assertTrue( Pattern.compile( "<td>\\s*\n\\s*missing", Pattern.MULTILINE ).matcher( dashboard ).find() );
+        Assert.assertTrue( Pattern.compile( "<td class=\"highlight\">\\s*\n\\s*missing", Pattern.MULTILINE )
+                .matcher( dashboard ).find() );
         Assert.assertTrue( Pattern.compile( "<td class=\"severity-major\">\\s*\n\\s*missing", Pattern.MULTILINE )
                 .matcher( dashboard ).find() );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/\">checkout</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"reports/bundle1\">report</a>" ) );
-        Assert.assertTrue( dashboard.contains( "<td>Bundle 2</td>" ) );
+        Assert.assertTrue( dashboard.contains( "<td class=\"highlight\">Bundle 2</td>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle2/base\">default</a>" ) );
         Assert.assertTrue( dashboard.contains( DashboardMojo.getVersion() ) );
     }
@@ -93,7 +94,7 @@ public class DashboardRendererTest
 
         DashboardModel model = new DashboardModel();
         model.setAllLanguages( Arrays.asList( "de", "fr", "es", "de_DE" ) );
-        model.setAllBundles( Arrays.asList( bundle1, bundle2 ) );
+        model.setProjects( Arrays.asList ( new ProjectModel ( Arrays.asList( bundle1, bundle2 ) ) ) );
         model.setGenerationDate( new Date().toString() );
         model.setVersion( DashboardMojo.getVersion() );
 

@@ -14,6 +14,7 @@
 
     <table>
       <tr>
+        <th>P</th>
         <th>Project Name</th>
         <th>default</th>
 #foreach( $lang in $dashboard.allLanguages)
@@ -26,9 +27,20 @@
 #end
       </tr>
 
-#foreach( $bundle in $dashboard.allBundles)
+#foreach( $project in $dashboard.projects )
       <tr>
-        <td>$bundle.projectName</td>
+        #set($rows = 1 + $project.allBundles.size())
+        #if ($dashboard.createTmx)
+        #set($cols = 6 + $dashboard.allLanguages.size())
+        #else
+        #set($cols = 5 + $dashboard.allLanguages.size())
+        #end
+        <td rowspan="$rows" class="project-col">&nbsp;</td>
+        <td colspan="$cols" class="project-row">&nbsp;</td>
+      </tr>
+#foreach( $bundle in $project.allBundles )
+      <tr>
+        <td class="highlight">$bundle.projectName</td>
 #if ($bundle.base)
         <td class="$bundle.base.issuesSeverityClass">
           <a href="$bundle.base.svnUrl">default</a>
@@ -46,19 +58,20 @@
         <td class="severity-major">
           missing
 #else
-        <td>
+        <td class="highlight">
           missing
 #end
         </td>
 #end
 
-        <td><a href="reports/$bundle.relativeReportUrl">report</a></td>
-        <td><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
+        <td class="highlight"><a href="reports/$bundle.relativeReportUrl">report</a></td>
+        <td class="highlight"><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
 
 #if ($dashboard.createTmx)
-        <td><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>
+        <td class="highlight"><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>
 #end
       </tr>
+#end
 #end
     </table>
 
