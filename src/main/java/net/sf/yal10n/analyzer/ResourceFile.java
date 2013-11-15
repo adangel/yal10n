@@ -31,12 +31,12 @@ import java.util.regex.Pattern;
 import net.sf.yal10n.charset.UTF8BOMCharsetProvider;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.svn.SVNInfo;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-import org.tmatesoft.svn.core.wc.SVNInfo;
 
 /**
  * A {@link ResourceFile} represents a single locale of a {@link ResourceBundle}.

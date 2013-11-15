@@ -32,7 +32,6 @@ import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNDiffClient;
-import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
@@ -127,8 +126,9 @@ public class SVNUtil
         try
         {
             eventHandler.setLog( log );
-            SVNInfo info = wcClient.doInfo( new File( fullFilePath ), SVNRevision.WORKING );
-            return info;
+            org.tmatesoft.svn.core.wc.SVNInfo info = wcClient.doInfo( new File( fullFilePath ), SVNRevision.WORKING );
+            return new SVNInfo( info.getRevision().toString(),
+                    info.getCommittedDate().toString() );
         }
         catch ( SVNException e )
         {
@@ -150,7 +150,7 @@ public class SVNUtil
     {
         try
         {
-            SVNInfo info = wcClient.doInfo( new File( fullLocalPath ), SVNRevision.WORKING );
+            org.tmatesoft.svn.core.wc.SVNInfo info = wcClient.doInfo( new File( fullLocalPath ), SVNRevision.WORKING );
             String repoPath = info.getRepositoryRootURL().getPath();
             String fullRepoPath = info.getURL().getPath();
 

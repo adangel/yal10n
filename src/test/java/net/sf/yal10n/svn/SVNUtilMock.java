@@ -18,8 +18,6 @@ import java.util.Date;
 
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Assert;
-import org.tmatesoft.svn.core.wc.SVNInfo;
-import org.tmatesoft.svn.core.wc.SVNRevision;
 
 /**
  * Mock for the {@link SVNUtil}
@@ -51,9 +49,7 @@ public class SVNUtilMock extends SVNUtil
         {
             Assert.assertEquals( expectedFile, fullFilePath );
         }
-        SVNInfo info = new SVNInfo( null, null, SVNRevision.create( 1L ), null, null, null, 0L,
-                new Date( TIMESTAMP ),
-                null, null, null, 0L );
+        SVNInfo info = new SVNInfo( "1", TIMESTAMP_STRING );
         return info;
     }
 }
