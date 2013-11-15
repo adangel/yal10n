@@ -42,15 +42,4 @@ public class ProjectModel
     {
         return allBundles;
     }
-
-    /**
-     * Sets the all bundles.
-     *
-     * @param allBundles the new all bundles
-     */
-    public void setAllBundles( List<BundleModel> allBundles )
-    {
-        this.allBundles = allBundles;
-    }
-
 }

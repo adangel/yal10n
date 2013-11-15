@@ -102,6 +102,7 @@ public class DashboardModel
         Collections.sort( allLanguagesSorted, config.getLanguageComparator() );
 
         Map<String, List<BundleModel>> projects = new HashMap<String, List<BundleModel>>();
+        List<ProjectModel> projectModels = new ArrayList<ProjectModel>();
         for ( ResourceBundle bundle : bundles )
         {
             List<BundleModel> bundleModels = projects.get( bundle.getRepoId() );
@@ -109,14 +110,13 @@ public class DashboardModel
             {
                 bundleModels = new ArrayList<BundleModel>();
                 projects.put( bundle.getRepoId(), bundleModels );
+                projectModels.add( new ProjectModel( bundleModels ) );
             }
             bundleModels.add( bundle.toBundleModel( log, allLanguagesSorted ) );
         }
-        List<ProjectModel> projectModels = new ArrayList<ProjectModel>();
-        for ( List<BundleModel> bundleModels : projects.values() )
+        for ( ProjectModel project : projectModels )
         {
-            resolveDuplicatedProjectNames( bundleModels );
-            projectModels.add( new ProjectModel( bundleModels ) );
+            resolveDuplicatedProjectNames( project.getAllBundles() );
         }
 
         DashboardModel model = new DashboardModel();

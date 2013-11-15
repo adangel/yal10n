@@ -95,4 +95,35 @@ public class DashboardModelTest
         Assert.assertTrue( model.getProjects().get( 0 ).getAllBundles()
                 .get( 1 ).getProjectName().endsWith( " someother" ) );
     }
+
+    /**
+     * Verify that bundles are grouped by projects / repositories.
+     * @throws Exception any error
+     */
+    @Test
+    public void testMultipleProjects() throws Exception
+    {
+        DashboardConfiguration config = new DashboardConfiguration();
+        config.setCreateTMX( false );
+        config.setLanguages( Arrays.asList( "de" ) );
+
+        String file = new File( "./target/test-classes/unit/subdirectory/messages.properties" ).getCanonicalPath();
+        String file2 = new File( "./target/test-classes/unit/subdirectory/someother.properties" ).getCanonicalPath();
+
+        ResourceBundle p1bundle1 = new ResourceBundle( config, null, "p1_repoId", ".", "." );
+        p1bundle1.addFile( new ResourceFile( config, new SVNUtilMock( file ), file, null ) );
+        ResourceBundle p1bundle2 = new ResourceBundle( config, null, "p1_repoId", ".", "." );
+        p1bundle2.addFile( new ResourceFile( config, new SVNUtilMock( file2 ), file2, null ) );
+        ResourceBundle p2bundle1 = new ResourceBundle( config, null, "p2_repoId", ".", "." );
+        p1bundle1.addFile( new ResourceFile( config, new SVNUtilMock( file ), file, null ) );
+        ResourceBundle p3bundle1 = new ResourceBundle( config, null, "p3_repoId", ".", "." );
+        p1bundle1.addFile( new ResourceFile( config, new SVNUtilMock( file ), file, null ) );
+
+        DashboardModel model = DashboardModel.create( new NullLog(), config,
+                Arrays.asList( p1bundle1, p1bundle2, p2bundle1, p3bundle1 ) );
+        Assert.assertEquals( 3, model.getProjects().size() );
+        Assert.assertEquals( 2, model.getProjects().get( 0 ).getAllBundles().size() );
+        Assert.assertEquals( 1, model.getProjects().get( 1 ).getAllBundles().size() );
+        Assert.assertEquals( 1, model.getProjects().get( 2 ).getAllBundles().size() );
+    }
 }

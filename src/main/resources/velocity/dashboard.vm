@@ -14,7 +14,7 @@
 
     <table>
       <tr>
-        <th>P</th>
+        <th>&nbsp;</th>
         <th>Project Name</th>
         <th>default</th>
 #foreach( $lang in $dashboard.allLanguages)
