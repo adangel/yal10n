@@ -66,7 +66,7 @@ public class SVNUtilTest
 
         svnUtil.checkout( log, svnUrl + "/trunk", destination );
         SVNLogChange result = svnUtil.log( log, destination + "/messages.properties",
-                3, 3 );
+                "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
 
@@ -87,23 +87,23 @@ public class SVNUtilTest
         svnUtil.checkout( log, svnUrl + "/trunk", destination );
 
         // revision 2: only prop change
-        SVNLogChange result = svnUtil.log( log, destination + "/testfile.txt", 2, 2 );
+        SVNLogChange result = svnUtil.log( log, destination + "/testfile.txt", "2", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        String diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 1, 2 );
+        String diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "1", "2" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertFalse( diff.contains( "Index: " ) );
 
         // revision 3: only file change (real diff)
-        result = svnUtil.log( log, destination + "/testfile.txt", 3, 3 );
+        result = svnUtil.log( log, destination + "/testfile.txt", "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 2, 3 );
+        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "2", "3" );
         Assert.assertFalse( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
 
         // revision 4: combined change of file and property
-        result = svnUtil.log( log, destination + "/testfile.txt", 4, 4 );
+        result = svnUtil.log( log, destination + "/testfile.txt", "4", "4" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", 3, 4 );
+        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "3", "4" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
     }

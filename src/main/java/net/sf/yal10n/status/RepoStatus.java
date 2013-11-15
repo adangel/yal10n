@@ -21,7 +21,7 @@ public class RepoStatus
 {
     private String id;
     private String completeRepoUrl;
-    private long revision;
+    private String revision;
 
     /**
      * Gets the id.
@@ -48,7 +48,7 @@ public class RepoStatus
      *
      * @return the revision
      */
-    public long getRevision()
+    public String getRevision()
     {
         return revision;
     }
@@ -58,7 +58,7 @@ public class RepoStatus
      *
      * @param revision the new revision
      */
-    public void setRevision( long revision )
+    public void setRevision( String revision )
     {
         this.revision = revision;
     }

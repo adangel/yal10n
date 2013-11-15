@@ -47,7 +47,7 @@ public class DetectChangesStatusTest
         RepoStatus repo = new RepoStatus();
         repo.setCompleteRepoUrl( "completeUrl" );
         repo.setId( "myId" );
-        final long revision = 4711L;
+        final String revision = "4711";
         repo.setRevision( revision );
 
         DetectChangesStatus status = new DetectChangesStatus();

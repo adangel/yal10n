@@ -66,7 +66,7 @@ public class DashboardMojoTest
     public void testExecute() throws Exception
     {
         SVNUtil svn = mock( SVNUtil.class );
-        when( svn.checkout( (Log) anyObject(), anyString(), anyString() ) ).thenReturn( 1L );
+        when( svn.checkout( (Log) anyObject(), anyString(), anyString() ) ).thenReturn( "1" );
         ResourceAnalyzer analyzer = mock( ResourceAnalyzer.class );
         doNothing().when( analyzer ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(),

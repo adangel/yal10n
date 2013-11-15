@@ -104,7 +104,7 @@ public abstract class BaseMojo extends AbstractMojo
             }
             else
             {
-                long revision = svn.checkout( getLog(), svnCheckoutUrl, dstPath );
+                String revision = svn.checkout( getLog(), svnCheckoutUrl, dstPath );
 
                 if ( newStatus != null )
                 {

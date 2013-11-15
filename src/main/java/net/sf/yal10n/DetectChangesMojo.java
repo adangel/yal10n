@@ -134,52 +134,44 @@ public class DetectChangesMojo extends BaseMojo
                     RepoStatus oldRepoStatus = previousStatus.getRepoStatusById( repoId );
                     RepoStatus newRepoStatus = newStatus.getRepoStatusById( repoId );
                     
-                    long oldRevision = oldRepoStatus.getRevision();
-                    long newRevision = newRepoStatus.getRevision();
+                    String oldRevision = oldRepoStatus.getRevision();
+                    String newRevision = newRepoStatus.getRevision();
                     
                     getLog().debug( "Analyzing changes for" );
                     getLog().debug( "  " + fullLocalPath );
                     getLog().debug( "  old revision: " + oldRevision + " new revision: " + newRevision );
                     getLog().debug( "" );
                     
-                    if ( oldRevision < newRevision )
+                    SVNLogChange changesFound = svn.log( getLog(),
+                            fullLocalPath, oldRevision + 1, newRevision );
+
+                    getLog().debug( "    Changes found: " + changesFound );
+                    if ( changesFound == SVNLogChange.MODIFICATION )
                     {
-                        SVNLogChange changesFound = svn.log( getLog(),
-                                fullLocalPath, oldRevision + 1, newRevision );
-                        
                         String diff = svn.diff( getLog(), dstPath, fullLocalPath, oldRevision, newRevision );
-                        
-                        getLog().debug( "    Changes found: " + changesFound );
-                        if ( changesFound == SVNLogChange.MODIFICATION )
+                        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+                        if ( unifiedDiff.getHunks().isEmpty() )
                         {
-                            UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
-                            if ( unifiedDiff.getHunks().isEmpty() )
-                            {
-                                getLog().info( "    There were no changes to the file content of " + fullSvnPath );
-                            }
-                            else
-                            {
-                                String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
-                                viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
-                                getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                                sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
-                            }
+                            getLog().info( "    There were no changes to the file content of " + fullSvnPath );
                         }
-                        else if ( changesFound == SVNLogChange.ADD )
+                        else
                         {
                             String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
-                            viewvcDiff += "?view=markup";
+                            viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
                             getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-
-                            String filename = fullLocalPath.substring( dstPath.length() );
-                            String fileContent = readFile( fullLocalPath );
-                            UnifiedDiff unifiedDiff = new UnifiedDiff( fileContent, true, filename );
                             sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                         }
                     }
-                    else
+                    else if ( changesFound == SVNLogChange.ADD )
                     {
-                        getLog().debug( "    No changes since last detect-changes run" );
+                        String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
+                        viewvcDiff += "?view=markup";
+                        getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
+
+                        String filename = fullLocalPath.substring( dstPath.length() );
+                        String fileContent = readFile( fullLocalPath );
+                        UnifiedDiff unifiedDiff = new UnifiedDiff( fileContent, true, filename );
+                        sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                     }
                 }
                 else

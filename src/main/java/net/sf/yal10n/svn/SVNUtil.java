@@ -92,7 +92,7 @@ public class SVNUtil
      * @param destination the destination
      * @return the long
      */
-    public long checkout( Log log, String svnUrl, String destination )
+    public String checkout( Log log, String svnUrl, String destination )
     {
         SVNURL url;
         try
@@ -106,7 +106,7 @@ public class SVNUtil
             }
             log.info( "Updating " + svnUrl );
             updateClient.doCheckout( url, dstPath, SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.UNKNOWN, false );
-            return eventHandler.getLastUpdateCompletedRevision();
+            return String.valueOf( eventHandler.getLastUpdateCompletedRevision() );
         }
         catch ( SVNException e )
         {
@@ -141,12 +141,12 @@ public class SVNUtil
      *
      * @param log the log
      * @param fullLocalPath the file to check
-     * @param baseRevision the old revision
-     * @param newRevision the new revision
+     * @param baseRevision the old revision (exclusive)
+     * @param newRevision the new revision (inclusive)
      * @return the change type, e.g. ADD, MODIFICATION or NONE
      */
     public SVNLogChange log( Log log, String fullLocalPath,
-            long baseRevision, long newRevision )
+            String baseRevision, String newRevision )
     {
         try
         {
@@ -172,8 +172,9 @@ public class SVNUtil
                 }
             };
             eventHandler.setLog( log );
-            logClient.doLog( new File[] { new File( fullLocalPath ) }, SVNRevision.create( baseRevision ),
-                    SVNRevision.create( newRevision ), false, true, 0, handler );
+            logClient.doLog( new File[] { new File( fullLocalPath ) },
+                    SVNRevision.create( Long.valueOf( baseRevision ) ),
+                    SVNRevision.create( Long.valueOf( newRevision ) ), false, true, 0, handler );
 
             SVNLogChange result;
             if ( changeTypes.isEmpty() )
@@ -207,15 +208,17 @@ public class SVNUtil
      * @param newRevision the new revision
      * @return the diff as a string
      */
-    public String diff( Log log, String basePath, String fullLocalPath, long baseRevision, long newRevision )
+    public String diff( Log log, String basePath, String fullLocalPath, String baseRevision, String newRevision )
     {
         try
         {
             eventHandler.setLog( log );
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             diffClient.getDiffGenerator().setBasePath( new File( basePath ) );
-            diffClient.doDiff( new File( fullLocalPath ), SVNRevision.create( newRevision ),
-                    SVNRevision.create( baseRevision ), SVNRevision.create( newRevision ),
+            diffClient.doDiff( new File( fullLocalPath ),
+                    SVNRevision.create( Long.valueOf( newRevision ) ),
+                    SVNRevision.create( Long.valueOf( baseRevision ) ),
+                    SVNRevision.create( Long.valueOf( newRevision ) ),
                     SVNDepth.EMPTY, false, result, null );
             return result.toString( "UTF-8" );
         }
