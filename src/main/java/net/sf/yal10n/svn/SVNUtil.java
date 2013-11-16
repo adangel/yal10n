@@ -18,13 +18,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.scm.ChangeFile;
+import org.apache.maven.scm.ChangeSet;
 import org.apache.maven.scm.CommandParameters;
 import org.apache.maven.scm.ScmException;
 import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.ScmFileStatus;
+import org.apache.maven.scm.ScmResult;
+import org.apache.maven.scm.ScmRevision;
+import org.apache.maven.scm.command.changelog.ChangeLogScmRequest;
+import org.apache.maven.scm.command.changelog.ChangeLogScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.command.info.InfoScmResult;
@@ -35,14 +43,9 @@ import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.component.annotations.Component;
-import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNLogEntry;
-import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNDiffClient;
-import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
@@ -59,7 +62,6 @@ public class SVNUtil
     private SVNClientManager svn;
     private SVNUpdateClient updateClient;
     private SVNWCClient wcClient;
-    private SVNLogClient logClient;
     private SVNDiffClient diffClient;
 
     private ScmManager scmManager;
@@ -75,7 +77,6 @@ public class SVNUtil
         updateClient.setEventHandler( eventHandler );
         wcClient = svn.getWCClient();
         wcClient.setEventHandler( eventHandler );
-        logClient = svn.getLogClient();
         diffClient = svn.getDiffClient();
 
         scmManager = new BasicScmManager();
@@ -108,6 +109,22 @@ public class SVNUtil
         return result;
     }
 
+    private void checkResult( ScmResult result )
+    {
+        if ( !result.isSuccess() )
+        {
+            System.err.println( "Provider message:" );
+
+            System.err.println( result.getProviderMessage() == null ? "" : result.getProviderMessage() );
+
+            System.err.println( "Command output:" );
+
+            System.err.println( result.getCommandOutput() == null ? "" : result.getCommandOutput() );
+
+            throw new RuntimeException( "Command failed." + StringUtils.defaultString( result.getProviderMessage() ) );
+        }
+    }
+
     /**
      * Checkout from the given svn url to the destination directory.
      *
@@ -138,6 +155,7 @@ public class SVNUtil
                 throw new RuntimeException( "Couldn't create directory " + dstPath );
             }
             CheckOutScmResult checkOutResult = scm.checkOut( repository, new ScmFileSet( dstPath ) );
+            checkResult( checkOutResult );
             String revision = checkOutResult.getRevision();
             log.info( "At revision " + revision );
             return revision;
@@ -167,6 +185,7 @@ public class SVNUtil
             ScmProviderRepository providerScmRepository = repository.getProviderRepository();
             ScmFileSet fileSet = new ScmFileSet( new File( baseDir ), new File( relativeFilePath ) );
             InfoScmResult info = scm.info( providerScmRepository, fileSet, (CommandParameters) null );
+            checkResult( info );
             InfoItem item = info.getInfoItems().get( 0 );
             return new SVNInfo( item.getLastChangedRevision(), item.getLastChangedDate() );
         }
@@ -180,48 +199,46 @@ public class SVNUtil
      * Determines whether a given file has been modified between two revisions.
      *
      * @param log the log
-     * @param fullLocalPath the file to check
+     * @param svnUrl the repository url
+     * @param checkoutDir the checkout directory
+     * @param relativeFilePath the file to check, relative to the checkout directory
      * @param baseRevision the old revision (exclusive)
      * @param newRevision the new revision (inclusive)
      * @return the change type, e.g. ADD, MODIFICATION or NONE
      */
-    public SVNLogChange log( Log log, String fullLocalPath,
+    public SVNLogChange log( Log log, String svnUrl, String checkoutDir, String relativeFilePath,
             String baseRevision, String newRevision )
     {
         try
         {
-            org.tmatesoft.svn.core.wc.SVNInfo info = wcClient.doInfo( new File( fullLocalPath ), SVNRevision.WORKING );
-            String repoPath = info.getRepositoryRootURL().getPath();
-            String fullRepoPath = info.getURL().getPath();
+            String scmUrl = createScmSvnUrl( svnUrl );
+            ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+            ChangeLogScmRequest scmRequest = new ChangeLogScmRequest( repository,
+                    new ScmFileSet( new File( checkoutDir ), new File ( relativeFilePath ) ) );
+            scmRequest.setStartRevision( new ScmRevision( baseRevision ) );
+            scmRequest.setEndRevision( new ScmRevision( newRevision ) );
+            ChangeLogScmResult changeLog = scm.changeLog( scmRequest );
+            checkResult( changeLog );
 
-            final String relativePath = fullRepoPath.substring( repoPath.length() );
-            final Set<String> changeTypes = new HashSet<String>();
-            ISVNLogEntryHandler handler = new ISVNLogEntryHandler()
+            Set<String> changeTypes = new HashSet<String>();
+            List<ChangeSet> changeSets = changeLog.getChangeLog().getChangeSets();
+            for ( ChangeSet cs : changeSets )
             {
-
-                @Override
-                public void handleLogEntry( SVNLogEntry logEntry ) throws SVNException
+                for ( ChangeFile f : cs.getFiles() )
                 {
-                    for ( SVNLogEntryPath p : logEntry.getChangedPaths().values() )
+                    if ( f.getName().endsWith( relativeFilePath ) )
                     {
-                        if ( relativePath.equals( p.getPath() ) )
-                        {
-                            changeTypes.add( String.valueOf( p.getType() ) );
-                        }
+                        changeTypes.add( String.valueOf( f.getAction() ) );
                     }
                 }
-            };
-            eventHandler.setLog( log );
-            logClient.doLog( new File[] { new File( fullLocalPath ) },
-                    SVNRevision.create( Long.valueOf( baseRevision ) ),
-                    SVNRevision.create( Long.valueOf( newRevision ) ), false, true, 0, handler );
-
+            }
             SVNLogChange result;
             if ( changeTypes.isEmpty() )
             {
                 result = SVNLogChange.NONE;
             }
-            else if ( changeTypes.contains( "A" ) )
+            else if ( changeTypes.contains( ScmFileStatus.ADDED.toString() ) )
             {
                 result = SVNLogChange.ADD;
             }
@@ -230,9 +247,8 @@ public class SVNUtil
                 result = SVNLogChange.MODIFICATION;
             }
             return result;
-
         }
-        catch ( SVNException e )
+        catch ( ScmException e )
         {
             throw new RuntimeException( e );
         }

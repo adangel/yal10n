@@ -234,7 +234,7 @@ public class ResourceFile
     }
 
     /**
-     * Gets the relative checkout url.
+     * Gets the relative checkout url. That's the path relative to the <strong>current</strong> directory.
      *
      * @return the relative checkout url
      */
@@ -250,6 +250,15 @@ public class ResourceFile
         {
             throw new RuntimeException( e );
         }
+    }
+
+    /**
+     * Gets the file path relative to the checkout directory.
+     * @return the file path relative to the checkout directory.
+     */
+    public String getRelativeFilePath()
+    {
+        return relativeFilePath;
     }
 
     /**
