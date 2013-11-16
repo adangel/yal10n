@@ -35,6 +35,7 @@ import net.sf.yal10n.report.ReportModel;
 import net.sf.yal10n.report.ReportRenderer;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
+import net.sf.yal10n.settings.ScmType;
 import net.sf.yal10n.svn.SVNUtil;
 import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
@@ -66,7 +67,7 @@ public class DashboardMojoTest
     public void testExecute() throws Exception
     {
         SVNUtil svn = mock( SVNUtil.class );
-        when( svn.checkout( (Log) anyObject(), anyString(), anyString() ) ).thenReturn( "1" );
+        when( svn.checkout( (Log) anyObject(), (ScmType) anyObject(), anyString(), anyString() ) ).thenReturn( "1" );
         ResourceAnalyzer analyzer = mock( ResourceAnalyzer.class );
         doNothing().when( analyzer ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(),
@@ -85,7 +86,7 @@ public class DashboardMojoTest
         mojo.setOutputDirectory( System.getProperty( "java.io.tmpdir" ) );
         mojo.execute();
 
-        verify( svn, times( 3 ) ).checkout( (Log) anyObject(), anyString(), anyString() );
+        verify( svn, times( 3 ) ).checkout( (Log) anyObject(), (ScmType) anyObject(), anyString(), anyString() );
         verify( analyzer, times( 3 ) ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(), (Repository) anyObject(), anyString() );
         verify( analyzer, times( 1 ) ).getBundles();

@@ -22,6 +22,7 @@ import net.sf.yal10n.dashboard.BundleModel;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.report.ReportModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtilMock;
 
 import org.junit.Assert;
@@ -35,7 +36,6 @@ public class ResourceBundleTest
 {
     private static ResourceBundle bundle;
     private static String resourceFile;
-    private static String resourceFileDe;
     private static ResourceFile file;
     private static ResourceFile fileDe;
     private static String svnUrl = "http://svn-url";
@@ -49,6 +49,7 @@ public class ResourceBundleTest
     public static void setup() throws Exception
     {
         DashboardConfiguration config = new DashboardConfiguration();
+        Repository repo = new Repository();
         String repoId = null;
         String checkoutDir = new File( "./target/test-classes/unit" ).getCanonicalPath();
         String localBasePath = checkoutDir + "/subdirectory";
@@ -56,15 +57,13 @@ public class ResourceBundleTest
         bundle = new ResourceBundle( config, svnUrl, repoId, localBasePath, checkoutDir );
         resourceFile = new File( "./target/test-classes/unit/subdirectory/messages.properties" )
             .getCanonicalPath();
-        resourceFileDe = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" )
-            .getCanonicalPath();
         String relativeFilePath = "subdirectory/messages.properties";
-        file = new ResourceFile( config, null, checkoutDir, relativeFilePath,
-                new SVNUtilMock( relativeFilePath ), resourceFile, null );
+        file = new ResourceFile( config, repo, null, checkoutDir, relativeFilePath,
+                new SVNUtilMock( relativeFilePath ), null );
         bundle.addFile( file );
         String relativeFilePathDe = "subdirectory/messages_de.properties";
-        fileDe = new ResourceFile( config, null, checkoutDir, relativeFilePathDe,
-                new SVNUtilMock( relativeFilePathDe ), resourceFileDe, null );
+        fileDe = new ResourceFile( config, repo, null, checkoutDir, relativeFilePathDe,
+                new SVNUtilMock( relativeFilePathDe ), null );
         bundle.addFile( fileDe );
     }
 

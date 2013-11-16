@@ -24,6 +24,7 @@ import java.util.TimeZone;
 
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtilMock;
 
 import org.junit.Assert;
@@ -48,7 +49,7 @@ public class ResourceFileTest
         out.write( "test=test de DE\n".getBytes( "UTF-8" ) );
         out.close();
 
-        ResourceFile file = new ResourceFile( null, null, null, null, null, tempFile.getCanonicalPath(), null );
+        ResourceFile file = new ResourceFile( null, null, null, "", tempFile.getCanonicalPath(), null, null );
         Properties properties = file.getProperties();
         Assert.assertEquals( "test de DE", properties.getProperty( "test" ) );
     }
@@ -61,21 +62,21 @@ public class ResourceFileTest
     public void testResourceFileLanguage() throws Exception
     {
         File resourceFile = new File( "./target/test-classes/unit/subdirectory/messages.properties" );
-        ResourceFile file = new ResourceFile( null, null, null, null, null, resourceFile.getCanonicalPath(), null );
+        ResourceFile file = new ResourceFile( null, null, null, "", resourceFile.getCanonicalPath(), null, null );
         Assert.assertTrue( file.isDefault() );
         Assert.assertFalse( file.isVariant() );
         Assert.assertEquals( "default", file.getLanguage() );
         Assert.assertEquals( Locale.ROOT, file.getLocale() );
         
         resourceFile = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" );
-        file = new ResourceFile( null, null, null, null, null, resourceFile.getCanonicalPath(), null );
+        file = new ResourceFile( null, null, null, "", resourceFile.getCanonicalPath(), null, null );
         Assert.assertFalse( file.isDefault() );
         Assert.assertFalse( file.isVariant() );
         Assert.assertEquals( "de", file.getLanguage() );
         Assert.assertEquals( Locale.GERMAN, file.getLocale() );
 
         resourceFile = new File( "./target/test-classes/unit/subdirectory/messages_de_DE.properties" );
-        file = new ResourceFile( null, null, null, null, null, resourceFile.getCanonicalPath(), null );
+        file = new ResourceFile( null, null, null, "", resourceFile.getCanonicalPath(), null, null );
         Assert.assertFalse( file.isDefault() );
         Assert.assertTrue( file.isVariant() );
         Assert.assertEquals( "de_DE", file.getLanguage() );
@@ -92,7 +93,7 @@ public class ResourceFileTest
     {
         String directory = new File( "./target/test-classes/unit/subdirectory" ).getCanonicalPath();
         String resourceFile = directory + "/" + "messages_de_DE.properties";
-        ResourceFile file = new ResourceFile( null, null, null, null, null, resourceFile, "http://full-svn-path" );
+        ResourceFile file = new ResourceFile( null, null, null, "", resourceFile, null, "http://full-svn-path" );
         Assert.assertEquals( "messages", file.getBaseName() );
         Assert.assertEquals( "messages de_DE", file.toString() );
         Assert.assertEquals( directory + "/messages", file.getBundleBaseName() );
@@ -111,21 +112,17 @@ public class ResourceFileTest
     {
         TimeZone.setDefault( TimeZone.getTimeZone( "UTC" ) );
         ResourceBundle bundle = new ResourceBundle( null, null, null, "test", "test" );
-        final String resourceFile = new File( "./target/test-classes/unit/subdirectory/messages.properties" )
-            .getCanonicalPath();
+        String checkoutPath = "./target/test-classes/unit";
         final String relativeFile = "subdirectory/messages.properties";
-        final String resourceFile2 = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" )
-            .getCanonicalPath();
         final String relativeFile2 = "subdirectory/messages_de.properties";
-        final String resourceFile3 = new File( "./target/test-classes/unit/subdirectory/messages_de_DE.properties" )
-            .getCanonicalPath();
         final String relativeFile3 = "subdirectory/messages_de_DE.properties";
         DashboardConfiguration config = new DashboardConfiguration();
+        Repository repo = new Repository();
         String svnRepoUrl = "http://svn.foo.com/svn/test-project";
         List<String> ignoreKeys = Arrays.asList( "ignored.message", "ignored.default.message" );
 
-        ResourceFile file = new ResourceFile( config, svnRepoUrl, null, relativeFile, new SVNUtilMock( relativeFile ),
-                resourceFile,
+        ResourceFile file = new ResourceFile( config, repo, svnRepoUrl, checkoutPath, relativeFile,
+                new SVNUtilMock( relativeFile ),
                 "http://svn.foo.com/svn/test-project/subdirectory/messages.properties" );
         bundle.addFile( file );
         LanguageModel languageModel = file.toLanguageModel( new NullLog(), ignoreKeys );
@@ -142,8 +139,8 @@ public class ResourceFileTest
         Assert.assertEquals( 0, languageModel.getScoreLog().size() );
         Assert.assertEquals( "http://svn.foo.com/svn/test-project/subdirectory/", languageModel.getSvnCheckoutUrl() );
 
-        ResourceFile file2 = new ResourceFile( config, svnRepoUrl, null, relativeFile2,
-                new SVNUtilMock( relativeFile2 ), resourceFile2, null );
+        ResourceFile file2 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile2,
+                new SVNUtilMock( relativeFile2 ), null );
         bundle.addFile( file2 );
         LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
@@ -161,8 +158,8 @@ public class ResourceFileTest
         Assert.assertEquals( "severity-major", languageModel2.getIssuesSeverityClass() );
         Assert.assertEquals( 2, languageModel2.getScoreLog().size() );
 
-        ResourceFile file3 = new ResourceFile( config, svnRepoUrl, null, relativeFile3,
-                new SVNUtilMock( relativeFile3 ), resourceFile3, null );
+        ResourceFile file3 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile3,
+                new SVNUtilMock( relativeFile3 ), null );
         bundle.addFile( file3 );
         LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertTrue( languageModel3.isVariant() );

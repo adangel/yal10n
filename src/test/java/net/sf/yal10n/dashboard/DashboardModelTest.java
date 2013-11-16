@@ -25,6 +25,7 @@ import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.analyzer.ResourceFile;
 import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtilMock;
 
 import org.junit.Test;
@@ -42,7 +43,6 @@ public class DashboardModelTest
     @Test
     public void testCreateModel() throws Exception
     {
-        File propertiesFile = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" );
         String checkedOutFilePath = new File( "./target/test-classes/unit" ).getCanonicalPath();
         String relativeFilePath = "subdirectory/messages_de.properties";
         List<String> languages = Arrays.asList( "fr", "de_DE", "de" );
@@ -51,11 +51,11 @@ public class DashboardModelTest
         config.setCreateTMX( true );
         config.setLanguages( languages );
         config.setLanguageComparator( LanguageComparator.ALPHABETICAL );
+        Repository repo = new Repository();
         ResourceBundle bundle = new ResourceBundle( config, null, null, ".", "." );
         bundles.add( bundle );
-        ResourceFile file = new ResourceFile( config, null, checkedOutFilePath, relativeFilePath,
-                new SVNUtilMock( relativeFilePath ),
-                propertiesFile.getCanonicalPath(), null );
+        ResourceFile file = new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath,
+                new SVNUtilMock( relativeFilePath ), null );
         bundle.addFile( file );
 
         DashboardModel model = DashboardModel.create( new NullLog(), config, bundles );
@@ -75,8 +75,6 @@ public class DashboardModelTest
     @Test
     public void testCreateModelDuplicateProjectName() throws Exception
     {
-        String file1 = new File( "./target/test-classes/unit/subdirectory/messages.properties" ).getCanonicalPath();
-        String file2 = new File( "./target/test-classes/unit/subdirectory/someother.properties" ).getCanonicalPath();
         String checkedOutFilePath = new File( "./target/test-classes/unit/" ).getCanonicalPath();
         String relativeFilePath1 = "subdirectory/messages.properties";
         String relativeFilePath2 = "subdirectory/someother.properties";
@@ -84,12 +82,13 @@ public class DashboardModelTest
         DashboardConfiguration config = new DashboardConfiguration();
         config.setCreateTMX( false );
         config.setLanguages( Arrays.asList( "de" ) );
+        Repository repo = new Repository();
         ResourceBundle bundle1 = new ResourceBundle( config, null, null, ".", "." );
-        bundle1.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath1,
-                new SVNUtilMock( relativeFilePath1 ), file1, null ) );
+        bundle1.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath1,
+                new SVNUtilMock( relativeFilePath1 ), null ) );
         ResourceBundle bundle2 = new ResourceBundle( config, null, null, ".", "." );
-        bundle2.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath2,
-                new SVNUtilMock( relativeFilePath2 ), file2, null ) );
+        bundle2.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath2,
+                new SVNUtilMock( relativeFilePath2 ), null ) );
 
         List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
         bundles.add( bundle1 );
@@ -115,24 +114,24 @@ public class DashboardModelTest
         config.setCreateTMX( false );
         config.setLanguages( Arrays.asList( "de" ) );
 
-        String file1 = new File( "./target/test-classes/unit/subdirectory/messages.properties" ).getCanonicalPath();
-        String file2 = new File( "./target/test-classes/unit/subdirectory/someother.properties" ).getCanonicalPath();
+        Repository repo = new Repository();
+
         String checkedOutFilePath = new File( "./target/test-classes/unit" ).getCanonicalPath();
         String relativeFilePath1 = "subdirectory/messages.properties";
         String relativeFilePath2 = "subdirectory/someother.properties";
 
         ResourceBundle p1bundle1 = new ResourceBundle( config, null, "p1_repoId", ".", "." );
-        p1bundle1.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath1,
-                new SVNUtilMock( relativeFilePath1 ), file1, null ) );
+        p1bundle1.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath1,
+                new SVNUtilMock( relativeFilePath1 ), null ) );
         ResourceBundle p1bundle2 = new ResourceBundle( config, null, "p1_repoId", ".", "." );
-        p1bundle2.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath2,
-                 new SVNUtilMock( relativeFilePath2 ), file2, null ) );
+        p1bundle2.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath2,
+                 new SVNUtilMock( relativeFilePath2 ), null ) );
         ResourceBundle p2bundle1 = new ResourceBundle( config, null, "p2_repoId", ".", "." );
-        p1bundle1.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath1,
-                 new SVNUtilMock( relativeFilePath1 ), file1, null ) );
+        p1bundle1.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath1,
+                 new SVNUtilMock( relativeFilePath1 ), null ) );
         ResourceBundle p3bundle1 = new ResourceBundle( config, null, "p3_repoId", ".", "." );
-        p1bundle1.addFile( new ResourceFile( config, null, checkedOutFilePath, relativeFilePath1,
-                 new SVNUtilMock( relativeFilePath1 ), file1, null ) );
+        p1bundle1.addFile( new ResourceFile( config, repo, null, checkedOutFilePath, relativeFilePath1,
+                 new SVNUtilMock( relativeFilePath1 ), null ) );
 
         DashboardModel model = DashboardModel.create( new NullLog(), config,
                 Arrays.asList( p1bundle1, p1bundle2, p2bundle1, p3bundle1 ) );

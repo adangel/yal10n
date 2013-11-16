@@ -142,14 +142,14 @@ public class DetectChangesMojo extends BaseMojo
                     getLog().debug( "  old revision: " + oldRevision + " new revision: " + newRevision );
                     getLog().debug( "" );
                     
-                    SVNLogChange changesFound = svn.log( getLog(), svnUrl, dstPath,
+                    SVNLogChange changesFound = svn.log( getLog(), repo.getType(), svnUrl, dstPath,
                             defaultFile.getRelativeFilePath(), oldRevision + 1, newRevision );
 
                     getLog().debug( "    Changes found: " + changesFound );
                     if ( changesFound == SVNLogChange.MODIFICATION )
                     {
-                        String diff = svn.diff( getLog(), svnUrl, dstPath, defaultFile.getRelativeFilePath(),
-                                oldRevision, newRevision );
+                        String diff = svn.diff( getLog(), repo.getType(), svnUrl, dstPath,
+                                defaultFile.getRelativeFilePath(), oldRevision, newRevision );
                         UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
                         if ( unifiedDiff.getHunks().isEmpty() )
                         {

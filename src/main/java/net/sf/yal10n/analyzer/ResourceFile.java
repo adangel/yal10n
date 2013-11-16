@@ -17,6 +17,7 @@ package net.sf.yal10n.analyzer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
 import net.sf.yal10n.charset.UTF8BOMCharsetProvider;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
+import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNInfo;
 import net.sf.yal10n.svn.SVNUtil;
 
@@ -50,6 +52,7 @@ public class ResourceFile
     private String fullLocalPath;
     private String fullSvnPath;
     private DashboardConfiguration config;
+    private Repository repo;
     private String svnRepoUrl;
     private String checkedOutPath;
     private String relativeFilePath;
@@ -60,23 +63,24 @@ public class ResourceFile
      * Creates a new resource file that can be analyzed.
      *
      * @param config the config
+     * @param repo the repository config
      * @param svnRepoUrl the url to the repository
      * @param checkedOutPath the path where the repository has been checked out
      * @param relativeFilePath the relative file path of the resource file
      * @param svn the svn
-     * @param fullLocalPath the full local path
      * @param fullSvnPath the full svn path
+     * @throws IOException couldn't determine the full local path
      */
-    public ResourceFile( DashboardConfiguration config, String svnRepoUrl, String checkedOutPath,
-            String relativeFilePath,
-            SVNUtil svn, String fullLocalPath, String fullSvnPath )
+    public ResourceFile( DashboardConfiguration config, Repository repo, String svnRepoUrl, String checkedOutPath,
+            String relativeFilePath, SVNUtil svn, String fullSvnPath ) throws IOException
     {
         this.config = config;
+        this.repo = repo;
         this.svnRepoUrl = svnRepoUrl;
         this.checkedOutPath = checkedOutPath;
         this.relativeFilePath = relativeFilePath;
         this.svn = svn;
-        this.fullLocalPath = fullLocalPath;
+        this.fullLocalPath = new File( checkedOutPath, relativeFilePath ).getCanonicalPath();
         this.fullSvnPath = fullSvnPath;
         loadProperties();
         determineLanguage();
@@ -323,7 +327,7 @@ public class ResourceFile
         model.setMissingMessages( missingKeys );
         model.setAdditionalMessages( additionalKeys );
 
-        SVNInfo svnInfo = svn.checkFile( log, svnRepoUrl, checkedOutPath, relativeFilePath );
+        SVNInfo svnInfo = svn.checkFile( log, repo.getType(), svnRepoUrl, checkedOutPath, relativeFilePath );
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 

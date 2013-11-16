@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.yal10n.settings.ScmType;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.scm.ChangeFile;
@@ -40,6 +42,7 @@ import org.apache.maven.scm.manager.BasicScmManager;
 import org.apache.maven.scm.manager.ScmManager;
 import org.apache.maven.scm.provider.ScmProvider;
 import org.apache.maven.scm.provider.ScmProviderRepository;
+import org.apache.maven.scm.provider.git.gitexe.GitExeScmProvider;
 import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.component.annotations.Component;
@@ -61,6 +64,7 @@ public class SVNUtil
     {
         scmManager = new BasicScmManager();
         scmManager.setScmProvider( "svn", new SvnExeScmProvider() );
+        scmManager.setScmProvider( "git", new GitExeScmProvider() );
     }
 
     /**
@@ -79,12 +83,22 @@ public class SVNUtil
         return svnUrl;
     }
 
-    private String createScmSvnUrl( String svnUrl )
+    private String createScmSvnUrl( ScmType type, String svnUrl )
     {
         String result = getUrl( svnUrl );
-        if ( !result.startsWith( "scm:svn:" ) )
+        if ( !result.startsWith( "scm:" ) )
         {
-            result = "scm:svn:" + result;
+            switch ( type )
+            {
+            case SVN:
+                result = "scm:svn:" + result;
+                break;
+            case GIT:
+                result = "scm:git:" + result;
+                break;
+            default:
+                throw new RuntimeException( "Scm type " + type + " is not supported." );
+            }
         }
         return result;
     }
@@ -109,21 +123,23 @@ public class SVNUtil
      * Checkout from the given svn url to the destination directory.
      *
      * @param log the log
+     * @param type the scm type
      * @param svnUrl the svn url
      * @param destination the destination
      * @return the current checked out version
      */
-    public String checkout( Log log, String svnUrl, String destination )
+    public String checkout( Log log, ScmType type, String svnUrl, String destination )
     {
         try
         {
             log.info( "Updating " + svnUrl );
 
-            String scmUrl = createScmSvnUrl( svnUrl );
+            String scmUrl = createScmSvnUrl( type, svnUrl );
             log.debug( "Converted Url: " + scmUrl );
 
             ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
             ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+            ScmProviderRepository providerRepository = repository.getProviderRepository();
 
             File dstPath = new File( destination );
             if ( dstPath.exists() && !dstPath.isDirectory() )
@@ -137,6 +153,12 @@ public class SVNUtil
             CheckOutScmResult checkOutResult = scm.checkOut( repository, new ScmFileSet( dstPath ) );
             checkResult( checkOutResult );
             String revision = checkOutResult.getRevision();
+            if ( revision == null )
+            {
+                InfoScmResult info = scm.info( providerRepository, new ScmFileSet( dstPath ), null );
+                checkResult( info );
+                revision = info.getInfoItems().get( 0 ).getRevision();
+            }
             log.info( "At revision " + revision );
             return revision;
         }
@@ -150,16 +172,17 @@ public class SVNUtil
      * Gets the information about a file in a local working directory.
      *
      * @param log the log
+     * @param type the scm type
      * @param svnUrl the checked out repository url
      * @param baseDir the directory where the repository has been checked out
      * @param relativeFilePath the file to check relative to baseDir
      * @return the svn information like revision.
      */
-    public SVNInfo checkFile( Log log, String svnUrl, String baseDir, String relativeFilePath )
+    public SVNInfo checkFile( Log log, ScmType type, String svnUrl, String baseDir, String relativeFilePath )
     {
         try
         {
-            String scmUrl = createScmSvnUrl( svnUrl );
+            String scmUrl = createScmSvnUrl( type, svnUrl );
             ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
             ScmRepository repository = scmManager.makeScmRepository( scmUrl );
             ScmProviderRepository providerScmRepository = repository.getProviderRepository();
@@ -179,6 +202,7 @@ public class SVNUtil
      * Determines whether a given file has been modified between two revisions.
      *
      * @param log the log
+     * @param type the scm type
      * @param svnUrl the repository url
      * @param checkoutDir the checkout directory
      * @param relativeFilePath the file to check, relative to the checkout directory
@@ -186,12 +210,12 @@ public class SVNUtil
      * @param newRevision the new revision (inclusive)
      * @return the change type, e.g. ADD, MODIFICATION or NONE
      */
-    public SVNLogChange log( Log log, String svnUrl, String checkoutDir, String relativeFilePath,
+    public SVNLogChange log( Log log, ScmType type, String svnUrl, String checkoutDir, String relativeFilePath,
             String baseRevision, String newRevision )
     {
         try
         {
-            String scmUrl = createScmSvnUrl( svnUrl );
+            String scmUrl = createScmSvnUrl( type, svnUrl );
             ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
             ScmRepository repository = scmManager.makeScmRepository( scmUrl );
             ChangeLogScmRequest scmRequest = new ChangeLogScmRequest( repository,
@@ -238,6 +262,7 @@ public class SVNUtil
      * Retrieves a unified diff for a given file and revision.
      *
      * @param log the log
+     * @param type the scm type
      * @param svnUrl the repository url
      * @param checkoutDir the checkout directory
      * @param relativeFilePath the file to diff, relative to the checkout directory
@@ -245,12 +270,12 @@ public class SVNUtil
      * @param newRevision the new revision
      * @return the diff as a string
      */
-    public String diff( Log log, String svnUrl, String checkoutDir, String relativeFilePath,
+    public String diff( Log log, ScmType type, String svnUrl, String checkoutDir, String relativeFilePath,
             String baseRevision, String newRevision )
     {
         try
         {
-            String scmUrl = createScmSvnUrl( svnUrl );
+            String scmUrl = createScmSvnUrl( type, svnUrl );
             ScmRepository repository = scmManager.makeScmRepository( scmUrl );
 
             ScmFileSet scmFileSet = new ScmFileSet( new File( checkoutDir ), new File( relativeFilePath ) );

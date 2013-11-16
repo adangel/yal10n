@@ -135,6 +135,11 @@ limitations under the License.
             <version>1.8.1</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.scm</groupId>
+            <artifactId>maven-scm-provider-gitexe</artifactId>
+            <version>1.8.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
             <version>3.2</version>
@@ -518,6 +523,7 @@ limitations under the License.
                         <configuration>
                             <debug>false</debug>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <cloneAllFiles>true</cloneAllFiles>
                             <pomIncludes>
                                 <pomInclude>*</pomInclude>
                             </pomIncludes>

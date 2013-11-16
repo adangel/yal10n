@@ -21,5 +21,8 @@ package net.sf.yal10n.settings;
 public enum ScmType
 {
     /** Subversion. */
-    SVN
+    SVN,
+
+    /** Git. */
+    GIT
 }

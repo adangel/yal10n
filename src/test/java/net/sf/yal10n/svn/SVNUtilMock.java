@@ -16,6 +16,8 @@ package net.sf.yal10n.svn;
 
 import java.util.Date;
 
+import net.sf.yal10n.settings.ScmType;
+
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Assert;
 
@@ -43,7 +45,7 @@ public class SVNUtilMock extends SVNUtil
     }
 
     @Override
-    public SVNInfo checkFile( Log log, String svnUrl, String baseDir, String relativeFilePath )
+    public SVNInfo checkFile( Log log, ScmType type, String svnUrl, String baseDir, String relativeFilePath )
     {
         if ( expectedFile != null )
         {

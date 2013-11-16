@@ -15,11 +15,14 @@ package net.sf.yal10n.svn;
  */
 
 import java.io.File;
+import java.util.Arrays;
 
 import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.diff.UnifiedDiff;
+import net.sf.yal10n.settings.ScmType;
 
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,9 +74,9 @@ public class SVNUtilTest
             FileUtils.deleteDirectory( destination );
         }
 
-        String revision = svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        String revision = svnUtil.checkout( log, ScmType.SVN, svnUrl + "/trunk", destination );
         Assert.assertEquals( "3", revision );
-        SVNLogChange result = svnUtil.log( log, svnUrl, destination, "messages.properties",
+        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "messages.properties",
                 "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
@@ -96,33 +99,63 @@ public class SVNUtilTest
             FileUtils.deleteDirectory( destination );
         }
 
-        String revision = svnUtil.checkout( log, svnUrl, destination );
+        String revision = svnUtil.checkout( log, ScmType.SVN, svnUrl, destination );
         Assert.assertEquals( "4", revision );
-        SVNInfo info = svnUtil.checkFile( log, svnUrl, destination, "testfile.txt" );
+        SVNInfo info = svnUtil.checkFile( log, ScmType.SVN, svnUrl, destination, "testfile.txt" );
         Assert.assertEquals( "4", info.getRevision() );
         Assert.assertEquals( "2013-08-04 18:47:40 +0200 (Sun, 04 Aug 2013)", info.getCommittedDate() );
 
         // revision 2: only prop change
-        SVNLogChange result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "2", "2" );
+        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        String diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "1", "2" );
+        String diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) ); // svnexe provides a Index, but empty changes
         UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
         Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
 
         // revision 3: only file change (real diff)
-        result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "3", "3" );
+        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "2", "3" );
+        diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
         Assert.assertFalse( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
 
         // revision 4: combined change of file and property
-        result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "4", "4" );
+        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "4", "4" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "3", "4" );
+        diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
+    }
+
+    /**
+     * Verify that git checkout works.
+     * @throws Exception any error
+     */
+    @Test
+    public void testGitCheckout() throws Exception
+    {
+        SVNUtil svnUtil = new SVNUtil();
+        Log log = new NullLog();
+        log = new SystemStreamLog();
+
+        String destination = new File( "./target/gitrepos/repo1-checkout" ).getCanonicalPath();
+        if ( new File( destination ).exists() )
+        {
+            FileUtils.deleteDirectory( destination );
+        }
+
+        Process unzip = Runtime.getRuntime().exec( "unzip -o repo1.zip", null,
+                new File( "./src/it/git-it/gitrepos/" ) );
+        Assert.assertEquals( 0, unzip.waitFor() );
+
+        String checkout = svnUtil.checkout( log, ScmType.GIT, "./src/it/git-it/gitrepos/repo1/.git", destination );
+        Assert.assertEquals( "f5d50077a92f9e29d704518ab2fbd9ecf7307214", checkout );
+        File dstPath = new File( destination );
+        Assert.assertTrue( dstPath.exists() && dstPath.isDirectory() );
+        String[] files = dstPath.list();
+        Arrays.sort( files );
+        Assert.assertEquals( "[.git, project-a]", Arrays.toString( files ) );
     }
 }

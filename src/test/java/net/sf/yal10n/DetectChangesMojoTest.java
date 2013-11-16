@@ -28,6 +28,7 @@ import java.io.File;
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
+import net.sf.yal10n.settings.ScmType;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.apache.maven.plugin.logging.Log;
@@ -49,7 +50,7 @@ public class DetectChangesMojoTest
     public void testExecute() throws Exception
     {
         SVNUtil svn = mock( SVNUtil.class );
-        when( svn.checkout( (Log) anyObject(), anyString(), anyString() ) ).thenReturn( "1" );
+        when( svn.checkout( (Log) anyObject(), (ScmType) anyObject(), anyString(), anyString() ) ).thenReturn( "1" );
         ResourceAnalyzer analyzer = mock( ResourceAnalyzer.class );
         doNothing().when( analyzer ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(),
@@ -63,7 +64,7 @@ public class DetectChangesMojoTest
         mojo.setYal10nStatus( status.getAbsolutePath() );
         mojo.execute();
 
-        verify( svn, times( 3 ) ).checkout( (Log) anyObject(), anyString(), anyString() );
+        verify( svn, times( 3 ) ).checkout( (Log) anyObject(), (ScmType) anyObject(), anyString(), anyString() );
         verify( analyzer, times( 3 ) ).analyze( (Log) anyObject(), anyString(), anyString(),
                 (DashboardConfiguration) anyObject(), (Repository) anyObject(), anyString() );
         verify( analyzer, times( 1 ) ).getBundles();
