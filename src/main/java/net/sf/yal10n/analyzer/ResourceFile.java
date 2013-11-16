@@ -50,6 +50,9 @@ public class ResourceFile
     private String fullLocalPath;
     private String fullSvnPath;
     private DashboardConfiguration config;
+    private String svnRepoUrl;
+    private String checkedOutPath;
+    private String relativeFilePath;
     private Properties properties;
     private String language;
 
@@ -57,14 +60,21 @@ public class ResourceFile
      * Creates a new resource file that can be analyzed.
      *
      * @param config the config
+     * @param svnRepoUrl the url to the repository
+     * @param checkedOutPath the path where the repository has been checked out
+     * @param relativeFilePath the relative file path of the resource file
      * @param svn the svn
      * @param fullLocalPath the full local path
      * @param fullSvnPath the full svn path
      */
-    public ResourceFile( DashboardConfiguration config, SVNUtil svn, String fullLocalPath,
-            String fullSvnPath )
+    public ResourceFile( DashboardConfiguration config, String svnRepoUrl, String checkedOutPath,
+            String relativeFilePath,
+            SVNUtil svn, String fullLocalPath, String fullSvnPath )
     {
         this.config = config;
+        this.svnRepoUrl = svnRepoUrl;
+        this.checkedOutPath = checkedOutPath;
+        this.relativeFilePath = relativeFilePath;
         this.svn = svn;
         this.fullLocalPath = fullLocalPath;
         this.fullSvnPath = fullSvnPath;
@@ -304,7 +314,7 @@ public class ResourceFile
         model.setMissingMessages( missingKeys );
         model.setAdditionalMessages( additionalKeys );
 
-        SVNInfo svnInfo = svn.checkFile( log, fullLocalPath );
+        SVNInfo svnInfo = svn.checkFile( log, svnRepoUrl, checkedOutPath, relativeFilePath );
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 

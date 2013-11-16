@@ -58,9 +58,13 @@ public class ResourceBundleTest
             .getCanonicalPath();
         resourceFileDe = new File( "./target/test-classes/unit/subdirectory/messages_de.properties" )
             .getCanonicalPath();
-        file = new ResourceFile( config, new SVNUtilMock( resourceFile ), resourceFile, null );
+        String relativeFilePath = "subdirectory/messages.properties";
+        file = new ResourceFile( config, null, checkoutDir, relativeFilePath,
+                new SVNUtilMock( relativeFilePath ), resourceFile, null );
         bundle.addFile( file );
-        fileDe = new ResourceFile( config, new SVNUtilMock( resourceFileDe ), resourceFileDe, null );
+        String relativeFilePathDe = "subdirectory/messages_de.properties";
+        fileDe = new ResourceFile( config, null, checkoutDir, relativeFilePathDe,
+                new SVNUtilMock( relativeFilePathDe ), resourceFileDe, null );
         bundle.addFile( fileDe );
     }
 

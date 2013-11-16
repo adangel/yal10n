@@ -22,14 +22,24 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.scm.CommandParameters;
+import org.apache.maven.scm.ScmException;
+import org.apache.maven.scm.ScmFileSet;
+import org.apache.maven.scm.command.checkout.CheckOutScmResult;
+import org.apache.maven.scm.command.info.InfoItem;
+import org.apache.maven.scm.command.info.InfoScmResult;
+import org.apache.maven.scm.manager.BasicScmManager;
+import org.apache.maven.scm.manager.ScmManager;
+import org.apache.maven.scm.provider.ScmProvider;
+import org.apache.maven.scm.provider.ScmProviderRepository;
+import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
+import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.FileUtils;
 import org.tmatesoft.svn.core.ISVNLogEntryHandler;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
-import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNDiffClient;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
@@ -52,6 +62,8 @@ public class SVNUtil
     private SVNLogClient logClient;
     private SVNDiffClient diffClient;
 
+    private ScmManager scmManager;
+
     /**
      * Instantiates a new SVN util.
      */
@@ -65,6 +77,9 @@ public class SVNUtil
         wcClient.setEventHandler( eventHandler );
         logClient = svn.getLogClient();
         diffClient = svn.getDiffClient();
+
+        scmManager = new BasicScmManager();
+        scmManager.setScmProvider( "svn", new SvnExeScmProvider() );
     }
 
     /**
@@ -72,16 +87,25 @@ public class SVNUtil
      * which will be interpreted as a relative file url.
      * @param svnUrl the url
      * @return the SVN url
-     * @throws SVNException if the URL is invalid
      */
-    private SVNURL getUrl( String svnUrl ) throws SVNException
+    private String getUrl( String svnUrl )
     {
         if ( svnUrl.startsWith( ".." ) || svnUrl.startsWith( "." ) )
         {
             String completePath = new File( ".", svnUrl ).getAbsolutePath();
-            return SVNURL.parseURIEncoded( "file://" + FileUtils.normalize( completePath ) );
+            return "file://" + completePath;
         }
-        return SVNURL.parseURIEncoded( svnUrl );
+        return svnUrl;
+    }
+
+    private String createScmSvnUrl( String svnUrl )
+    {
+        String result = getUrl( svnUrl );
+        if ( !result.startsWith( "scm:svn:" ) )
+        {
+            result = "scm:svn:" + result;
+        }
+        return result;
     }
 
     /**
@@ -90,25 +114,35 @@ public class SVNUtil
      * @param log the log
      * @param svnUrl the svn url
      * @param destination the destination
-     * @return the long
+     * @return the current checked out version
      */
     public String checkout( Log log, String svnUrl, String destination )
     {
-        SVNURL url;
         try
         {
-            eventHandler.setLog( log );
-            url = getUrl( svnUrl );
-            File dstPath = new File( destination );
-            if ( dstPath.exists() )
-            {
-                wcClient.doCleanup( dstPath );
-            }
             log.info( "Updating " + svnUrl );
-            updateClient.doCheckout( url, dstPath, SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.UNKNOWN, false );
-            return String.valueOf( eventHandler.getLastUpdateCompletedRevision() );
+
+            String scmUrl = createScmSvnUrl( svnUrl );
+            log.debug( "Converted Url: " + scmUrl );
+
+            ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+
+            File dstPath = new File( destination );
+            if ( dstPath.exists() && !dstPath.isDirectory() )
+            {
+                throw new RuntimeException( "Path is not a directory: " + dstPath );
+            }
+            else if ( !dstPath.exists() && !dstPath.mkdirs() )
+            {
+                throw new RuntimeException( "Couldn't create directory " + dstPath );
+            }
+            CheckOutScmResult checkOutResult = scm.checkOut( repository, new ScmFileSet( dstPath ) );
+            String revision = checkOutResult.getRevision();
+            log.info( "At revision " + revision );
+            return revision;
         }
-        catch ( SVNException e )
+        catch ( ScmException e )
         {
             throw new RuntimeException( e );
         }
@@ -118,19 +152,25 @@ public class SVNUtil
      * Gets the information about a file in a local working directory.
      *
      * @param log the log
-     * @param fullFilePath the file
+     * @param svnUrl the checked out repository url
+     * @param baseDir the directory where the repository has been checked out
+     * @param relativeFilePath the file to check relative to baseDir
      * @return the svn information like revision.
      */
-    public SVNInfo checkFile( Log log, String fullFilePath )
+    public SVNInfo checkFile( Log log, String svnUrl, String baseDir, String relativeFilePath )
     {
         try
         {
-            eventHandler.setLog( log );
-            org.tmatesoft.svn.core.wc.SVNInfo info = wcClient.doInfo( new File( fullFilePath ), SVNRevision.WORKING );
-            return new SVNInfo( info.getRevision().toString(),
-                    info.getCommittedDate().toString() );
+            String scmUrl = createScmSvnUrl( svnUrl );
+            ScmProvider scm = scmManager.getProviderByUrl( scmUrl );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+            ScmProviderRepository providerScmRepository = repository.getProviderRepository();
+            ScmFileSet fileSet = new ScmFileSet( new File( baseDir ), new File( relativeFilePath ) );
+            InfoScmResult info = scm.info( providerScmRepository, fileSet, (CommandParameters) null );
+            InfoItem item = info.getInfoItems().get( 0 );
+            return new SVNInfo( item.getLastChangedRevision(), item.getLastChangedDate() );
         }
-        catch ( SVNException e )
+        catch ( ScmException e )
         {
             throw new RuntimeException( e );
         }

@@ -128,7 +128,7 @@ public class ResourceAnalyzer
                 String fullPath = new File( dstPath, s ).getCanonicalPath();
                 String fullDstPath = new File( dstPath ).getCanonicalPath();
                 String svnPath = svnUrl + "/" + s;
-                ResourceFile resourceFile = new ResourceFile( config, svn, fullPath, svnPath );
+                ResourceFile resourceFile = new ResourceFile( config, svnUrl, dstPath, s, svn, fullPath, svnPath );
                 String baseBundleName = resourceFile.getBundleBaseName();
 
                 ResourceBundle bundle = bundles.get( baseBundleName );

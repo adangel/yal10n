@@ -16,10 +16,11 @@ package net.sf.yal10n.svn;
 
 import java.io.File;
 
-import junit.framework.Assert;
 import net.sf.yal10n.analyzer.NullLog;
 
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.FileUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -54,17 +55,23 @@ public class SVNUtilTest
     /**
      * Checks whether the change is correctly detected as modification
      * instead of adding.
+     * @throws Exception any error
      */
     @Test
-    public void testIssue24DetectChanges()
+    public void testIssue24DetectChanges() throws Exception
     {
         SVNUtil svnUtil = new SVNUtil();
         Log log = new NullLog();
 
         String svnUrl = "file://" + new File( "./src/test/resources/svnrepos/issue24-detectchanges" ).getAbsolutePath();
         String destination = new File( "./target/svnrepos/issue24-detectchanges" ).getAbsolutePath();
+        if ( new File( destination ).exists() )
+        {
+            FileUtils.deleteDirectory( destination );
+        }
 
-        svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        String revision = svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        Assert.assertEquals( "3", revision );
         SVNLogChange result = svnUtil.log( log, destination + "/messages.properties",
                 "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
@@ -83,8 +90,17 @@ public class SVNUtilTest
         String svnUrl = "file://" + new File( "./src/test/resources/svnrepos/detectchanges-props-only" )
             .getCanonicalPath();
         String destination = new File( "./target/svnrepos/detectchanges-props-only" ).getCanonicalPath();
+        if ( new File( destination ).exists() )
+        {
+            FileUtils.deleteDirectory( destination );
+        }
 
-        svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        String revision = svnUtil.checkout( log, svnUrl + "/trunk", destination );
+        Assert.assertEquals( "4", revision );
+        SVNInfo info = svnUtil.checkFile( log, svnUrl + "/trunk", destination, "testfile.txt" );
+        Assert.assertEquals( "4", info.getRevision() );
+        Assert.assertEquals( "2013-08-04 18:47:40 +0200 (Sun, 04 Aug 2013)", info.getCommittedDate() );
+//        Assert.assertEquals( "Sun Aug 04 18:47:40 CEST 2013", info.getCommittedDate() ); // svnkit
 
         // revision 2: only prop change
         SVNLogChange result = svnUtil.log( log, destination + "/testfile.txt", "2", "2" );
@@ -107,4 +123,22 @@ public class SVNUtilTest
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
     }
+    
+//    @Test
+//    public void testCheckout()
+//    {
+//        SVNUtil svnUtil = new SVNUtil();
+//        Log log = new NullLog();
+//
+//        String svnUrl = "file://"
+//    + new File( "./src/test/resources/svnrepos/issue24-detectchanges" ).getAbsolutePath();
+//        String destination = new File( "./target/svnrepos/issue24-detectchanges2" ).getAbsolutePath();
+//
+//        long checkout = svnUtil.checkout( log, svnUrl + "/trunk", destination );
+//        System.out.println(" result: " + checkout);
+////        SVNLogChange result = svnUtil.log( log, destination + "/messages.properties",
+////                3, 3 );
+////        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
+//    }
+
 }

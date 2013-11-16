@@ -43,11 +43,11 @@ public class SVNUtilMock extends SVNUtil
     }
 
     @Override
-    public SVNInfo checkFile( Log log, String fullFilePath )
+    public SVNInfo checkFile( Log log, String svnUrl, String baseDir, String relativeFilePath )
     {
         if ( expectedFile != null )
         {
-            Assert.assertEquals( expectedFile, fullFilePath );
+            Assert.assertEquals( expectedFile, relativeFilePath );
         }
         SVNInfo info = new SVNInfo( "1", TIMESTAMP_STRING );
         return info;
