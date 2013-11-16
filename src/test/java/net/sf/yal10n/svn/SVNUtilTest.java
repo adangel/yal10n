@@ -17,6 +17,7 @@ package net.sf.yal10n.svn;
 import java.io.File;
 
 import net.sf.yal10n.analyzer.NullLog;
+import net.sf.yal10n.diff.UnifiedDiff;
 
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.FileUtils;
@@ -100,45 +101,28 @@ public class SVNUtilTest
         SVNInfo info = svnUtil.checkFile( log, svnUrl, destination, "testfile.txt" );
         Assert.assertEquals( "4", info.getRevision() );
         Assert.assertEquals( "2013-08-04 18:47:40 +0200 (Sun, 04 Aug 2013)", info.getCommittedDate() );
-//        Assert.assertEquals( "Sun Aug 04 18:47:40 CEST 2013", info.getCommittedDate() ); // svnkit
 
         // revision 2: only prop change
         SVNLogChange result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "2", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        String diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "1", "2" );
+        String diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
-        Assert.assertFalse( diff.contains( "Index: " ) );
+        Assert.assertTrue( diff.contains( "Index: " ) ); // svnexe provides a Index, but empty changes
+        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
 
         // revision 3: only file change (real diff)
         result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "3", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "2", "3" );
+        diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "2", "3" );
         Assert.assertFalse( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
 
         // revision 4: combined change of file and property
         result = svnUtil.log( log, svnUrl, destination, "testfile.txt", "4", "4" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-        diff = svnUtil.diff( log, destination, destination + "/testfile.txt", "3", "4" );
+        diff = svnUtil.diff( log, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
     }
-    
-//    @Test
-//    public void testCheckout()
-//    {
-//        SVNUtil svnUtil = new SVNUtil();
-//        Log log = new NullLog();
-//
-//        String svnUrl = "file://"
-//    + new File( "./src/test/resources/svnrepos/issue24-detectchanges" ).getAbsolutePath();
-//        String destination = new File( "./target/svnrepos/issue24-detectchanges2" ).getAbsolutePath();
-//
-//        long checkout = svnUtil.checkout( log, svnUrl + "/trunk", destination );
-//        System.out.println(" result: " + checkout);
-////        SVNLogChange result = svnUtil.log( log, destination + "/messages.properties",
-////                3, 3 );
-////        Assert.assertEquals( SVNLogChange.MODIFICATION, result );
-//    }
-
 }

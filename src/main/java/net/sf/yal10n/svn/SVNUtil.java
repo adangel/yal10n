@@ -14,7 +14,6 @@ package net.sf.yal10n.svn;
  * limitations under the License.
  */
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.HashSet;
@@ -34,6 +33,7 @@ import org.apache.maven.scm.ScmRevision;
 import org.apache.maven.scm.command.changelog.ChangeLogScmRequest;
 import org.apache.maven.scm.command.changelog.ChangeLogScmResult;
 import org.apache.maven.scm.command.checkout.CheckOutScmResult;
+import org.apache.maven.scm.command.diff.DiffScmResult;
 import org.apache.maven.scm.command.info.InfoItem;
 import org.apache.maven.scm.command.info.InfoScmResult;
 import org.apache.maven.scm.manager.BasicScmManager;
@@ -43,12 +43,6 @@ import org.apache.maven.scm.provider.ScmProviderRepository;
 import org.apache.maven.scm.provider.svn.svnexe.SvnExeScmProvider;
 import org.apache.maven.scm.repository.ScmRepository;
 import org.codehaus.plexus.component.annotations.Component;
-import org.tmatesoft.svn.core.SVNDepth;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNDiffClient;
-import org.tmatesoft.svn.core.wc.SVNRevision;
-import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
 
 /**
  * Simple SVN utility for checking out files from subversion.
@@ -58,12 +52,6 @@ public class SVNUtil
 {
     private static final int BYTE_MASK = 0xff;
 
-    private EventHandler eventHandler;
-    private SVNClientManager svn;
-    private SVNUpdateClient updateClient;
-    private SVNWCClient wcClient;
-    private SVNDiffClient diffClient;
-
     private ScmManager scmManager;
 
     /**
@@ -71,14 +59,6 @@ public class SVNUtil
      */
     public SVNUtil()
     {
-        eventHandler = new EventHandler( );
-        svn = SVNClientManager.newInstance();
-        updateClient = svn.getUpdateClient();
-        updateClient.setEventHandler( eventHandler );
-        wcClient = svn.getWCClient();
-        wcClient.setEventHandler( eventHandler );
-        diffClient = svn.getDiffClient();
-
         scmManager = new BasicScmManager();
         scmManager.setScmProvider( "svn", new SvnExeScmProvider() );
     }
@@ -258,27 +238,28 @@ public class SVNUtil
      * Retrieves a unified diff for a given file and revision.
      *
      * @param log the log
-     * @param basePath the base path that should be stripped of from the fullLocalPath in the diff output
-     * @param fullLocalPath the file
+     * @param svnUrl the repository url
+     * @param checkoutDir the checkout directory
+     * @param relativeFilePath the file to diff, relative to the checkout directory
      * @param baseRevision the old revision
      * @param newRevision the new revision
      * @return the diff as a string
      */
-    public String diff( Log log, String basePath, String fullLocalPath, String baseRevision, String newRevision )
+    public String diff( Log log, String svnUrl, String checkoutDir, String relativeFilePath,
+            String baseRevision, String newRevision )
     {
         try
         {
-            eventHandler.setLog( log );
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            diffClient.getDiffGenerator().setBasePath( new File( basePath ) );
-            diffClient.doDiff( new File( fullLocalPath ),
-                    SVNRevision.create( Long.valueOf( newRevision ) ),
-                    SVNRevision.create( Long.valueOf( baseRevision ) ),
-                    SVNRevision.create( Long.valueOf( newRevision ) ),
-                    SVNDepth.EMPTY, false, result, null );
-            return result.toString( "UTF-8" );
+            String scmUrl = createScmSvnUrl( svnUrl );
+            ScmRepository repository = scmManager.makeScmRepository( scmUrl );
+
+            ScmFileSet scmFileSet = new ScmFileSet( new File( checkoutDir ), new File( relativeFilePath ) );
+            DiffScmResult diffResult = scmManager.diff( repository, scmFileSet,
+                    new ScmRevision( baseRevision ), new ScmRevision( newRevision ) );
+            checkResult( diffResult );
+            return diffResult.getPatch();
         }
-        catch ( Exception e )
+        catch ( ScmException e )
         {
             throw new RuntimeException( e );
         }
