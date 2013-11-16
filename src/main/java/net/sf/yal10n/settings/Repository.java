@@ -24,6 +24,7 @@ public class Repository
 {
     private String url;
     private String mirrorUrl;
+    private String tag = "HEAD";
     private ScmType type = ScmType.SVN;
     private String viewvcUrl;
     private List<String> includes;
@@ -67,6 +68,25 @@ public class Repository
     public void setMirrorUrl( String mirrorUrl )
     {
         this.mirrorUrl = mirrorUrl;
+    }
+
+    /**
+     * Gets the tag that is used for the checkout. It can also be a branch name.
+     * By default, "HEAD" is used.
+     * @return the tag
+     */
+    public String getTag()
+    {
+        return tag;
+    }
+
+    /**
+     * Sets the tag/branch that is used for the checkout.
+     * @param tag the tag
+     */
+    public void setTag( String tag )
+    {
+        this.tag = tag;
     }
 
     /**
