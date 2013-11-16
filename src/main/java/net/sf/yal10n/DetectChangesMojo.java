@@ -143,7 +143,7 @@ public class DetectChangesMojo extends BaseMojo
                     getLog().debug( "" );
                     
                     SVNLogChange changesFound = svn.log( getLog(), repo.getType(), svnUrl, dstPath,
-                            defaultFile.getRelativeFilePath(), oldRevision + 1, newRevision );
+                            defaultFile.getRelativeFilePath(), oldRevision, newRevision );
 
                     getLog().debug( "    Changes found: " + changesFound );
                     if ( changesFound == SVNLogChange.MODIFICATION )

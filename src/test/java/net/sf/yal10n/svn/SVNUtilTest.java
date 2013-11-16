@@ -76,8 +76,11 @@ public class SVNUtilTest
 
         String revision = svnUtil.checkout( log, ScmType.SVN, svnUrl + "/trunk", destination );
         Assert.assertEquals( "3", revision );
+        // checkout a second time into the already checked out working directory
+        revision = svnUtil.checkout( log, ScmType.SVN, svnUrl + "/trunk", destination );
+        Assert.assertEquals( "3", revision );
         SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "messages.properties",
-                "3", "3" );
+                "2", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
 
@@ -106,7 +109,7 @@ public class SVNUtilTest
         Assert.assertEquals( "2013-08-04 18:47:40 +0200 (Sun, 04 Aug 2013)", info.getCommittedDate() );
 
         // revision 2: only prop change
-        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "2" );
+        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         String diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
@@ -115,14 +118,14 @@ public class SVNUtilTest
         Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
 
         // revision 3: only file change (real diff)
-        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "3" );
+        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
         Assert.assertFalse( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
 
         // revision 4: combined change of file and property
-        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "4", "4" );
+        result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );

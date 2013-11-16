@@ -229,6 +229,10 @@ public class SVNUtil
             List<ChangeSet> changeSets = changeLog.getChangeLog().getChangeSets();
             for ( ChangeSet cs : changeSets )
             {
+                if ( cs.getRevision().equals( baseRevision ) )
+                {
+                    continue;
+                }
                 for ( ChangeFile f : cs.getFiles() )
                 {
                     if ( f.getName().endsWith( relativeFilePath ) )

@@ -3,7 +3,7 @@ String buildlog = new File ( basedir, "build.log" ).getText( "UTF-8" )
 assert buildlog.contains( "Updating ./svnrepos/repo1/trunk" )
 assert buildlog.contains( "Updating ./svnrepos/repo1/a/trunk" )
 assert buildlog.contains( "Updating ./svnrepos/repo2/trunk" )
-assert buildlog.contains( "At revision 2" )
+assert buildlog.contains( "At revision 3" )
 assert buildlog.contains( "At revision 1" )
 
 assert buildlog.contains( "Found 4 bundles:" )
