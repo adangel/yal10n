@@ -37,6 +37,7 @@ limitations under the License.
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
       <item name="Usage" href="usage.html"/>
+      <item name="Release Notes" href="release-notes.html"/>
     </menu>
     <menu name="Examples">
       <item name="Example Report" href="examples/simple-it/dashboard.html"/>

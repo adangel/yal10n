@@ -37,13 +37,17 @@ yal10n Maven Plugin
   General instructions on how to use the Yal10n Plugin can be found on the {{{./usage.html}usage page}}.
 
 
+* Bug reports / Feature requests
+
+  Please report any bugs or feature requests at {{http://sourceforge.net/p/yal10n/tickets}}.
+
 * Future ideas, missing features
 
   * localize the dashboard itself
 
   * better documentation (available checks, configuration, ...)
 
-  * report / detect changes based on the revision of the files or even with svn annotate, line-based check
+  * report / detect changes based on the revision of the files or even with annotate/blame, line-based check
 
   * add a report mojo, to make it easy to include the report of a single project into a site
   
@@ -52,7 +56,7 @@ yal10n Maven Plugin
 
   * pseudo language generation
 
-  * support other scms than subversion (e.g. git)
+  * support other scms than subversion and git (e.g. mercurial)
 
   * more configuration options for TMX
 
