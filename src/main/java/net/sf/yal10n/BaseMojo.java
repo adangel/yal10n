@@ -93,7 +93,6 @@ public abstract class BaseMojo extends AbstractMojo
             getLog().debug( repoNumber + " url: " + repo.getUrl() );
 
             String svnUrl = RepositoryUtil.getSvnUrl( config, repo );
-            String svnCheckoutUrl = RepositoryUtil.getCheckoutUrl( config, repo );
             String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
 
             String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
@@ -103,7 +102,7 @@ public abstract class BaseMojo extends AbstractMojo
             }
             else
             {
-                String revision = svn.checkout( getLog(), repo.getType(), svnCheckoutUrl, dstPath );
+                String revision = svn.checkout( getLog(), repo.getType(), svnUrl, dstPath );
 
                 if ( newStatus != null )
                 {
@@ -115,7 +114,7 @@ public abstract class BaseMojo extends AbstractMojo
                 }
             }
 
-            analyzer.analyze( getLog(), svnCheckoutUrl, dstPath, config, repo, repoId );
+            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
         }
     }
 }
