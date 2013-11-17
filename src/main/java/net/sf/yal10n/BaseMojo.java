@@ -116,7 +116,7 @@ public abstract class BaseMojo extends AbstractMojo
                 }
             }
 
-            analyzer.analyze( getLog(), svnUrl, dstPath, config, repo, repoId );
+            analyzer.analyze( getLog(), svnCheckoutUrl, dstPath, config, repo, repoId );
         }
     }
 }
