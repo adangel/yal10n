@@ -15,7 +15,9 @@ package net.sf.yal10n.svn;
  */
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.diff.UnifiedDiff;
@@ -104,9 +106,14 @@ public class SVNUtilTest
 
         String revision = svnUtil.checkout( log, ScmType.SVN, svnUrl, destination );
         Assert.assertEquals( "4", revision );
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z" );
+        Date expectedDate = simpleDateFormat.parse( "2013-08-04 18:47:40 +0200" );
+        String expectedDateString = simpleDateFormat.format( expectedDate );
         SVNInfo info = svnUtil.checkFile( log, ScmType.SVN, svnUrl, destination, "testfile.txt" );
         Assert.assertEquals( "4", info.getRevision() );
-        Assert.assertEquals( "2013-08-04 18:47:40 +0200 (Sun, 04 Aug 2013)", info.getCommittedDate() );
+        Assert.assertTrue( "Expected: " + expectedDateString + "\nWas: " + info.getCommittedDate(),
+                info.getCommittedDate().startsWith( expectedDateString ) );
 
         // revision 2: only prop change
         SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
@@ -153,7 +160,8 @@ public class SVNUtilTest
                 new File( "./src/it/git-it/gitrepos/" ) );
         Assert.assertEquals( 0, unzip.waitFor() );
 
-        String checkout = svnUtil.checkout( log, ScmType.GIT, "./src/it/git-it/gitrepos/repo1/.git", destination );
+        String url = "./src/it/git-it/gitrepos/repo1/.git";
+        String checkout = svnUtil.checkout( log, ScmType.GIT, url, destination );
         Assert.assertEquals( "f5d50077a92f9e29d704518ab2fbd9ecf7307214", checkout );
         File dstPath = new File( destination );
         Assert.assertTrue( dstPath.exists() && dstPath.isDirectory() );
