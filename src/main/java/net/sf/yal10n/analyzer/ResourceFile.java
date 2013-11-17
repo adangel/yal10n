@@ -58,6 +58,7 @@ public class ResourceFile
     private String relativeFilePath;
     private Properties properties;
     private String language;
+    private SVNInfo svnInfo;
 
     /**
      * Creates a new resource file that can be analyzed.
@@ -327,7 +328,10 @@ public class ResourceFile
         model.setMissingMessages( missingKeys );
         model.setAdditionalMessages( additionalKeys );
 
-        SVNInfo svnInfo = svn.checkFile( log, repo.getType(), svnRepoUrl, checkedOutPath, relativeFilePath );
+        if ( svnInfo == null )
+        {
+            svnInfo = svn.checkFile( log, repo.getType(), svnRepoUrl, checkedOutPath, relativeFilePath );
+        }
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 

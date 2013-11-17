@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.Collection;
 
-import junit.framework.Assert;
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.dashboard.DashboardModel;
@@ -40,6 +39,7 @@ import net.sf.yal10n.svn.SVNUtil;
 import net.sf.yal10n.tmx.TranslationMemoryRenderer;
 
 import org.apache.maven.plugin.logging.Log;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

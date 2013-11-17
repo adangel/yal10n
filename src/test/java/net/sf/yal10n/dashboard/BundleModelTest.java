@@ -14,8 +14,8 @@ package net.sf.yal10n.dashboard;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

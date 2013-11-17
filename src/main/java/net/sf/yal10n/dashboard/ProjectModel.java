@@ -14,6 +14,7 @@ package net.sf.yal10n.dashboard;
  * limitations under the License.
  */
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -42,4 +43,39 @@ public class ProjectModel
     {
         return allBundles;
     }
+
+    /**
+     * Comparator for sorting by project name.
+     */
+    public static final Comparator<ProjectModel> BY_NAME = new Comparator<ProjectModel>()
+    {
+        /**
+         * Sorting by the project name of the first bundle.
+         *
+         * @param o1 the one project
+         * @param 02 the other project
+         * @return a negative integer, zero, or a positive integer
+         * as this object is less than, equal to, or greater than the specified object.
+         */
+        @Override
+        public int compare( ProjectModel o1, ProjectModel o2 )
+        {
+            int result = 0;
+            if ( !o1.getAllBundles().isEmpty() && !o2.getAllBundles().isEmpty() )
+            {
+                BundleModel bundle1 = o1.getAllBundles().get( 0 );
+                BundleModel bundle2 = o2.getAllBundles().get( 0 );
+                result = bundle1.compareTo( bundle2 );
+            }
+            else if ( o1.getAllBundles().isEmpty() && !o2.getAllBundles().isEmpty() )
+            {
+                result = 1;
+            }
+            else if ( !o1.getAllBundles().isEmpty() && o2.getAllBundles().isEmpty() )
+            {
+                result = -1;
+            }
+            return result;
+        }
+    };
 }

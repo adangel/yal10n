@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
 import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.analyzer.ResourceBundle;
@@ -28,6 +27,7 @@ import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtilMock;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

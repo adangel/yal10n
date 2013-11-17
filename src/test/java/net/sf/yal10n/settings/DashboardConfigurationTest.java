@@ -19,9 +19,9 @@ import java.util.List;
 
 import javax.mail.Address;
 
-import junit.framework.Assert;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

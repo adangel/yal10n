@@ -18,10 +18,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
