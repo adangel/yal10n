@@ -27,6 +27,7 @@ import java.util.Set;
 
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
+import net.sf.yal10n.svn.RepositoryUtil;
 import net.sf.yal10n.svn.SVNUtil;
 
 import org.apache.maven.plugin.logging.Log;
@@ -126,7 +127,7 @@ public class ResourceAnalyzer
                 log.debug( "found: " + s );
 
                 String fullDstPath = new File( dstPath ).getCanonicalPath();
-                String svnPath = svnUrl + "/" + s;
+                String svnPath = RepositoryUtil.getCheckoutUrl( config, repo ) + "/" + s;
                 ResourceFile resourceFile = new ResourceFile( config, repo, svnUrl, dstPath, s, svn, svnPath );
                 String baseBundleName = resourceFile.getBundleBaseName();
 

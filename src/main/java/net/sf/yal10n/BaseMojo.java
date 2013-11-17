@@ -19,9 +19,9 @@ import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.status.DetectChangesStatus;
 import net.sf.yal10n.status.RepoStatus;
+import net.sf.yal10n.svn.RepositoryUtil;
 import net.sf.yal10n.svn.SVNUtil;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -92,9 +92,8 @@ public abstract class BaseMojo extends AbstractMojo
             repoNumber++;
             getLog().debug( repoNumber + " url: " + repo.getUrl() );
 
-            String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
-            String mirrorUrl = SVNUtil.toCompleteUrl( config.getMirrorPrefix(), repo.getMirrorUrl() );
-            String svnCheckoutUrl = StringUtils.isEmpty( mirrorUrl ) ? svnUrl : mirrorUrl;
+            String svnUrl = RepositoryUtil.getSvnUrl( config, repo );
+            String svnCheckoutUrl = RepositoryUtil.getCheckoutUrl( config, repo );
             String repoId = SVNUtil.toRepoId( config.getRepoPrefix(), repo.getUrl() );
 
             String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );

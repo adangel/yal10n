@@ -41,6 +41,7 @@ import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.status.DetectChangesStatus;
 import net.sf.yal10n.status.RepoStatus;
+import net.sf.yal10n.svn.RepositoryUtil;
 import net.sf.yal10n.svn.SVNLogChange;
 import net.sf.yal10n.svn.SVNUtil;
 
@@ -126,7 +127,7 @@ public class DetectChangesMojo extends BaseMojo
                     String fullLocalPath = defaultFile.getFullLocalPath();
                     String fullSvnPath = defaultFile.getSVNPath();
                     Repository repo = config.getRepositoryById( repoId );
-                    String svnUrl = SVNUtil.toCompleteUrl( config.getRepoPrefix(), repo.getUrl() );
+                    String svnUrl = RepositoryUtil.getSvnUrl( config, repo );
                     String viewvcUrl = SVNUtil.toCompleteUrl( config.getViewvcPrefix(),
                             repo.getViewvcUrl() == null ? repo.getUrl() : repo.getViewvcUrl() );
                     String dstPath = FileUtils.normalize( outputDirectory + "/checkouts/" + repoId + "/" );
