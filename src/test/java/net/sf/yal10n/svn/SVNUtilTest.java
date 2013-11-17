@@ -120,7 +120,8 @@ public class SVNUtilTest
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         String diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
-        Assert.assertTrue( diff.contains( "Index: " ) ); // svnexe provides a Index, but empty changes
+        // svnexe provides a Index, but empty changes with svn 1.7, but not with svn 1.6...
+        // Assert.assertTrue( diff.contains( "Index: " ) );
         UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
         Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
 
