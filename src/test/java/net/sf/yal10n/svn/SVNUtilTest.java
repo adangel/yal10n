@@ -109,11 +109,11 @@ public class SVNUtilTest
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z" );
         Date expectedDate = simpleDateFormat.parse( "2013-08-04 18:47:40 +0200" );
-        String expectedDateString = simpleDateFormat.format( expectedDate );
         SVNInfo info = svnUtil.checkFile( log, ScmType.SVN, svnUrl, destination, "testfile.txt" );
         Assert.assertEquals( "4", info.getRevision() );
-        Assert.assertTrue( "Expected: " + expectedDateString + "\nWas: " + info.getCommittedDate(),
-                info.getCommittedDate().startsWith( expectedDateString ) );
+        Date actualDate = simpleDateFormat.parse( info.getCommittedDate() );
+        Assert.assertEquals( "Expected: " + expectedDate + " - but got: " + actualDate,
+                expectedDate.getTime(), actualDate.getTime() );
 
         // revision 2: only prop change
         SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
