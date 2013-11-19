@@ -120,8 +120,12 @@ public class SVNUtilTest
         SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         String diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
-        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
-        Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
+        UnifiedDiff unifiedDiff = null;
+        if ( !diff.isEmpty() )
+        {
+            unifiedDiff = new UnifiedDiff( diff );
+            Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
+        }
 
         // revision 3: only file change (real diff)
         result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
