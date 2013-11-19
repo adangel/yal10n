@@ -120,9 +120,6 @@ public class SVNUtilTest
         SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         String diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "1", "2" );
-        Assert.assertTrue( diff.contains( "Property changes on: " ) );
-        // svnexe provides a Index, but empty changes with svn 1.7, but not with svn 1.6...
-        // Assert.assertTrue( diff.contains( "Index: " ) );
         UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
         Assert.assertTrue( unifiedDiff.getHunks().isEmpty() );
 
@@ -130,19 +127,22 @@ public class SVNUtilTest
         result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "2", "3" );
-        Assert.assertFalse( diff.contains( "Property changes on: " ) );
-        Assert.assertTrue( diff.contains( "Index: " ) );
+        unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertFalse( unifiedDiff.getHunks().isEmpty() );
 
         // revision 4: combined change of file and property
         result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
-        Assert.assertTrue( diff.contains( "Property changes on: " ) );
-        Assert.assertTrue( diff.contains( "Index: " ) );
+        unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertFalse( unifiedDiff.getHunks().isEmpty() );
 
         // revision 6: a changeset with two file changed, but only one is important
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "5", "6" );
         Assert.assertEquals( 1, StringUtils.countMatches( diff, "Index: " ) );
+        unifiedDiff = new UnifiedDiff( diff );
+        Assert.assertFalse( unifiedDiff.getHunks().isEmpty() );
+        Assert.assertEquals( "testfile.txt\t(revision 5)", unifiedDiff.getOriginalName() );
     }
 
     /**
