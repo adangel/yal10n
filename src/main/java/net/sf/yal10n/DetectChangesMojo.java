@@ -158,7 +158,7 @@ public class DetectChangesMojo extends BaseMojo
                         }
                         else
                         {
-                            String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
+                            String viewvcDiff = viewvcUrl + "/" + defaultFile.getRelativeFilePath();
                             viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
                             getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
                             sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
@@ -166,7 +166,7 @@ public class DetectChangesMojo extends BaseMojo
                     }
                     else if ( changesFound == SVNLogChange.ADD )
                     {
-                        String viewvcDiff = buildViewvcUrl( fullSvnPath, svnUrl, viewvcUrl );
+                        String viewvcDiff = viewvcUrl + "/" + defaultFile.getRelativeFilePath();
                         viewvcDiff += "?view=markup";
                         getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
 
@@ -242,18 +242,6 @@ public class DetectChangesMojo extends BaseMojo
         {
             throw new RuntimeException( mex );
         }
-    }
-
-    /**
-     * @param fullSvnPath prefix+url+path  file:///foo/svnrepos/a/trunk/dir/file.x
-     * @param svnUrl      prefix+url       file:///foo/svnrepos/a/trunk
-     * @param viewvcUrl   prefix+url       http://viewvc/a/trunk
-     * @return            prefix+url+path  http://viewvc/a/trunk/dir/file.x
-     */
-    private String buildViewvcUrl( String fullSvnPath, String svnUrl, String viewvcUrl )
-    {
-        String svnPath = fullSvnPath.substring( svnUrl.length() );
-        return viewvcUrl + svnPath;
     }
 
     /**
