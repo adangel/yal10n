@@ -23,6 +23,7 @@ import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.diff.UnifiedDiff;
 import net.sf.yal10n.settings.ScmType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.codehaus.plexus.util.FileUtils;
@@ -81,8 +82,7 @@ public class SVNUtilTest
         // checkout a second time into the already checked out working directory
         revision = svnUtil.checkout( log, ScmType.SVN, svnUrl + "/trunk", destination );
         Assert.assertEquals( "3", revision );
-        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "messages.properties",
-                "2", "3" );
+        SVNLogChange result = svnUtil.log( log, ScmType.SVN, svnUrl, destination, "messages.properties", "2", "3" );
         Assert.assertEquals( SVNLogChange.MODIFICATION, result );
     }
 
@@ -104,13 +104,14 @@ public class SVNUtilTest
             FileUtils.deleteDirectory( destination );
         }
 
+
         String revision = svnUtil.checkout( log, ScmType.SVN, svnUrl, destination );
-        Assert.assertEquals( "4", revision );
+        Assert.assertEquals( "6", revision );
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss Z" );
-        Date expectedDate = simpleDateFormat.parse( "2013-08-04 18:47:40 +0200" );
+        Date expectedDate = simpleDateFormat.parse( "2013-11-19 18:10:46 +0100" );
         SVNInfo info = svnUtil.checkFile( log, ScmType.SVN, svnUrl, destination, "testfile.txt" );
-        Assert.assertEquals( "4", info.getRevision() );
+        Assert.assertEquals( revision, info.getRevision() );
         Date actualDate = simpleDateFormat.parse( info.getCommittedDate() );
         Assert.assertEquals( "Expected: " + expectedDate + " - but got: " + actualDate,
                 expectedDate.getTime(), actualDate.getTime() );
@@ -138,6 +139,10 @@ public class SVNUtilTest
         diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "3", "4" );
         Assert.assertTrue( diff.contains( "Property changes on: " ) );
         Assert.assertTrue( diff.contains( "Index: " ) );
+
+        // revision 6: a changeset with two file changed, but only one is important
+        diff = svnUtil.diff( log, ScmType.SVN, svnUrl, destination, "testfile.txt", "5", "6" );
+        Assert.assertEquals( 1, StringUtils.countMatches( diff, "Index: " ) );
     }
 
     /**

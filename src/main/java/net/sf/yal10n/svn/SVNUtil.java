@@ -14,7 +14,10 @@ package net.sf.yal10n.svn;
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.List;
@@ -286,12 +289,44 @@ public class SVNUtil
             DiffScmResult diffResult = scmManager.diff( repository, scmFileSet,
                     new ScmRevision( baseRevision ), new ScmRevision( newRevision ) );
             checkResult( diffResult );
-            return diffResult.getPatch();
+            return filterPatch( diffResult.getPatch(), relativeFilePath );
         }
         catch ( ScmException e )
         {
             throw new RuntimeException( e );
         }
+    }
+
+    private static String filterPatch( String patch, String relativeFilePath )
+    {
+        BufferedReader r = new BufferedReader( new StringReader( patch ) );
+        String line;
+        StringBuilder newPatch = new StringBuilder();
+        boolean fileStarted = false;
+        try
+        {
+            while ( ( line = r.readLine() ) != null )
+            {
+                if ( !fileStarted && line.startsWith( "Index: " + relativeFilePath ) )
+                {
+                    newPatch.append( line ).append( '\n' );
+                    fileStarted = true;
+                }
+                else if ( fileStarted && line.startsWith( "Index: " ) )
+                {
+                    fileStarted = false;
+                }
+                else if ( fileStarted )
+                {
+                    newPatch.append( line ).append( '\n' );
+                }
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+        return newPatch.toString();
     }
 
     /**
