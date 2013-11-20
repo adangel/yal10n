@@ -148,6 +148,10 @@ public class UnifiedDiff
                     {
                         origLineNumber = newLineNumber;
                     }
+                    else
+                    {
+                        newLineNumber = origLineNumber;
+                    }
                     currentHunk.commonLines.put( origLineNumber, diffLine );
                     currentHunk.indicators.put( origLineNumber, ' ' );
                     origLineNumber++;

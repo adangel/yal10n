@@ -160,7 +160,7 @@ public class UnifiedDiffTest
                 + "+++ myfile (new)\n"
                 + "@@ -1,8 +1,8 @@\n"
                 + " first line - no change\n"
-                + " second line - is removed\n"
+                + "-second line - is removed\n"
                 + " third line - no change\n"
                 + "-fourth line\n"
                 + "+fourth line - changed\n"
