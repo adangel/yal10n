@@ -92,7 +92,8 @@ public class UnifiedDiff
         originalName = lines[2].substring( 4 );
         newName = lines[3].substring( 4 );
 
-        int currentLineNumber = 0;
+        int origLineNumber = 0;
+        int newLineNumber = 0;
         Hunk currentHunk = null;
 
         for ( int i = 4; i < lines.length; i++ )
@@ -115,7 +116,8 @@ public class UnifiedDiff
 
                 if ( currentHunk != null )
                 {
-                    currentHunk.lastLineNumber = currentLineNumber;
+                    currentHunk.lastLineNumber = newLineNumber;
+                    calculateChangedLines( currentHunk );
                     hunks.add( currentHunk );
                     currentHunk = null;
                 }
@@ -123,8 +125,9 @@ public class UnifiedDiff
                 if ( newHunkStarted )
                 {
                     currentHunk = new Hunk();
-                    currentLineNumber = Math.min( Integer.parseInt( m.group( 1 ) ), Integer.parseInt( m.group( 3 ) ) );
-                    currentHunk.firstLineNumber = currentLineNumber;
+                    origLineNumber = Integer.parseInt( m.group( 1 ) );
+                    newLineNumber = origLineNumber;
+                    currentHunk.firstLineNumber = origLineNumber;
                 }
             }
             else
@@ -137,34 +140,28 @@ public class UnifiedDiff
 
                 char indicator = line.charAt( 0 );
                 String diffLine = line.substring( 1 );
-                char nextIndicator = nextLine.charAt( 0 );
 
                 switch ( indicator )
                 {
                 case ' ':
-                    currentHunk.commonLines.put( currentLineNumber, diffLine );
-                    currentHunk.indicators.put( currentLineNumber, ' ' );
-                    currentLineNumber++;
+                    if ( origLineNumber < newLineNumber )
+                    {
+                        origLineNumber = newLineNumber;
+                    }
+                    currentHunk.commonLines.put( origLineNumber, diffLine );
+                    currentHunk.indicators.put( origLineNumber, ' ' );
+                    origLineNumber++;
+                    newLineNumber++;
                     break;
                 case '-':
-                    currentHunk.origLines.put( currentLineNumber, diffLine );
-                    if ( nextIndicator == '+' )
-                    {
-                        currentHunk.indicators.put( currentLineNumber, 'C' );
-                    }
-                    else
-                    {
-                        currentHunk.indicators.put( currentLineNumber, '-' );
-                        currentLineNumber++;
-                    }
+                    currentHunk.origLines.put( origLineNumber, diffLine );
+                    currentHunk.indicators.put( origLineNumber, '-' );
+                    origLineNumber++;
                     break;
                 case '+':
-                    currentHunk.newLines.put( currentLineNumber, diffLine );
-                    if ( currentHunk.indicators.get( currentLineNumber ) == null )
-                    {
-                        currentHunk.indicators.put( currentLineNumber, '+' );
-                    }
-                    currentLineNumber++;
+                    currentHunk.newLines.put( newLineNumber, diffLine );
+                    currentHunk.indicators.put( newLineNumber, '+' );
+                    newLineNumber++;
                     break;
                 default:
                     // ignore
@@ -173,8 +170,20 @@ public class UnifiedDiff
         }
         if ( currentHunk != null )
         {
-            currentHunk.lastLineNumber = currentLineNumber;
+            currentHunk.lastLineNumber = newLineNumber;
+            calculateChangedLines( currentHunk );
             hunks.add( currentHunk );
+        }
+    }
+
+    private void calculateChangedLines( Hunk currentHunk )
+    {
+        for ( Integer line : currentHunk.origLines.keySet() )
+        {
+            if ( currentHunk.newLines.containsKey( line ) )
+            {
+                currentHunk.indicators.put( line, 'C' );
+            }
         }
     }
 
