@@ -45,6 +45,7 @@ import net.sf.yal10n.svn.RepositoryUtil;
 import net.sf.yal10n.svn.SVNLogChange;
 import net.sf.yal10n.svn.SVNUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -151,17 +152,24 @@ public class DetectChangesMojo extends BaseMojo
                     {
                         String diff = svn.diff( getLog(), repo.getType(), svnUrl, dstPath,
                                 defaultFile.getRelativeFilePath(), oldRevision, newRevision );
-                        UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
-                        if ( unifiedDiff.getHunks().isEmpty() )
+                        if ( StringUtils.isEmpty( diff ) )
                         {
                             getLog().info( "    There were no changes to the file content of " + fullSvnPath );
                         }
                         else
                         {
-                            String viewvcDiff = viewvcUrl + "/" + defaultFile.getRelativeFilePath();
-                            viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
-                            getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                            sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                            UnifiedDiff unifiedDiff = new UnifiedDiff( diff );
+                            if ( unifiedDiff.getHunks().isEmpty() )
+                            {
+                                getLog().info( "    There were no changes to the file content of " + fullSvnPath );
+                            }
+                            else
+                            {
+                                String viewvcDiff = viewvcUrl + "/" + defaultFile.getRelativeFilePath();
+                                viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
+                                getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
+                                sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                            }
                         }
                     }
                     else if ( changesFound == SVNLogChange.ADD )
