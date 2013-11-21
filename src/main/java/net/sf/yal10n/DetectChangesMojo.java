@@ -20,23 +20,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
 import net.sf.yal10n.analyzer.ResourceBundle;
 import net.sf.yal10n.analyzer.ResourceFile;
 import net.sf.yal10n.diff.UnifiedDiff;
+import net.sf.yal10n.email.Emailer;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.status.DetectChangesStatus;
@@ -63,7 +59,9 @@ public class DetectChangesMojo extends BaseMojo
 
     @Parameter( required = true, property = "yal10n.status", defaultValue = "target/yal10n-status.json" )
     private String yal10nStatus;
-    
+
+    private Emailer emailer;
+
     /**
      * Instantiates a new detect changes mojo.
      */
@@ -78,10 +76,12 @@ public class DetectChangesMojo extends BaseMojo
      * @param svn the svn
      * @param analyzer the analyzer
      */
-    DetectChangesMojo( SVNUtil svn, ResourceAnalyzer analyzer )
+    DetectChangesMojo( SVNUtil svn, ResourceAnalyzer analyzer, Emailer emailer )
     {
         this.svn = svn;
         this.analyzer = analyzer;
+        this.emailer = emailer;
+        emailer.setLog( getLog() );
     }
 
     /**
@@ -168,7 +168,7 @@ public class DetectChangesMojo extends BaseMojo
                                 String viewvcDiff = viewvcUrl + "/" + defaultFile.getRelativeFilePath();
                                 viewvcDiff += "?r1=" + oldRevision + "&r2=" + newRevision;
                                 getLog().info( "    Change found: ViewVC url: " + viewvcDiff );
-                                sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                                createAndSendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                             }
                         }
                     }
@@ -181,7 +181,7 @@ public class DetectChangesMojo extends BaseMojo
                         String filename = fullLocalPath.substring( dstPath.length() );
                         String fileContent = readFile( fullLocalPath );
                         UnifiedDiff unifiedDiff = new UnifiedDiff( fileContent, true, filename );
-                        sendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
+                        createAndSendEmail( config, repo, bundle.getProjectName(), viewvcDiff, unifiedDiff );
                     }
                 }
                 else
@@ -213,42 +213,33 @@ public class DetectChangesMojo extends BaseMojo
         return result;
     }
 
-    private void sendEmail( DashboardConfiguration config, Repository repo, String projectName, String viewvcDiff,
-            UnifiedDiff unifiedDiff )
+    void createAndSendEmail( DashboardConfiguration config, Repository repo, String projectName,
+            String viewvcDiff, UnifiedDiff unifiedDiff )
     {
         Properties props = new Properties();
         props.put( "mail.smtp.host", config.getNotification().getSmtpServer() );
         props.put( "mail.smtp.port", config.getNotification().getSmtpPort() );
-        Session session = Session.getInstance( props );
 
+        InternetAddress from;
         try
         {
-            String from = config.getNotification().getMailFrom();
+            from = new InternetAddress( config.getNotification().getMailFrom() );
             List<Address> recipients = config.getNotification().getRecipientsAddresses();
             recipients.addAll( repo.getNotification().getRecipientsAddresses() );
             String subject = config.getNotification().getSubject()
                     .replaceAll( Pattern.quote( "{{projectName}}" ), projectName );
-
-            MimeMessage msg = new MimeMessage( session );
-            msg.setFrom( new InternetAddress( from ) );
-            msg.setRecipients( Message.RecipientType.TO, recipients.toArray( new Address[recipients.size()] ) );
-            msg.setSubject( subject );
-            msg.setSentDate( new Date() );
-
-            msg.setContent( "<html><body>Changes detected in <strong>" + projectName + "</strong><br>"
+            String content = "<html><body>Changes detected in <strong>" + projectName + "</strong><br>"
                     + "<p>See here: <a href=\"" + viewvcDiff + "\">" + viewvcDiff + "</a></p>"
                     + "<br>"
                     + "<strong>Diff output:</strong><br>"
                     + unifiedDiff.asHtmlSnippet()
-                    + "</body></html>", "text/html" );
-            
-            Transport.send( msg );
+                    + "</body></html>";
 
-            getLog().info( "Email sent for project " + projectName + " to " + recipients );
+            emailer.sendEmail( props, from, recipients, subject, content, projectName );
         }
-        catch ( MessagingException mex )
+        catch ( AddressException e )
         {
-            throw new RuntimeException( mex );
+            throw new RuntimeException( e );
         }
     }
 
