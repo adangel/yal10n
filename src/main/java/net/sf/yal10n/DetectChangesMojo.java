@@ -44,6 +44,7 @@ import net.sf.yal10n.svn.SVNUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
@@ -60,6 +61,13 @@ public class DetectChangesMojo extends BaseMojo
     @Parameter( required = true, property = "yal10n.status", defaultValue = "target/yal10n-status.json" )
     private String yal10nStatus;
 
+    /**
+     * Only log the email content, but do not really send it.
+     */
+    @Parameter( required = false, property = "yal10n.skipEmail", defaultValue = "false" )
+    private boolean skipEmail;
+
+    @Component
     private Emailer emailer;
 
     /**
@@ -81,7 +89,6 @@ public class DetectChangesMojo extends BaseMojo
         this.svn = svn;
         this.analyzer = analyzer;
         this.emailer = emailer;
-        emailer.setLog( getLog() );
     }
 
     /**
@@ -89,7 +96,8 @@ public class DetectChangesMojo extends BaseMojo
      */
     public final void execute() throws MojoExecutionException, MojoFailureException
     {
-        
+        emailer.setLog( getLog() );
+
         if ( offline )
         {
             throw new MojoFailureException( "Can't work in offline mode." );
@@ -235,7 +243,7 @@ public class DetectChangesMojo extends BaseMojo
                     + unifiedDiff.asHtmlSnippet()
                     + "</body></html>";
 
-            emailer.sendEmail( props, from, recipients, subject, content, projectName );
+            emailer.sendEmail( skipEmail, props, from, recipients, subject, content, projectName );
         }
         catch ( AddressException e )
         {

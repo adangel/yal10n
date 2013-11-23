@@ -14,12 +14,14 @@ package net.sf.yal10n.email;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -28,10 +30,12 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * Helper class to actually send off a email.
  */
+@Component( role = Emailer.class, hint = "Emailer" )
 public class Emailer
 {
     private Log log;
@@ -64,6 +68,7 @@ public class Emailer
     /**
      * Sends the email with the given content.
      *
+     * @param skip don't send the email, only log it.
      * @param properties the properties. Needs properties for <code>mail.smtp.host</code>
      * and <code>mail.smtp.port</code>
      * @param from the from address
@@ -72,7 +77,7 @@ public class Emailer
      * @param content the content
      * @param projectName the project name
      */
-    public void sendEmail( Properties properties, InternetAddress from, List<Address> recipients,
+    public void sendEmail( boolean skip, Properties properties, InternetAddress from, List<Address> recipients,
             String subject, String content, String projectName )
     {
         Session session = Session.getInstance( properties );
@@ -85,13 +90,56 @@ public class Emailer
             msg.setSentDate( new Date() );
             msg.setContent( content, "text/html" );
 
-            Transport.send( msg );
-
-            getLog().info( "Email sent for project " + projectName + " to " + recipients );
+            if ( !skip )
+            {
+                Transport.send( msg );
+                getLog().info( "Email sent for project " + projectName + " to " + recipients );
+            }
+            else
+            {
+                getLog().info( "SkipEmail is true. Do not send the following message:" );
+                getLog().info( "-----------------------------------------------------" );
+                getLog().info( asString( msg ) );
+                getLog().info( "-----------------------------------------------------" );
+            }
         }
         catch ( MessagingException mex )
         {
             throw new RuntimeException( mex );
         }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private String asString( MimeMessage msg ) throws MessagingException, IOException
+    {
+        StringBuilder sb = new StringBuilder( "\n" );
+        sb.append( "From: " );
+        if ( msg.getFrom() != null )
+        {
+            for ( Address a : msg.getFrom() )
+            {
+                sb.append( a ).append( "; " );
+            }
+        }
+        sb.append( "\n" );
+        sb.append( "To: " );
+        if ( msg.getRecipients( RecipientType.TO ) != null )
+        {
+            for ( Address a : msg.getRecipients( RecipientType.TO ) )
+            {
+                sb.append( a ).append( "; " );
+            }
+        }
+        sb.append( "\n" );
+        sb.append( "Subject: " ).append( msg.getSubject() ).append( "\n" );
+        sb.append( "Date: " ).append( msg.getSentDate() ).append( "\n" );
+        sb.append( "Content-Type: " ).append( msg.getContentType() ).append( "\n" );
+        sb.append( "\n" );
+        sb.append( msg.getContent() );
+        sb.append( "\n.\n" );
+        return sb.toString();
     }
 }

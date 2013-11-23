@@ -15,6 +15,7 @@ package net.sf.yal10n;
  */
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -115,8 +116,8 @@ public class DetectChangesMojoTest
         ArgumentCaptor<String> content = ArgumentCaptor.forClass( String.class );
 
         mojo.createAndSendEmail( config, repo, projectName, viewvcDiff, unifiedDiff );
-        verify( emailer, times( 1 ) ).setLog( any( Log.class ) );
-        verify( emailer, times( 1 ) ).sendEmail( any( Properties.class ), eq( new InternetAddress( "sender" ) ),
+        verify( emailer, times( 1 ) ).sendEmail( anyBoolean(), any( Properties.class ),
+                eq( new InternetAddress( "sender" ) ),
                 eq( recipients ), eq( "localization Foo" ), content.capture(), eq( projectName ) );
         verifyNoMoreInteractions( emailer );
 

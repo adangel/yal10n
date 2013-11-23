@@ -1,0 +1,8 @@
+{
+  "lastDetection" : "2013-11-23T18:13:46.947+01:00",
+  "repos" : [ {
+    "id" : "0d1a4de8a865d2c4b1b562058f57ee3a",
+    "completeRepoUrl" : "./svnrepos/repo1/trunk",
+    "revision" : "1"
+  } ]
+}

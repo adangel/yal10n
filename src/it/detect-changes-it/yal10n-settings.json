@@ -1,0 +1,19 @@
+{
+    "repoPrefix": "./svnrepos/",
+    "viewvcPrefix": "http://svn/viewvc/",
+    "includes": [ "**/*essages*.properties" ],
+    "excludes": [ "**/src/test/**"],
+    "languages": ["de", "de_DE", "fr", "ja", "nl"],
+    "repositories": [
+        {
+            "url": "repo1/trunk"
+        }
+    ],
+    "notification": {
+        "smtpServer": "localhost",
+        "smtpPort": "25",
+        "subject": "[yal10n] changes in {{projectName}}",
+        "mailFrom": "andreas@localhost",
+        "recipients": "andreas@localhost, andreas@localhost"
+    }
+}
