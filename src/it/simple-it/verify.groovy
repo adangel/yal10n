@@ -34,3 +34,6 @@ index3 = dashboardContent.indexOf( "de_DE" )
 assert index3 > -1
 
 assert index1 < index2 && index2 < index3
+
+// verify that default.css has been extracted to target
+assert new File ( basedir, "target/default.css" ).exists()
