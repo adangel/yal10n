@@ -14,6 +14,7 @@ package net.sf.yal10n;
  * limitations under the License.
  */
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.webjars.WebJarExtractor;
 
 /**
  * This mojo creates a dashboard like overview of all resource bundles.
@@ -120,6 +122,16 @@ public class DashboardMojo extends BaseMojo
             getLog().info( "Skipping TMX creation." );
         }
 
+        copyWebResources();
+    }
+
+    /**
+     * Copies the required resources for the html pages. This includes all stylesheets and
+     * javascript frameworks.
+     * @throws MojoExecutionException on any problem while copying files
+     */
+    private void copyWebResources() throws MojoExecutionException
+    {
         OutputStream theme = null;
         try
         {
@@ -133,6 +145,16 @@ public class DashboardMojo extends BaseMojo
         finally
         {
             IOUtil.close( theme );
+        }
+
+        WebJarExtractor extractor = new WebJarExtractor();
+        try
+        {
+            extractor.extractAllWebJarsTo( new File( FileUtils.normalize( outputDirectory + "/webjars" ) ) );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Couldn't extract webjars", e );
         }
     }
 

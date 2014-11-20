@@ -37,3 +37,8 @@ assert index1 < index2 && index2 < index3
 
 // verify that default.css has been extracted to target
 assert new File ( basedir, "target/default.css" ).exists()
+// verify that webjars have been extracted
+assert new File ( basedir, "target/webjars/foundation" ).exists()
+assert new File ( basedir, "target/webjars/jquery" ).exists()
+assert new File ( basedir, "target/webjars/modernizr" ).exists()
+assert new File ( basedir, "target/webjars/normalize.css" ).exists()

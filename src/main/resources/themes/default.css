@@ -1,67 +1,59 @@
-body {
-   color: black;
-   font-family: sans-serif;
-   margin: 15px;
-   padding: 10px;
-   padding-top: 0px;
-   border: 2px #aaaaaa solid;
-   border-radius: 10px;
-}
-hr {
-   border: 1px solid #aaaaaa;
-}
-h1, h2 {
-   border-radius: 5px;
-   padding: 3px;
-   border: 1px solid black;
-}
-h1 {
-   background-color: darkGrey;
-}
-h2 {
+table th {
    background-color: lightGrey;
 }
-table, td, th {
-   border-collapse: collapse;
+table tr.even,
+table tr.alt,
+table tr:nth-of-type(2n) {
+  background: none repeat scroll 0 0 #f0f0f0;
 }
-th {
-   background-color: #dddddd;
-   text-align: center;
-}
-th, td {
-   border: 1px solid #aaaaaa;
-   padding: 0.4em;
-}
-tr:hover td.highlight {
+
+.dashboard tr:hover td.highlight {
    background: lightblue;
 }
-tr:nth-child(even) {
-   background: white;
-}
-tr:nth-child(odd) {
-   background: #eeeeee;
-}
-td.no-issues {
+.dashboard td.no-issues {
    background: lightGreen;
 }
-tr:hover td.no-issues {
+.dashboard tr:hover td.no-issues {
    background: #73BE73;
 }
-td.severity-major {
+.dashboard td.severity-major {
    background: lightCoral;
 }
-tr:hover td.severity-major {
+.dashboard tr:hover td.severity-major {
    background: #C06666;
 }
-td.severity-minor {
+.dashboard td.severity-minor {
    background: yellow;
 }
-tr:hover td.severity-minor {
+.dashboard tr:hover td.severity-minor {
    background: #CCCC00;
 }
-td.project-col {
-   border-right: none;
+
+
+.report .languages {
+   border: 1px #ccc solid;
 }
-td.project-row {
-   border-left: none;
+.report .tabs dd.active a {
+   background-color: #008cba;
+   color: white;
+}
+.report .tabs dd.active:after {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #008cba;
+  content: "";
+  left: 50%;
+  margin-left: -8px;
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+}
+.report .tabs dd > a {
+   background-color: lightGrey;
+   padding-top: 0px;
+   padding-bottom: 0px;
+}
+.report .tabs-content {
+   border-top: 1px #aaa solid;
+   padding: 1rem;
 }

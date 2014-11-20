@@ -1,87 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" >
   <head>
     <title>yal10n dashboard</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="webjars/normalize.css/normalize.css" type="text/css" rel="stylesheet"/>
+    <link href="webjars/foundation/css/foundation.min.css" type="text/css" rel="stylesheet"/>
     <link href="default.css" type="text/css" rel="stylesheet"/>
-    </style>
+    <script src="webjars/modernizr/modernizr.min.js"></script>
   </head>
-  <body>
-    <h1>yal10n Dashboard</h1>
+  <body class="dashboard">
+    <div class="row">
+        <div class="columns">
+            <h1>yal10n Dashboard</h1>
 
-    <p>Generation Date: $dashboard.generationDate</p>
+            <p>Generation Date: $dashboard.generationDate</p>
 
-    <table>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Project Name</th>
-        <th>default</th>
+            <table>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Project Name</th>
+                <th>default</th>
 #foreach( $lang in $dashboard.allLanguages)
-        <th>$lang</th>
+                <th>$lang</th>
 #end
-        <th>Report</th>
-        <th>Checkout SVN</th>
+                <th>Report</th>
+                <th>Checkout SVN</th>
 #if ($dashboard.createTmx)
-        <th>Download TMX</th>
+                <th>Download TMX</th>
 #end
-      </tr>
+            </tr>
 
 #foreach( $project in $dashboard.projects )
-      <tr>
-        #set($rows = 1 + $project.allBundles.size())
-        #if ($dashboard.createTmx)
-        #set($cols = 6 + $dashboard.allLanguages.size())
-        #else
-        #set($cols = 5 + $dashboard.allLanguages.size())
-        #end
-        <td rowspan="$rows" class="project-col">&nbsp;</td>
-        <td colspan="$cols" class="project-row">&nbsp;</td>
-      </tr>
+            <tr>
+            #set($rows = 1 + $project.allBundles.size())
+            #if ($dashboard.createTmx)
+            #set($cols = 6 + $dashboard.allLanguages.size())
+            #else
+            #set($cols = 5 + $dashboard.allLanguages.size())
+            #end
+                <td rowspan="$rows" class="project-col">&nbsp;</td>
+                <td colspan="$cols" class="project-row">&nbsp;</td>
+            </tr>
 #foreach( $bundle in $project.allBundles )
-      <tr>
-        <td class="highlight">$bundle.projectName</td>
+            <tr>
+                <td class="highlight">$bundle.projectName</td>
 #if ($bundle.base)
-        <td class="$bundle.base.issuesSeverityClass">
-          <a href="$bundle.base.svnUrl">default</a>
+                <td class="$bundle.base.issuesSeverityClass">
+                    <a href="$bundle.base.svnUrl">default</a>
 #else
-        <td class="severity-major">
-          missing
+                <td class="severity-major">
+                    missing
 #end
-        </td>
+                </td>
 
 #foreach( $lang in $bundle.languages)
 #if ($lang.existing)
-        <td class="$lang.issuesSeverityClass">
-          <a href="$lang.svnUrl">$lang.name</a>
+                <td class="$lang.issuesSeverityClass">
+                    <a href="$lang.svnUrl">$lang.name</a>
 #elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
-        <td class="severity-major">
-          missing
+                <td class="severity-major">
+                    missing
 #else
-        <td class="highlight">
-          missing
+                <td class="highlight">
+                    missing
 #end
-        </td>
+                </td>
 #end
 
-        <td class="highlight"><a href="reports/$bundle.relativeReportUrl">report</a></td>
-        <td class="highlight"><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
-
-#if ($dashboard.createTmx)
-        <td class="highlight"><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>
-#end
-      </tr>
-#end
-#end
-    </table>
+                <td class="highlight"><a href="reports/$bundle.relativeReportUrl">report</a></td>
+                <td class="highlight"><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
 
 #if ($dashboard.createTmx)
-    <p>
-        <a href="all-translations.tmx">Download complete translation memory</a>
-    </p>
+                <td class="highlight"><a href="reports/$bundle.relativeTmxUrl">Download TMX</a></td>
 #end
+              </tr>
+#end
+#end
+        </table>
 
-    <hr>
-    &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $dashboard.version
+#if ($dashboard.createTmx)
+            <p>
+                <a href="all-translations.tmx">Download complete translation memory</a>
+            </p>
+#end
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="columns">
+            &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $dashboard.version
+        </div>
+    </div>
+
+    <script src="webjars/jquery/jquery.min.js"></script>
+    <script src="webjars/foundation/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
   </body>
 </html>

@@ -1,82 +1,111 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" >
   <head>
     <title>yal10n - Report for $report.projectName</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="../webjars/normalize.css/normalize.css" type="text/css" rel="stylesheet"/>
+    <link href="../webjars/foundation/css/foundation.min.css" type="text/css" rel="stylesheet"/>
     <link href="../default.css" type="text/css" rel="stylesheet"/>
+    <script src="../webjars/modernizr/modernizr.min.js"></script>
   </head>
   <body>
-    <h1>yal10n - Report for $report.projectName</h1>
-    
-    <p>Generation Date: $report.generationDate</p>
-    <p>Maven Coordinates: $report.mavenCoordinates</p>
-    <p>Base Path: $report.basePath</p>
-    <p>Base Name: $report.baseName</p>
-    
-    <h2>Summary</h2>
-    <table class="simple">
-      <tr>
-        <th>Language</th>
-        <th>Encoding</th>
-        <th>Count of Messages</th>
-        <th>Count of Not Translated Messages</th>
-        <th>Count of Missing Messages</th>
-        <th>Count of Additional Messages</th>
-      </tr>
+  <body class="report">
+    <div class="row">
+      <div class="columns">
+        <h1>yal10n - Report for $report.projectName</h1>
+
+        <p>Generation Date: $report.generationDate</p>
+        <p>Maven Coordinates: $report.mavenCoordinates</p>
+        <p>Base Path: $report.basePath</p>
+        <p>Base Name: $report.baseName</p>
+
+        <table>
+          <tr>
+            <th>Language</th>
+            <th>Encoding</th>
+            <th>Count of Messages</th>
+            <th>Count of Not Translated Messages</th>
+            <th>Count of Missing Messages</th>
+            <th>Count of Additional Messages</th>
+          </tr>
 #foreach( $lang in $report.allLanguages)
-      <tr>
-        <td><a href="#$lang.name">$lang.name</a></td>
-        <td>$lang.encoding</td>
-        <td>$lang.countOfMessages</td>
-        <td>$lang.notTranslatedMessages.size()</td>
-        <td>$lang.missingMessages.size()</td>
-        <td>$lang.additionalMessages.size()</td>
-      </tr>
+          <tr>
+            <td><a href="#$lang.name">$lang.name</a></td>
+            <td>$lang.encoding</td>
+            <td>$lang.countOfMessages</td>
+            <td>$lang.notTranslatedMessages.size()</td>
+            <td>$lang.missingMessages.size()</td>
+            <td>$lang.additionalMessages.size()</td>
+          </tr>
 #end
-    </table>
-    
+        </table>
+
+        <div class="languages">
+          <dl class="tabs" data-tab data-options="deep_linking:true;scroll_to_content: false">
 #foreach( $lang in $report.allLanguages)
-    <a name="$lang.name">
-    <h2>$lang.name</h2>
-    </a>
-    
-    <p>Encoding: $lang.encoding</p>
-    <p>Count of Messages: $lang.countOfMessages</p>
-    <p>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></p>
-    <p>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></p>
-    
-    
-    <h3>Not Translated Messages ($lang.notTranslatedMessages.size())</h3>
-    <ul>
-    #foreach ($key in $lang.notTranslatedMessages.keySet())
-      <li>$esc.html($key) = $esc.html($lang.notTranslatedMessages[$key])</li>
-    #end
-    </ul>
-
-    <h3>Missing Messages ($lang.missingMessages.size())</h3>
-    <ul>
-    #foreach ($key in $lang.missingMessages.keySet())
-      <li>$esc.html($key) = $esc.html($lang.missingMessages[$key])</li>
-    #end
-    </ul>
-
-    <h3>Additional Messages ($lang.additionalMessages.size())</h3>
-    <ul>
-    #foreach ($key in $lang.additionalMessages.keySet())
-      <li>$esc.html($key) = $esc.html($lang.additionalMessages[$key])</li>
-    #end
-    </ul>
-    
-    <h3>Issues ($lang.scoreLog.size())</h3>
-    <ul>
-    #foreach ($log in $lang.scoreLog)
-      <li>$esc.html($log)</li>
-    #end
-    </ul>
-
+            <dd class="#if( $velocityCount == 1)active#end">
+                <a href="#$lang.name">$lang.name</a>
+            </dd>
 #end
-    <hr>
-    &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $report.version
+          </dl>
+
+          <div class="tabs-content">
+#foreach( $lang in $report.allLanguages)
+            <div class="content #if( $velocityCount == 1)active#end" id="$lang.name">
+
+              <p>Encoding: $lang.encoding</p>
+              <p>Count of Messages: $lang.countOfMessages</p>
+              <p>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></p>
+              <p>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></p>
+
+
+              <h3>Not Translated Messages ($lang.notTranslatedMessages.size())</h3>
+              <ul>
+              #foreach ($key in $lang.notTranslatedMessages.keySet())
+                <li>$esc.html($key) = $esc.html($lang.notTranslatedMessages[$key])</li>
+              #end
+              </ul>
+
+              <h3>Missing Messages ($lang.missingMessages.size())</h3>
+              <ul>
+              #foreach ($key in $lang.missingMessages.keySet())
+                <li>$esc.html($key) = $esc.html($lang.missingMessages[$key])</li>
+              #end
+              </ul>
+
+              <h3>Additional Messages ($lang.additionalMessages.size())</h3>
+              <ul>
+              #foreach ($key in $lang.additionalMessages.keySet())
+                <li>$esc.html($key) = $esc.html($lang.additionalMessages[$key])</li>
+              #end
+              </ul>
+
+              <h3>Issues ($lang.scoreLog.size())</h3>
+              <ul>
+              #foreach ($log in $lang.scoreLog)
+                <li>$esc.html($log)</li>
+              #end
+              </ul>
+            </div>
+#end
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="columns">
+        &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $report.version
+      </div>
+    </div>
+
+    <script src="../webjars/jquery/jquery.min.js"></script>
+    <script src="../webjars/foundation/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
   </body>
 </html>
