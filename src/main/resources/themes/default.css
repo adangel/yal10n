@@ -57,3 +57,6 @@ table tr:nth-of-type(2n) {
    border-top: 1px #aaa solid;
    padding: 1rem;
 }
+.report table th {
+   vertical-align: top;
+}

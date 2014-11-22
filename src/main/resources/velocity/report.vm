@@ -56,39 +56,65 @@
 #foreach( $lang in $report.allLanguages)
             <div class="content #if( $velocityCount == 1)active#end" id="$lang.name">
 
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th>Count of Keys / Key</th>
+                    <th>Value in the default locale</th>
+                </tr>
+                <tr>
+                    <th>Total Keys</th>
+                    <td colspan="2"><span class="round label">$lang.countOfMessages</span></td>
+                </tr>
+                #set( $rows = $lang.missingMessages.size() + 1 )
+                <tr>
+                    <th rowspan="$rows">Missing</th>
+                    <td colspan="2"><span class="round label">$lang.missingMessages.size()</span></td>
+                </tr>
+                #foreach ($key in $lang.missingMessages.keySet())
+                <tr>
+                    <td>$esc.html($key)</td>
+                    <td>$esc.html($lang.missingMessages[$key])</td>
+                </tr>
+                #end
+                #set( $rows = $lang.notTranslatedMessages.size() + 1 )
+                <tr>
+                    <th rowspan="$rows">Not Translated</th>
+                    <td colspan="2"><span class="round label">$lang.notTranslatedMessages.size()</span></td>
+                </tr>
+                #foreach ($key in $lang.notTranslatedMessages.keySet())
+                <tr>
+                    <td>$esc.html($key)</td>
+                    <td>$esc.html($lang.notTranslatedMessages[$key])</td>
+                </tr>
+                #end
+                #set( $rows = $lang.additionalMessages.size() + 1 )
+                <tr>
+                    <th rowspan="$rows">Additional</th>
+                    <td colspan="2"><span class="round label">$lang.additionalMessages.size()</span></td>
+                </tr>
+                #foreach ($key in $lang.additionalMessages.keySet())
+                <tr>
+                    <td>$esc.html($key)</td>
+                    <td>$esc.html($lang.additionalMessages[$key])</td>
+                </tr>
+                #end
+                #set( $rows = $lang.scoreLog.size() + 1 )
+                <tr>
+                    <th rowspan="$rows">Issues</th>
+                    <td colspan="2"><span class="round label">$lang.scoreLog.size()</span></td>
+                </tr>
+                #foreach ($log in $lang.scoreLog)
+                <tr>
+                    <td colspan="2">$esc.html($log)</td>
+                </tr>
+                #end
+            </table>
+
               <p>Encoding: $lang.encoding</p>
-              <p>Count of Messages: $lang.countOfMessages</p>
               <p>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></p>
               <p>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></p>
 
-
-              <h3>Not Translated Messages ($lang.notTranslatedMessages.size())</h3>
-              <ul>
-              #foreach ($key in $lang.notTranslatedMessages.keySet())
-                <li>$esc.html($key) = $esc.html($lang.notTranslatedMessages[$key])</li>
-              #end
-              </ul>
-
-              <h3>Missing Messages ($lang.missingMessages.size())</h3>
-              <ul>
-              #foreach ($key in $lang.missingMessages.keySet())
-                <li>$esc.html($key) = $esc.html($lang.missingMessages[$key])</li>
-              #end
-              </ul>
-
-              <h3>Additional Messages ($lang.additionalMessages.size())</h3>
-              <ul>
-              #foreach ($key in $lang.additionalMessages.keySet())
-                <li>$esc.html($key) = $esc.html($lang.additionalMessages[$key])</li>
-              #end
-              </ul>
-
-              <h3>Issues ($lang.scoreLog.size())</h3>
-              <ul>
-              #foreach ($log in $lang.scoreLog)
-                <li>$esc.html($log)</li>
-              #end
-              </ul>
             </div>
 #end
           </div>
