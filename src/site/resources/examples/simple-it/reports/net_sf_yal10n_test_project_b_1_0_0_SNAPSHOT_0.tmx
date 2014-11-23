@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmx version="1.4b">
-    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20131114T203217Z"></header>
+    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20141123T203748Z"></header>
     <body>
         <tu tuid="./svnrepos/repo1/trunk/messages:key">
             <prop type="x-svn-base-path">./svnrepos/repo1/trunk/messages</prop>
             <prop type="x-key">key</prop>
             <tuv xml:lang="en">
                 <seg>a different project</seg>
+            </tuv>
+        </tu>
+        <tu tuid="./svnrepos/repo1/trunk/messages:key1">
+            <prop type="x-svn-base-path">./svnrepos/repo1/trunk/messages</prop>
+            <prop type="x-key">key1</prop>
+            <tuv xml:lang="en">
+                <seg>changed</seg>
             </tuv>
         </tu>
     </body>

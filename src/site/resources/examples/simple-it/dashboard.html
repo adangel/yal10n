@@ -1,159 +1,182 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" >
   <head>
     <title>yal10n dashboard</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="webjars/normalize.css/normalize.css" type="text/css" rel="stylesheet"/>
+    <link href="webjars/foundation/css/foundation.min.css" type="text/css" rel="stylesheet"/>
     <link href="default.css" type="text/css" rel="stylesheet"/>
-    </style>
+    <script src="webjars/modernizr/modernizr.min.js"></script>
   </head>
-  <body>
-    <h1>yal10n Dashboard</h1>
+  <body class="dashboard">
+    <div class="contain-to-grid fixed">
+      <nav class="top-bar" data-topbar role="navigation">
+        <ul class="title-area">
+            <li class="name">
+                <h1>
+                    <a href="#">yal10n Dashboard</a>
+                </h1>
+            </li>
+        </ul>
+      </nav>
+    </div>
 
-    <p>Generation Date: Thu Nov 14 21:32:17 CET 2013</p>
+    <div class="row">
+        <div class="columns">
+            <p>Generation Date: Sun Nov 23 21:37:47 CET 2014</p>
 
-    <table>
-      <tr>
-        <th>&nbsp;</th>
-        <th>Project Name</th>
-        <th>default</th>
-        <th>de</th>
-        <th>fr</th>
-        <th>ja</th>
-        <th>nl</th>
-        <th>de_DE</th>
-        <th>Report</th>
-        <th>Checkout SVN</th>
-        <th>Download TMX</th>
-      </tr>
+            <table>
+              <tr>
+                <th>&nbsp;</th>
+                <th>Project Name</th>
+                <th>default</th>
+                <th>de</th>
+                <th>fr</th>
+                <th>ja</th>
+                <th>nl</th>
+                <th>de_DE</th>
+                <th>Checkout SVN</th>
+                <th>Download TMX</th>
+            </tr>
 
-      <tr>
-                                <td rowspan="3" class="project-col">&nbsp;</td>
-        <td colspan="11" class="project-row">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="highlight">Test Project A ValidationMessages</td>
-        <td class="severity-minor">
-          <a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/ValidationMessages.properties">default</a>
-        </td>
+            <tr>
+                                                    <td rowspan="2" class="project-col">&nbsp;</td>
+                <td colspan="10" class="project-row">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="highlight">net.sf.yal10n:test-project-b:1.0.0-SNAPSHOT</td>
+                <td class="no-issues">
+                    <a href="reports/net_sf_yal10n_test_project_b_1_0_0_SNAPSHOT_0.html#default">default</a>
+                </td>
 
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="highlight">
-          missing
-        </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="highlight">
+                    missing
+                </td>
 
-        <td class="highlight"><a href="reports/Test_Project_A_1.html">report</a></td>
-        <td class="highlight"><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/">checkout</a></td>
+                <td class="highlight"><a href="./svnrepos/repo1/trunk/project-b/src/main/resources/">checkout</a></td>
 
-        <td class="highlight"><a href="reports/Test_Project_A_1.tmx">Download TMX</a></td>
-      </tr>
-      <tr>
-        <td class="highlight">Test Project A messages</td>
-        <td class="severity-minor">
-          <a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages.properties">default</a>
-        </td>
+                <td class="highlight"><a href="reports/net_sf_yal10n_test_project_b_1_0_0_SNAPSHOT_0.tmx">Download TMX</a></td>
+              </tr>
+            <tr>
+                                                    <td rowspan="3" class="project-col">&nbsp;</td>
+                <td colspan="10" class="project-row">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="highlight">Test Project A ValidationMessages</td>
+                <td class="severity-minor">
+                    <a href="reports/Test_Project_A_1.html#default">default</a>
+                </td>
 
-        <td class="severity-major">
-          <a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages_de.properties">de</a>
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="highlight">
-          missing
-        </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="highlight">
+                    missing
+                </td>
 
-        <td class="highlight"><a href="reports/Test_Project_A_2.html">report</a></td>
-        <td class="highlight"><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/">checkout</a></td>
+                <td class="highlight"><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/">checkout</a></td>
 
-        <td class="highlight"><a href="reports/Test_Project_A_2.tmx">Download TMX</a></td>
-      </tr>
-      <tr>
-                                <td rowspan="2" class="project-col">&nbsp;</td>
-        <td colspan="11" class="project-row">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="highlight">Unknown Project 3</td>
-        <td class="severity-minor">
-          <a href="./svnrepos/repo2/trunk/project-c/resources/messages.properties">default</a>
-        </td>
+                <td class="highlight"><a href="reports/Test_Project_A_1.tmx">Download TMX</a></td>
+              </tr>
+            <tr>
+                <td class="highlight">Test Project A messages</td>
+                <td class="severity-minor">
+                    <a href="reports/Test_Project_A_2.html#default">default</a>
+                </td>
 
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="highlight">
-          missing
-        </td>
+                <td class="severity-major">
+                    <a href="reports/Test_Project_A_2.html#de">de</a>
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="highlight">
+                    missing
+                </td>
 
-        <td class="highlight"><a href="reports/Unknown_Project_3_3.html">report</a></td>
-        <td class="highlight"><a href="./svnrepos/repo2/trunk/project-c/resources/">checkout</a></td>
+                <td class="highlight"><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/">checkout</a></td>
 
-        <td class="highlight"><a href="reports/Unknown_Project_3_3.tmx">Download TMX</a></td>
-      </tr>
-      <tr>
-                                <td rowspan="2" class="project-col">&nbsp;</td>
-        <td colspan="11" class="project-row">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="highlight">net.sf.yal10n:test-project-b:1.0.0-SNAPSHOT</td>
-        <td class="no-issues">
-          <a href="./svnrepos/repo1/trunk/project-b/src/main/resources/messages.properties">default</a>
-        </td>
+                <td class="highlight"><a href="reports/Test_Project_A_2.tmx">Download TMX</a></td>
+              </tr>
+            <tr>
+                                                    <td rowspan="2" class="project-col">&nbsp;</td>
+                <td colspan="10" class="project-row">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="highlight">Unknown Project 3</td>
+                <td class="severity-minor">
+                    <a href="reports/Unknown_Project_3_3.html#default">default</a>
+                </td>
 
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="severity-major">
-          missing
-        </td>
-        <td class="highlight">
-          missing
-        </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="severity-major">
+                    missing
+                </td>
+                <td class="highlight">
+                    missing
+                </td>
 
-        <td class="highlight"><a href="reports/net_sf_yal10n_test_project_b_1_0_0_SNAPSHOT_0.html">report</a></td>
-        <td class="highlight"><a href="./svnrepos/repo1/trunk/project-b/src/main/resources/">checkout</a></td>
+                <td class="highlight"><a href="./svnrepos/repo2/trunk/project-c/resources/">checkout</a></td>
 
-        <td class="highlight"><a href="reports/net_sf_yal10n_test_project_b_1_0_0_SNAPSHOT_0.tmx">Download TMX</a></td>
-      </tr>
-    </table>
+                <td class="highlight"><a href="reports/Unknown_Project_3_3.tmx">Download TMX</a></td>
+              </tr>
+        </table>
 
-    <p>
-        <a href="all-translations.tmx">Download complete translation memory</a>
-    </p>
+            <p>
+                <a href="all-translations.tmx">Download complete translation memory</a>
+            </p>
+        </div>
+    </div>
 
-    <hr>
-    &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> 1.0.0-SNAPSHOT
+
+    <div class="row">
+        <div class="columns">
+            &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> 1.0.0-SNAPSHOT
+        </div>
+    </div>
+
+    <script src="webjars/jquery/jquery.min.js"></script>
+    <script src="webjars/foundation/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
   </body>
 </html>
