@@ -155,14 +155,14 @@
                   </div>
                 </dd>
                 <dd class="accordion-navigation">
-                  <a href="#${lang.name}_issues"><strong>Issues:</strong> <span class="round label">$lang.scoreLog.size()</span></a>
+                  <a href="#${lang.name}_issues"><strong>Issues:</strong> <span class="round label">$lang.issues.size()</span></a>
                   <div id="${lang.name}_issues" class="content">
-                  #if( $lang.scoreLog.isEmpty() )
+                  #if( $lang.issues.isEmpty() )
                   <span class="round label success">No issues detected</span>
                   #else
                   <ul>
-                  #foreach ($log in $lang.scoreLog)
-                    <li>$esc.html($log)</li>
+                  #foreach ($issue in $lang.issues)
+                    <li>$esc.html($issue)</li>
                   #end
                   </ul>
                   #end

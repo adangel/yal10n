@@ -21,20 +21,22 @@ package net.sf.yal10n.dashboard;
 public enum StatusClass
 {
     /** Everything is ok. E.g. no missing translations, etc. */
-    OK( "success", "ok" ),
+    OK( "success", "no-issues", "ok" ),
 
     /** Major issues, e.g. wrong encoding, many missing translations, etc. */
-    MAJOR_ISSUES( "warning", "major issues" ),
+    MAJOR_ISSUES( "warning", "severity-major", "major issues" ),
 
     /** Only minor issues, e.g. additional messages, etc. */
-    MINOR_ISSUES( "info", "minor issues" );
+    MINOR_ISSUES( "info", "severity-minor", "minor issues" );
 
     private final String foundationClass;
+    private final String dashboardClass;
     private final String message;
 
-    private StatusClass( String foundationClass, String message )
+    private StatusClass( String foundationClass, String dashboardClass, String message )
     {
         this.foundationClass = foundationClass;
+        this.dashboardClass = dashboardClass;
         this.message = message;
     }
 
@@ -45,6 +47,15 @@ public enum StatusClass
     public String getFoundationClass()
     {
         return foundationClass;
+    }
+
+    /**
+     * Gets the style for the dashboard table.
+     * @return the css class to be used in the dashboard table.
+     */
+    public String getDashboardClass()
+    {
+        return dashboardClass;
     }
 
     /**

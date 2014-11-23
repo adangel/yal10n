@@ -57,7 +57,7 @@
             <tr>
                 <td class="highlight">$bundle.projectName</td>
 #if ($bundle.base)
-                <td class="$bundle.base.issuesSeverityClass">
+                <td class="$bundle.base.status.dashboardClass">
                     <a href="reports/$bundle.relativeReportUrl#default">default</a>
 #else
                 <td class="severity-major">
@@ -67,7 +67,7 @@
 
 #foreach( $lang in $bundle.languages)
 #if ($lang.existing)
-                <td class="$lang.issuesSeverityClass">
+                <td class="$lang.status.dashboardClass">
                     <a href="reports/$bundle.relativeReportUrl#$lang.name">$lang.name</a>
 #elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
                 <td class="severity-major">

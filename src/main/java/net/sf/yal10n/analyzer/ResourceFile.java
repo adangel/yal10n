@@ -347,26 +347,21 @@ public class ResourceFile
         List<String> issues = executeChecks( detectedEncoding, notTranslatedKeys, missingKeys, additionalKeys,
                 defaultFile );
 
-        String issuesSeverityClass;
         StatusClass status;
         if ( issues.isEmpty() )
         {
-            issuesSeverityClass = "no-issues";
             status = StatusClass.OK;
         }
         else if ( issues.size() < majorIssueThreshold )
         {
-            issuesSeverityClass = "severity-minor";
             status = StatusClass.MINOR_ISSUES;
         }
         else
         {
-            issuesSeverityClass = "severity-major";
             status = StatusClass.MAJOR_ISSUES;
         }
-        model.setIssuesSeverityClass( issuesSeverityClass );
         model.setStatus( status );
-        model.setScoreLog( issues );
+        model.setIssues( issues );
 
         return model;
     }
@@ -374,12 +369,12 @@ public class ResourceFile
     private List<String> executeChecks( EncodingResult detectedEncoding, Map<String, String> notTranslatedKeys,
             Map<String, String> missingKeys, Map<String, String> additionalKeys, ResourceFile defaultFile )
     {
-        List<String> scoreLog = new ArrayList<String>();
+        List<String> issues = new ArrayList<String>();
 
         // wrong encoding
         if ( detectedEncoding.getDetected() == Encoding.OTHER )
         {
-            scoreLog.add( "Wrong Encoding: "
+            issues.add( "Wrong Encoding: "
                     + detectedEncoding.getError()
                     + " at line " + detectedEncoding.getErrorLine()
                     + " , column " + detectedEncoding.getErrorColumn() );
@@ -387,7 +382,7 @@ public class ResourceFile
         // missing base file
         if ( defaultFile == null )
         {
-            scoreLog.add( "Missing default file" );
+            issues.add( "Missing default file" );
         }
         // more than 10 % not translated or missing
         if ( defaultFile != null && !isVariant() )
@@ -396,14 +391,14 @@ public class ResourceFile
                     / defaultFile.getProperties().size();
             if ( missingPercentage > config.getChecks().getPercentageMissing() )
             {
-                scoreLog.add( String.format( Locale.ENGLISH, "%.2f %% missing or not translated keys",
+                issues.add( String.format( Locale.ENGLISH, "%.2f %% missing or not translated keys",
                         missingPercentage ) );
             }
         }
         // at least one additional
         if ( !additionalKeys.isEmpty() )
         {
-            scoreLog.add( "There are additional keys" );
+            issues.add( "There are additional keys" );
         }
 
         if ( config.getChecks().isCheckFileHeaders() )
@@ -417,7 +412,7 @@ public class ResourceFile
                 Matcher m = p.matcher( s );
                 if ( !m.find() || m.start() > 0 )
                 {
-                    scoreLog.add( "File header missing or not at the beginning of the file" );
+                    issues.add( "File header missing or not at the beginning of the file" );
                 }
 
             }
@@ -441,7 +436,7 @@ public class ResourceFile
                     firstLine = firstLine.trim();
                     if ( !firstLine.startsWith( "#" ) && firstLine.indexOf( '=' ) > -1 )
                     {
-                        scoreLog.add( "File has BOM, but first line contains already a message."
+                        issues.add( "File has BOM, but first line contains already a message."
                                 + "Please add a blank line." );
                     }
                 }
@@ -456,7 +451,7 @@ public class ResourceFile
                 IOUtil.close( reader );
             }
         }
-        return scoreLog;
+        return issues;
     }
 
     private boolean isIgnoreKey( String key, List<String> ignoreKeys )

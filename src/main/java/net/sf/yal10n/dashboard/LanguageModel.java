@@ -35,9 +35,8 @@ public class LanguageModel
     private Map<String, String> notTranslatedMessages = new HashMap<String, String>();
     private Map<String, String> missingMessages = new HashMap<String, String>();
     private Map<String, String> additionalMessages = new HashMap<String, String>();
-    private String issuesSeverityClass;
     private StatusClass status;
-    private List<String> scoreLog;
+    private List<String> issues;
     private boolean variant;
     private boolean existing;
 
@@ -242,23 +241,23 @@ public class LanguageModel
     }
 
     /**
-     * Gets the score log.
+     * Gets the issues.
      *
-     * @return the score log
+     * @return the issues
      */
-    public List<String> getScoreLog()
+    public List<String> getIssues()
     {
-        return scoreLog;
+        return issues;
     }
 
     /**
-     * Sets the score log.
+     * Sets the issues.
      *
-     * @param scoreLog the new score log
+     * @param issues the issues
      */
-    public void setScoreLog( List<String> scoreLog )
+    public void setIssues( List<String> issues )
     {
-        this.scoreLog = scoreLog;
+        this.issues = issues;
     }
 
     /**
@@ -279,26 +278,6 @@ public class LanguageModel
     public void setRelativeUrl( String relativeUrl )
     {
         this.relativeUrl = relativeUrl;
-    }
-
-    /**
-     * Gets the issues severity class.
-     *
-     * @return the issues severity class
-     */
-    public String getIssuesSeverityClass()
-    {
-        return issuesSeverityClass;
-    }
-
-    /**
-     * Sets the issues severity class.
-     *
-     * @param issuesSeverityClass the new issues severity class
-     */
-    public void setIssuesSeverityClass( String issuesSeverityClass )
-    {
-        this.issuesSeverityClass = issuesSeverityClass;
     }
 
     /**

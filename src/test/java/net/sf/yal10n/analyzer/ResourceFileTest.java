@@ -137,9 +137,8 @@ public class ResourceFileTest
         Assert.assertEquals( 0, languageModel.getNotTranslatedMessages().size() );
         Assert.assertEquals( 0, languageModel.getMissingMessages().size() );
         Assert.assertEquals( 0, languageModel.getAdditionalMessages().size() );
-        Assert.assertEquals( "no-issues", languageModel.getIssuesSeverityClass() );
         Assert.assertEquals( StatusClass.OK, languageModel.getStatus() );
-        Assert.assertEquals( 0, languageModel.getScoreLog().size() );
+        Assert.assertEquals( 0, languageModel.getIssues().size() );
         Assert.assertEquals( "http://svn.foo.com/svn/test-project/subdirectory/", languageModel.getSvnCheckoutUrl() );
 
         ResourceFile file2 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile2,
@@ -159,9 +158,8 @@ public class ResourceFileTest
         Assert.assertTrue( languageModel2.getMissingMessages().containsKey( "not.translated.missing" ) );
         Assert.assertEquals( 1, languageModel2.getAdditionalMessages().size() );
         Assert.assertTrue( languageModel2.getAdditionalMessages().containsKey( "additional.message" ) );
-        Assert.assertEquals( "severity-major", languageModel2.getIssuesSeverityClass() );
         Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel2.getStatus() );
-        Assert.assertEquals( 2, languageModel2.getScoreLog().size() );
+        Assert.assertEquals( 2, languageModel2.getIssues().size() );
 
         ResourceFile file3 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile3,
                 new SVNUtilMock( relativeFile3 ), null );
@@ -169,7 +167,7 @@ public class ResourceFileTest
         LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), ignoreKeys, 5 );
         Assert.assertTrue( languageModel3.isVariant() );
         Assert.assertEquals( "[Wrong Encoding: MALFORMED[1] at line 5 , column 114]",
-                languageModel3.getScoreLog().toString() );
+                languageModel3.getIssues().toString() );
         Assert.assertEquals( "OTHER", languageModel3.getEncoding() );
         Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel3.getEncodingStatus() );
         Assert.assertEquals( StatusClass.MINOR_ISSUES, languageModel3.getStatus() );
