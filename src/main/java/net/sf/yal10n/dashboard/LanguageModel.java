@@ -30,6 +30,7 @@ public class LanguageModel
     private String svnInfo;
     private String name;
     private String encoding;
+    private StatusClass encodingStatus;
     private int countOfMessages = -1;
     private Map<String, String> notTranslatedMessages = new HashMap<String, String>();
     private Map<String, String> missingMessages = new HashMap<String, String>();
@@ -137,6 +138,26 @@ public class LanguageModel
     public String getEncoding()
     {
         return this.encoding;
+    }
+
+    /**
+     * Sets the encoding status.
+     *
+     * @param encodingStatus the encoding status
+     */
+    public void setEncodingStatus( StatusClass encodingStatus )
+    {
+        this.encodingStatus = encodingStatus;
+    }
+
+    /**
+     * Gets the encoding status.
+     *
+     * @return the encoding status
+     */
+    public StatusClass getEncodingStatus()
+    {
+        return this.encodingStatus;
     }
 
     /**

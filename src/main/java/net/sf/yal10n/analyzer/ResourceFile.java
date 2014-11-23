@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import net.sf.yal10n.charset.UTF8BOMCharsetProvider;
 import net.sf.yal10n.dashboard.LanguageModel;
+import net.sf.yal10n.dashboard.StatusClass;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNInfo;
@@ -283,6 +284,14 @@ public class ResourceFile
         SimpleEncodingDetector detector = new SimpleEncodingDetector();
         EncodingResult detectedEncoding = detector.detectEncoding( new File( fullLocalPath ) );
         model.setEncoding( detectedEncoding.getDetected().name() );
+        if ( detectedEncoding.getDetected() != Encoding.OTHER )
+        {
+            model.setEncodingStatus( StatusClass.OK );
+        }
+        else
+        {
+            model.setEncodingStatus( StatusClass.MAJOR_ISSUES );
+        }
         model.setCountOfMessages( getProperties().size() );
         model.setExisting( true );
         model.setVariant( isVariant() );

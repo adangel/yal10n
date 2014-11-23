@@ -23,6 +23,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 import net.sf.yal10n.dashboard.LanguageModel;
+import net.sf.yal10n.dashboard.StatusClass;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNUtilMock;
@@ -128,6 +129,7 @@ public class ResourceFileTest
         LanguageModel languageModel = file.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel.getEncoding() );
+        Assert.assertEquals( StatusClass.OK, languageModel.getEncodingStatus() );
         Assert.assertEquals( "default", languageModel.getName() );
         Assert.assertEquals( "/target/test-classes/unit/subdirectory/messages.properties",
                 languageModel.getRelativeUrl() );
@@ -145,6 +147,7 @@ public class ResourceFileTest
         LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), ignoreKeys );
         Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel2.getEncoding() );
+        Assert.assertEquals( StatusClass.OK, languageModel2.getEncodingStatus() );
         Assert.assertEquals( "de", languageModel2.getName() );
         Assert.assertEquals( "/target/test-classes/unit/subdirectory/messages_de.properties",
                 languageModel2.getRelativeUrl() );
@@ -165,6 +168,8 @@ public class ResourceFileTest
         Assert.assertTrue( languageModel3.isVariant() );
         Assert.assertEquals( "[Wrong Encoding (1.0): MALFORMED[1] at line 5 , column 114]",
                 languageModel3.getScoreLog().toString() );
+        Assert.assertEquals( "OTHER", languageModel3.getEncoding() );
+        Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel3.getEncodingStatus() );
     }
     
 }
