@@ -26,7 +26,6 @@
 #foreach( $lang in $dashboard.allLanguages)
                 <th>$lang</th>
 #end
-                <th>Report</th>
                 <th>Checkout SVN</th>
 #if ($dashboard.createTmx)
                 <th>Download TMX</th>
@@ -37,9 +36,9 @@
             <tr>
             #set($rows = 1 + $project.allBundles.size())
             #if ($dashboard.createTmx)
-            #set($cols = 6 + $dashboard.allLanguages.size())
-            #else
             #set($cols = 5 + $dashboard.allLanguages.size())
+            #else
+            #set($cols = 4 + $dashboard.allLanguages.size())
             #end
                 <td rowspan="$rows" class="project-col">&nbsp;</td>
                 <td colspan="$cols" class="project-row">&nbsp;</td>
@@ -49,7 +48,7 @@
                 <td class="highlight">$bundle.projectName</td>
 #if ($bundle.base)
                 <td class="$bundle.base.issuesSeverityClass">
-                    <a href="$bundle.base.svnUrl">default</a>
+                    <a href="reports/$bundle.relativeReportUrl#default">default</a>
 #else
                 <td class="severity-major">
                     missing
@@ -59,7 +58,7 @@
 #foreach( $lang in $bundle.languages)
 #if ($lang.existing)
                 <td class="$lang.issuesSeverityClass">
-                    <a href="$lang.svnUrl">$lang.name</a>
+                    <a href="reports/$bundle.relativeReportUrl#$lang.name">$lang.name</a>
 #elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
                 <td class="severity-major">
                     missing
@@ -70,7 +69,6 @@
                 </td>
 #end
 
-                <td class="highlight"><a href="reports/$bundle.relativeReportUrl">report</a></td>
                 <td class="highlight"><a href="$bundle.base.svnCheckoutUrl">checkout</a></td>
 
 #if ($dashboard.createTmx)
