@@ -325,6 +325,7 @@ public class ResourceBundle
         model.setVersion( DashboardMojo.getVersion() );
         model.setBasePath( localBasePath );
         model.setBaseName( baseName );
+        model.setSvnCheckoutUrl( allLanguages.get( 0 ).getSvnCheckoutUrl() );
         return model;
     }
 

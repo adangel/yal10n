@@ -48,6 +48,8 @@ public class ReportModel
     /** The all languages. */
     private List<LanguageModel> allLanguages;
 
+    private String svnCheckoutUrl;
+
     /**
      * Gets the project name.
      *
@@ -206,5 +208,25 @@ public class ReportModel
     public void setVersion( String version )
     {
         this.version = version;
+    }
+
+    /**
+     * Gets the svn checkout url.
+     *
+     * @return the svn checkout url
+     */
+    public String getSvnCheckoutUrl()
+    {
+        return svnCheckoutUrl;
+    }
+
+    /**
+     * Sets the svn checkout url.
+     *
+     * @param svnCheckoutUrl the new svn checkout url
+     */
+    public void setSvnCheckoutUrl( String svnCheckoutUrl )
+    {
+        this.svnCheckoutUrl = svnCheckoutUrl;
     }
 }

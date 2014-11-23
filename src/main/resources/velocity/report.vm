@@ -32,10 +32,12 @@
 
     <div class="row">
       <div class="columns">
-        <p>Generation Date: $report.generationDate</p>
-        <p>Maven Coordinates: $report.mavenCoordinates</p>
-        <p>Base Path: $report.basePath</p>
-        <p>Base Name: $report.baseName</p>
+        <div>Checkout: <a href="$report.svnCheckoutUrl">$report.svnCheckoutUrl</a></div>
+        <div>Generation Date: $report.generationDate</div>
+        <div>Maven Coordinates: $report.mavenCoordinates</div>
+        <div>Base Path: $report.basePath</div>
+        <div>Base Name: $report.baseName</div>
+        <p></p>
 
         <table>
           <tr>
