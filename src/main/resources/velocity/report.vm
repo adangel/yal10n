@@ -13,10 +13,25 @@
   </head>
   <body>
   <body class="report">
+    <div class="contain-to-grid fixed">
+      <nav class="top-bar" data-topbar role="navigation">
+        <ul class="title-area">
+            <li class="name">
+                <h1>
+                    <a href="#">yal10n - Report for $report.projectName</a>
+                </h1>
+            </li>
+        </ul>
+        <section class="top-bar-section">
+            <ul class="right">
+                <li class="active"><a href="../dashboard.html">Back to dashboard</a></li>
+            </ul>
+        </section>
+      </nav>
+    </div>
+
     <div class="row">
       <div class="columns">
-        <h1>yal10n - Report for $report.projectName</h1>
-
         <p>Generation Date: $report.generationDate</p>
         <p>Maven Coordinates: $report.mavenCoordinates</p>
         <p>Base Path: $report.basePath</p>

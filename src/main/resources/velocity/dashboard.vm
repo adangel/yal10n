@@ -12,10 +12,20 @@
     <script src="webjars/modernizr/modernizr.min.js"></script>
   </head>
   <body class="dashboard">
+    <div class="contain-to-grid fixed">
+      <nav class="top-bar" data-topbar role="navigation">
+        <ul class="title-area">
+            <li class="name">
+                <h1>
+                    <a href="#">yal10n Dashboard</a>
+                </h1>
+            </li>
+        </ul>
+      </nav>
+    </div>
+
     <div class="row">
         <div class="columns">
-            <h1>yal10n Dashboard</h1>
-
             <p>Generation Date: $dashboard.generationDate</p>
 
             <table>
