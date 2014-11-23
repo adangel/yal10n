@@ -33,7 +33,7 @@
           </tr>
 #foreach( $lang in $report.allLanguages)
           <tr>
-            <td><a href="#$lang.name">$lang.name</a></td>
+            <td><a href="#$lang.name"><span class="has-tip label round $lang.status.foundationClass" data-tooltip aria-haspopup="true" title="$lang.status.message">$lang.name</span></a></td>
             <td>$lang.encoding</td>
             <td>$lang.countOfMessages</td>
             <td>$lang.notTranslatedMessages.size()</td>
@@ -56,6 +56,7 @@
 #foreach( $lang in $report.allLanguages)
             <div class="content #if( $velocityCount == 1)active#end" id="$lang.name">
 
+              <div>Overall Status: <span class="label round $lang.status.foundationClass">$lang.status.message</span></div>
               <div>Encoding: <span class="label round $lang.encodingStatus.foundationClass">$lang.encoding</span></div>
               <div>Total Keys: $lang.countOfMessages</div>
               <p></p>

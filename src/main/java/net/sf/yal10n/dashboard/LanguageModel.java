@@ -36,6 +36,7 @@ public class LanguageModel
     private Map<String, String> missingMessages = new HashMap<String, String>();
     private Map<String, String> additionalMessages = new HashMap<String, String>();
     private String issuesSeverityClass;
+    private StatusClass status;
     private List<String> scoreLog;
     private boolean variant;
     private boolean existing;
@@ -298,6 +299,26 @@ public class LanguageModel
     public void setIssuesSeverityClass( String issuesSeverityClass )
     {
         this.issuesSeverityClass = issuesSeverityClass;
+    }
+
+    /**
+     * Gets the status.
+     *
+     * @return the status
+     */
+    public StatusClass getStatus()
+    {
+        return this.status;
+    }
+
+    /**
+     * Sets the status.
+     *
+     * @param status the status
+     */
+    public void setStatus( StatusClass status )
+    {
+        this.status = status;
     }
 
     /**

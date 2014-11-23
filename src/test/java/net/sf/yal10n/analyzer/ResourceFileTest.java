@@ -138,6 +138,7 @@ public class ResourceFileTest
         Assert.assertEquals( 0, languageModel.getMissingMessages().size() );
         Assert.assertEquals( 0, languageModel.getAdditionalMessages().size() );
         Assert.assertEquals( "no-issues", languageModel.getIssuesSeverityClass() );
+        Assert.assertEquals( StatusClass.OK, languageModel.getStatus() );
         Assert.assertEquals( 0, languageModel.getScoreLog().size() );
         Assert.assertEquals( "http://svn.foo.com/svn/test-project/subdirectory/", languageModel.getSvnCheckoutUrl() );
 
@@ -159,6 +160,7 @@ public class ResourceFileTest
         Assert.assertEquals( 1, languageModel2.getAdditionalMessages().size() );
         Assert.assertTrue( languageModel2.getAdditionalMessages().containsKey( "additional.message" ) );
         Assert.assertEquals( "severity-major", languageModel2.getIssuesSeverityClass() );
+        Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel2.getStatus() );
         Assert.assertEquals( 2, languageModel2.getScoreLog().size() );
 
         ResourceFile file3 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile3,
@@ -170,6 +172,7 @@ public class ResourceFileTest
                 languageModel3.getScoreLog().toString() );
         Assert.assertEquals( "OTHER", languageModel3.getEncoding() );
         Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel3.getEncodingStatus() );
+        Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel3.getStatus() );
     }
     
 }

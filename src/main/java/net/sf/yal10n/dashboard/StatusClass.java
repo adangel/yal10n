@@ -21,19 +21,21 @@ package net.sf.yal10n.dashboard;
 public enum StatusClass
 {
     /** Everything is ok. E.g. no missing translations, etc. */
-    OK( "success" ),
+    OK( "success", "ok" ),
 
     /** Major issues, e.g. wrong encoding, many missing translations, etc. */
-    MAJOR_ISSUES( "warning" ),
+    MAJOR_ISSUES( "warning", "major issues" ),
 
     /** Only minor issues, e.g. additional messages, etc. */
-    MINOR_ISSUES( "info" );
+    MINOR_ISSUES( "info", "minor issues" );
 
     private final String foundationClass;
+    private final String message;
 
-    private StatusClass( String foundationClass )
+    private StatusClass( String foundationClass, String message )
     {
         this.foundationClass = foundationClass;
+        this.message = message;
     }
 
     /**
@@ -43,5 +45,14 @@ public enum StatusClass
     public String getFoundationClass()
     {
         return foundationClass;
+    }
+
+    /**
+     * Gets the textual representation of the status.
+     * @return the message
+     */
+    public String getMessage()
+    {
+        return message;
     }
 }

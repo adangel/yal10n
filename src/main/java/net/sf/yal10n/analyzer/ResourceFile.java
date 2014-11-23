@@ -351,19 +351,24 @@ public class ResourceFile
                 scoreLog );
 
         String issuesSeverityClass;
+        StatusClass status;
         if ( score >= 1.0 )
         {
             issuesSeverityClass = "severity-major";
+            status = StatusClass.MAJOR_ISSUES;
         }
         else if ( score >= SEVERITY_MINOR )
         {
             issuesSeverityClass = "severity-minor";
+            status = StatusClass.MINOR_ISSUES;
         }
         else
         {
             issuesSeverityClass = "no-issues";
+            status = StatusClass.OK;
         }
         model.setIssuesSeverityClass( issuesSeverityClass );
+        model.setStatus( status );
         model.setScoreLog( scoreLog );
 
         return model;
