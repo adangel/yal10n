@@ -47,7 +47,6 @@ import org.codehaus.plexus.util.IOUtil;
 public class ResourceFile
 {
     private static final String DEFAULT_LANGUAGE = "default";
-    private static final double SEVERITY_MINOR = 0.5;
     private ResourceBundle bundle;
     private SVNUtil svn;
     private String fullLocalPath;
@@ -272,9 +271,10 @@ public class ResourceFile
      *
      * @param log the log
      * @param ignoreKeys the ignore keys
+     * @param majorIssueThreshold number of issues to be considered a major problem
      * @return the language model
      */
-    public LanguageModel toLanguageModel( Log log, List<String> ignoreKeys )
+    public LanguageModel toLanguageModel( Log log, List<String> ignoreKeys, int majorIssueThreshold )
     {
         LanguageModel model = new LanguageModel();
         model.setSvnUrl( fullSvnPath );
@@ -344,46 +344,42 @@ public class ResourceFile
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 
-        double score = 0.0;
-        List<String> scoreLog = new ArrayList<String>();
-
-        score = executeChecks( detectedEncoding, notTranslatedKeys, missingKeys, additionalKeys, defaultFile, score,
-                scoreLog );
+        List<String> issues = executeChecks( detectedEncoding, notTranslatedKeys, missingKeys, additionalKeys,
+                defaultFile );
 
         String issuesSeverityClass;
         StatusClass status;
-        if ( score >= 1.0 )
+        if ( issues.isEmpty() )
         {
-            issuesSeverityClass = "severity-major";
-            status = StatusClass.MAJOR_ISSUES;
+            issuesSeverityClass = "no-issues";
+            status = StatusClass.OK;
         }
-        else if ( score >= SEVERITY_MINOR )
+        else if ( issues.size() < majorIssueThreshold )
         {
             issuesSeverityClass = "severity-minor";
             status = StatusClass.MINOR_ISSUES;
         }
         else
         {
-            issuesSeverityClass = "no-issues";
-            status = StatusClass.OK;
+            issuesSeverityClass = "severity-major";
+            status = StatusClass.MAJOR_ISSUES;
         }
         model.setIssuesSeverityClass( issuesSeverityClass );
         model.setStatus( status );
-        model.setScoreLog( scoreLog );
+        model.setScoreLog( issues );
 
         return model;
     }
 
-    private double executeChecks( EncodingResult detectedEncoding, Map<String, String> notTranslatedKeys,
-            Map<String, String> missingKeys, Map<String, String> additionalKeys, ResourceFile defaultFile,
-            double startScore, List<String> scoreLog )
+    private List<String> executeChecks( EncodingResult detectedEncoding, Map<String, String> notTranslatedKeys,
+            Map<String, String> missingKeys, Map<String, String> additionalKeys, ResourceFile defaultFile )
     {
-        double score = startScore;
+        List<String> scoreLog = new ArrayList<String>();
+
         // wrong encoding
         if ( detectedEncoding.getDetected() == Encoding.OTHER )
         {
-            score += 1.0;
-            scoreLog.add( "Wrong Encoding (1.0): "
+            scoreLog.add( "Wrong Encoding: "
                     + detectedEncoding.getError()
                     + " at line " + detectedEncoding.getErrorLine()
                     + " , column " + detectedEncoding.getErrorColumn() );
@@ -391,8 +387,7 @@ public class ResourceFile
         // missing base file
         if ( defaultFile == null )
         {
-            score += 1.0;
-            scoreLog.add( "Missing default file (1.0)" );
+            scoreLog.add( "Missing default file" );
         }
         // more than 10 % not translated or missing
         if ( defaultFile != null && !isVariant() )
@@ -401,16 +396,14 @@ public class ResourceFile
                     / defaultFile.getProperties().size();
             if ( missingPercentage > config.getChecks().getPercentageMissing() )
             {
-                score += SEVERITY_MINOR;
-                scoreLog.add( String.format( Locale.ENGLISH, "%.2f %% missing or not translated keys (0.5)",
+                scoreLog.add( String.format( Locale.ENGLISH, "%.2f %% missing or not translated keys",
                         missingPercentage ) );
             }
         }
         // at least one additional
         if ( !additionalKeys.isEmpty() )
         {
-            score += SEVERITY_MINOR;
-            scoreLog.add( "There are additional keys (0.5)" );
+            scoreLog.add( "There are additional keys" );
         }
 
         if ( config.getChecks().isCheckFileHeaders() )
@@ -424,8 +417,7 @@ public class ResourceFile
                 Matcher m = p.matcher( s );
                 if ( !m.find() || m.start() > 0 )
                 {
-                    scoreLog.add( "File header missing or not a the beginning of the file (0.5)" );
-                    score += SEVERITY_MINOR;
+                    scoreLog.add( "File header missing or not at the beginning of the file" );
                 }
 
             }
@@ -450,8 +442,7 @@ public class ResourceFile
                     if ( !firstLine.startsWith( "#" ) && firstLine.indexOf( '=' ) > -1 )
                     {
                         scoreLog.add( "File has BOM, but first line contains already a message."
-                                + "Please add a blank line. (0.5)" );
-                        score += SEVERITY_MINOR;
+                                + "Please add a blank line." );
                     }
                 }
 
@@ -465,7 +456,7 @@ public class ResourceFile
                 IOUtil.close( reader );
             }
         }
-        return score;
+        return scoreLog;
     }
 
     private boolean isIgnoreKey( String key, List<String> ignoreKeys )

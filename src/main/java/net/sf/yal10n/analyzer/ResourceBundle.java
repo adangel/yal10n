@@ -33,6 +33,7 @@ import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.dashboard.BundleModel;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.report.ReportModel;
+import net.sf.yal10n.settings.CheckConfiguration;
 import net.sf.yal10n.settings.DashboardConfiguration;
 
 import org.apache.maven.model.Model;
@@ -305,15 +306,20 @@ public class ResourceBundle
     {
         List<LanguageModel> allLanguages = new ArrayList<LanguageModel>();
         ResourceFile defaultFile = getDefaultFile();
+        CheckConfiguration checks = config.getChecks();
         String baseName = null;
         if ( defaultFile != null )
         {
-            allLanguages.add( defaultFile.toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
+            allLanguages.add( defaultFile.toLanguageModel( log,
+                    checks.getIgnoreKeys(),
+                    checks.getIssuesThreshold() ) );
             baseName = defaultFile.getBaseName();
         }
         for ( String lang : getLanguages() )
         {
-            allLanguages.add( getByLanguage( lang ).toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
+            allLanguages.add( getByLanguage( lang ).toLanguageModel( log,
+                    checks.getIgnoreKeys(),
+                    checks.getIssuesThreshold() ) );
         }
 
         ReportModel model = new ReportModel();
@@ -369,10 +375,13 @@ public class ResourceBundle
         model.setRelativeReportUrl( getRelativeReportUrl() );
         model.setRelativeTmxUrl( getRelativeTmxUrl() );
 
+        CheckConfiguration checks = config.getChecks();
         ResourceFile defaultFile = getDefaultFile();
         if ( defaultFile != null )
         {
-            model.setBase( defaultFile.toLanguageModel( log, config.getChecks().getIgnoreKeys() ) );
+            model.setBase( defaultFile.toLanguageModel( log,
+                    checks.getIgnoreKeys(),
+                    checks.getIssuesThreshold() ) );
         }
         for ( String lang : allLanguages )
         {
@@ -387,7 +396,9 @@ public class ResourceBundle
             }
             else
             {
-                langModel = file.toLanguageModel( log, config.getChecks().getIgnoreKeys() );
+                langModel = file.toLanguageModel( log,
+                        checks.getIgnoreKeys(),
+                        checks.getIssuesThreshold() );
             }
             model.addLanguage( langModel );
         }

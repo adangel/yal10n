@@ -26,6 +26,7 @@ public class CheckConfiguration
     private boolean checkFileHeaders = false;
     private String fileHeaderRegexp = "";
     private List<String> ignoreKeys = new ArrayList<String>();
+    private int issuesThreshold = 5;
 
     /**
      * Determines how many messages are allowed to be missing (missing or not translated)
@@ -103,5 +104,24 @@ public class CheckConfiguration
     public void setIgnoreKeys( List<String> ignoreKeys )
     {
         this.ignoreKeys = ignoreKeys;
+    }
+
+    /**
+     * Determines how many issues should be considered to be a major problem.
+     * Default value is 5.
+     * @return number of issues that make the problem major.
+     */
+    public int getIssuesThreshold()
+    {
+        return issuesThreshold;
+    }
+
+    /**
+     * Sets the number of issues that are needed to considering the issues as a major problem.
+     * @param issueThreshold number of issues
+     */
+    public void setIssueThreshold( int issueThreshold )
+    {
+        this.issuesThreshold = issueThreshold;
     }
 }
