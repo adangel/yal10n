@@ -56,64 +56,105 @@
 #foreach( $lang in $report.allLanguages)
             <div class="content #if( $velocityCount == 1)active#end" id="$lang.name">
 
-            <table>
-                <tr>
-                    <th>Type</th>
-                    <th>Count of Keys / Key</th>
-                    <th>Value in the default locale</th>
-                </tr>
-                <tr>
-                    <th>Total Keys</th>
-                    <td colspan="2"><span class="round label">$lang.countOfMessages</span></td>
-                </tr>
-                #set( $rows = $lang.missingMessages.size() + 1 )
-                <tr>
-                    <th rowspan="$rows">Missing</th>
-                    <td colspan="2"><span class="round label">$lang.missingMessages.size()</span></td>
-                </tr>
-                #foreach ($key in $lang.missingMessages.keySet())
-                <tr>
-                    <td>$esc.html($key)</td>
-                    <td>$esc.html($lang.missingMessages[$key])</td>
-                </tr>
-                #end
-                #set( $rows = $lang.notTranslatedMessages.size() + 1 )
-                <tr>
-                    <th rowspan="$rows">Not Translated</th>
-                    <td colspan="2"><span class="round label">$lang.notTranslatedMessages.size()</span></td>
-                </tr>
-                #foreach ($key in $lang.notTranslatedMessages.keySet())
-                <tr>
-                    <td>$esc.html($key)</td>
-                    <td>$esc.html($lang.notTranslatedMessages[$key])</td>
-                </tr>
-                #end
-                #set( $rows = $lang.additionalMessages.size() + 1 )
-                <tr>
-                    <th rowspan="$rows">Additional</th>
-                    <td colspan="2"><span class="round label">$lang.additionalMessages.size()</span></td>
-                </tr>
-                #foreach ($key in $lang.additionalMessages.keySet())
-                <tr>
-                    <td>$esc.html($key)</td>
-                    <td>$esc.html($lang.additionalMessages[$key])</td>
-                </tr>
-                #end
-                #set( $rows = $lang.scoreLog.size() + 1 )
-                <tr>
-                    <th rowspan="$rows">Issues</th>
-                    <td colspan="2"><span class="round label">$lang.scoreLog.size()</span></td>
-                </tr>
-                #foreach ($log in $lang.scoreLog)
-                <tr>
-                    <td colspan="2">$esc.html($log)</td>
-                </tr>
-                #end
-            </table>
+              <div>Encoding: <span class="label round #if( $lang.encoding.startsWith('UTF8') )success#{else}alert#{end}">$lang.encoding</span></div>
+              <div>Total Keys: $lang.countOfMessages</div>
+              <p></p>
 
-              <p>Encoding: $lang.encoding</p>
-              <p>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></p>
-              <p>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></p>
+              <dl class="accordion" data-accordion>
+                <dd class="accordion-navigation">
+                  <a href="#${lang.name}_missing"><strong>Missing Keys:</strong> <span class="round label">$lang.missingMessages.size()</span></a>
+                  <div id="${lang.name}_missing" class="content">
+                  #if( $lang.missingMessages.isEmpty() )
+                  <span class="round label success">No missing messages</span>
+                  #else
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Key</th>
+                        <th>Value in the default locale</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        #foreach ($key in $lang.missingMessages.keySet())
+                        <tr>
+                            <td>$esc.html($key)</td>
+                            <td>$esc.html($lang.missingMessages[$key])</td>
+                        </tr>
+                        #end
+                    </tbody>
+                  </table>
+                  #end
+                  </div>
+                </dd>
+                <dd class="accordion-navigation">
+                  <a href="#${lang.name}_not_translated"><strong>Not Translated:</strong> <span class="round label">$lang.notTranslatedMessages.size()</span></a>
+                  <div id="${lang.name}_not_translated" class="content">
+                  #if( $lang.notTranslatedMessages.isEmpty() )
+                  <span class="round label success">No not translated messages</span>
+                  #else
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Key</th>
+                        <th>Value in the default locale</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        #foreach ($key in $lang.notTranslatedMessages.keySet())
+                        <tr>
+                            <td>$esc.html($key)</td>
+                            <td>$esc.html($lang.notTranslatedMessages[$key])</td>
+                        </tr>
+                        #end
+                    </tbody>
+                  </table>
+                  #end
+                  </div>
+                </dd>
+                <dd class="accordion-navigation">
+                  <a href="#${lang.name}_additional"><strong>Additional:</strong> <span class="round label">$lang.additionalMessages.size()</span></a>
+                  <div id="${lang.name}_additional" class="content">
+                  #if( $lang.additionalMessages.isEmpty() )
+                  <span class="round label success">No additional messages</span>
+                  #else
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        #foreach ($key in $lang.additionalMessages.keySet())
+                        <tr>
+                            <td>$esc.html($key)</td>
+                            <td>$esc.html($lang.additionalMessages[$key])</td>
+                        </tr>
+                        #end
+                    </tbody>
+                  </table>
+                  #end
+                  </div>
+                </dd>
+                <dd class="accordion-navigation">
+                  <a href="#${lang.name}_issues"><strong>Issues:</strong> <span class="round label">$lang.scoreLog.size()</span></a>
+                  <div id="${lang.name}_issues" class="content">
+                  #if( $lang.scoreLog.isEmpty() )
+                  <span class="round label success">No issues detected</span>
+                  #else
+                  <ul>
+                  #foreach ($log in $lang.scoreLog)
+                    <li>$esc.html($log)</li>
+                  #end
+                  </ul>
+                  #end
+                  </div>
+                </dd>
+              </dl>
+
+              <p></p>
+              <div>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></div>
+              <div>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></div>
 
             </div>
 #end
