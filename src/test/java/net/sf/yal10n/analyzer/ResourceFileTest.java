@@ -116,6 +116,7 @@ public class ResourceFileTest
         final String relativeFile = "subdirectory/messages.properties";
         final String relativeFile2 = "subdirectory/messages_de.properties";
         final String relativeFile3 = "subdirectory/messages_de_DE.properties";
+        final String relativeFile4 = "subdirectory/messages_zh_CN.properties";
         DashboardConfiguration config = new DashboardConfiguration();
         config.getChecks().setIgnoreKeys( Arrays.asList( "ignored.message", "ignored.default.message" ) );
         config.getChecks().setIssueThreshold( 1 );
@@ -167,11 +168,19 @@ public class ResourceFileTest
         config.getChecks().setIssueThreshold( 5 );
         LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertTrue( languageModel3.isVariant() );
+        Assert.assertEquals( 1, languageModel3.getIssues().size() );
         Assert.assertEquals( "[Wrong Encoding: MALFORMED[1] at line 5 , column 114]",
                 languageModel3.getIssues().toString() );
         Assert.assertEquals( "OTHER", languageModel3.getEncoding() );
         Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel3.getEncodingStatus() );
         Assert.assertEquals( StatusClass.MINOR_ISSUES, languageModel3.getStatus() );
+
+        ResourceFile file4 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile4,
+                new SVNUtilMock( relativeFile4 ), null );
+        bundle.addFile( file4 );
+        LanguageModel languageModel4 = file4.toLanguageModel( new NullLog(), config.getChecks() );
+        Assert.assertTrue( languageModel4.isVariant() );
+        Assert.assertEquals( 1, languageModel4.getIssues().size() );
+        Assert.assertEquals( "[75.00 % missing or not translated keys]", languageModel4.getIssues().toString() );
     }
-    
 }

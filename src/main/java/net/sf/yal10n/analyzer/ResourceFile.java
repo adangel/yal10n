@@ -344,8 +344,8 @@ public class ResourceFile
         String info = "Revision " + svnInfo.getRevision() + " (" + svnInfo.getCommittedDate() + ")";
         model.setSvnInfo( info );
 
-        List<String> issues = executeChecks( detectedEncoding, notTranslatedKeys, missingKeys, additionalKeys,
-                defaultFile );
+        List<String> issues = executeChecks( checks.getIncludeVariants(), detectedEncoding, notTranslatedKeys,
+                missingKeys, additionalKeys, defaultFile );
 
         StatusClass status;
         if ( issues.isEmpty() )
@@ -366,7 +366,8 @@ public class ResourceFile
         return model;
     }
 
-    private List<String> executeChecks( EncodingResult detectedEncoding, Map<String, String> notTranslatedKeys,
+    private List<String> executeChecks( List<String> includeVariants, EncodingResult detectedEncoding,
+            Map<String, String> notTranslatedKeys,
             Map<String, String> missingKeys, Map<String, String> additionalKeys, ResourceFile defaultFile )
     {
         List<String> issues = new ArrayList<String>();
@@ -385,7 +386,7 @@ public class ResourceFile
             issues.add( "Missing default file" );
         }
         // more than 10 % not translated or missing
-        if ( defaultFile != null && !isVariant() )
+        if ( defaultFile != null && ( !isVariant() || includeVariants.contains( this.getLanguage() ) ) )
         {
             double missingPercentage = 100.0 * ( notTranslatedKeys.size() + missingKeys.size() )
                     / defaultFile.getProperties().size();

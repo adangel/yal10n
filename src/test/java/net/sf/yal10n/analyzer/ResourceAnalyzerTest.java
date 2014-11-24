@@ -67,7 +67,7 @@ public class ResourceAnalyzerTest
         ResourceBundle bundle = bundles.get( 0 );
         Assert.assertNotNull( bundle );
         Assert.assertEquals( repoId, bundle.getRepoId() );
-        Assert.assertEquals( "[de, de_DE, ja]", bundle.getLanguages().toString() );
+        Assert.assertEquals( "[de, de_DE, ja, zh_CN]", bundle.getLanguages().toString() );
 
         bundle = bundles.get( 1 );
         Assert.assertNotNull( bundle.getLocaleBasePath() );
