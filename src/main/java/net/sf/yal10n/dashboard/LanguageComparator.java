@@ -15,11 +15,12 @@ package net.sf.yal10n.dashboard;
  */
 
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Comparators used to sort languages.
  */
-public enum LanguageComparator implements Comparator<String>
+public enum LanguageComparator
 {
     /**
      * Sorts the languages in alphabetical order.
@@ -28,9 +29,16 @@ public enum LanguageComparator implements Comparator<String>
     ALPHABETICAL
     {
         @Override
-        public int compare( String o1, String o2 )
+        public Comparator<String> build( final List<String> variants )
         {
-            return o1.compareToIgnoreCase( o2 );
+            return new Comparator<String>()
+            {
+                @Override
+                public int compare( String o1, String o2 )
+                {
+                    return o1.compareToIgnoreCase( o2 );
+                }
+            };
         }
     },
 
@@ -41,25 +49,67 @@ public enum LanguageComparator implements Comparator<String>
     ALPHABETICAL_VARIANTS_LAST
     {
         @Override
-        public int compare( String o1, String o2 )
+        public Comparator<String> build( final List<String> variants )
         {
-            if ( o1.contains( "_" ) && o2.contains( "_" )
-                || !o1.contains( "_" ) && !o2.contains(  "_" ) )
+            return new Comparator<String>()
             {
-                return o1.compareToIgnoreCase( o2 );
-            }
-            else if ( o1.contains(  "_" ) && !o2.contains( "_" ) )
-            {
-                return 1;
-            }
-            else if ( !o1.contains( "_" ) && o2.contains( "_" ) )
-            {
-                return -1;
-            }
-            else
-            {
-                return o1.compareToIgnoreCase( o2 );
-            }
+                @Override
+                public int compare( String o1, String o2 )
+                {
+                    if ( variants.contains( o1 ) && variants.contains( o2 ) )
+                    {
+                        return o1.compareToIgnoreCase( o2 );
+                    }
+                    if ( variants.contains( o1 ) && !variants.contains( o2 ) )
+                    {
+                        if ( o2.contains( "_" ) )
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            return o1.compareToIgnoreCase( o2 );
+                        }
+                    }
+                    if ( !variants.contains( o1 ) && variants.contains( o2 ) )
+                    {
+                        if ( o1.contains( "_" ) )
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return o1.compareToIgnoreCase( o2 );
+                        }
+                    }
+
+                    if ( o1.contains( "_" ) && o2.contains( "_" )
+                        || !o1.contains( "_" ) && !o2.contains(  "_" ) )
+                    {
+                        return o1.compareToIgnoreCase( o2 );
+                    }
+                    else if ( o1.contains(  "_" ) && !o2.contains( "_" ) )
+                    {
+                        return 1;
+                    }
+                    else if ( !o1.contains( "_" ) && o2.contains( "_" ) )
+                    {
+                        return -1;
+                    }
+
+                    return o1.compareToIgnoreCase( o2 );
+                }
+            };
         }
-    }
+    };
+
+    /**
+     * Builds a comparator, that may take the given list of variants
+     * into account. This variants might be sorted as usual languages,
+     * before other variants.
+     * @param variants list of variants
+     * @return a comparator
+     * @see #ALPHABETICAL_VARIANTS_LAST
+     */
+    public abstract Comparator<String> build( List<String> variants );
 }

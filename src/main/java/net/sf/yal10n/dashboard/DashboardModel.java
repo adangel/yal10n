@@ -99,7 +99,8 @@ public class DashboardModel
             allLanguages.addAll( bundle.getLanguages() );
         }
         ArrayList<String> allLanguagesSorted = new ArrayList<String>( allLanguages );
-        Collections.sort( allLanguagesSorted, config.getLanguageComparator() );
+        Collections.sort( allLanguagesSorted,
+                config.getLanguageComparator().build( config.getChecks().getIncludeVariants() ) );
 
         Map<String, List<BundleModel>> projects = new HashMap<String, List<BundleModel>>();
         List<BundleModel> allBundles = new ArrayList<BundleModel>();
