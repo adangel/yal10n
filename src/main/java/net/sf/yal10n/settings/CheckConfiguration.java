@@ -15,6 +15,7 @@ package net.sf.yal10n.settings;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ import java.util.List;
 public class CheckConfiguration
 {
     private double percentageMissing = 10.0d;
+    private List<String> includeVariants = Arrays.asList( "zh_CN", "zh_TW" );
     private boolean checkFileHeaders = false;
     private String fileHeaderRegexp = "";
     private List<String> ignoreKeys = new ArrayList<String>();
@@ -123,5 +125,24 @@ public class CheckConfiguration
     public void setIssueThreshold( int issueThreshold )
     {
         this.issuesThreshold = issueThreshold;
+    }
+
+    /**
+     * Gets the list of language variants, that should not be excluded in the checks.
+     * Default are: zh_CN and zh_TW.
+     * @return the list of language variants
+     */
+    public List<String> getIncludeVariants()
+    {
+        return includeVariants;
+    }
+
+    /**
+     * Sets the list of language variants, that should not be excluded in the checks.
+     * @param includeVariants the list of language variants
+     */
+    public void setIncludeVariants( List<String> includeVariants )
+    {
+        this.includeVariants = includeVariants;
     }
 }

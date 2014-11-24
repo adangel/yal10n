@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import net.sf.yal10n.charset.UTF8BOMCharsetProvider;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.dashboard.StatusClass;
+import net.sf.yal10n.settings.CheckConfiguration;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNInfo;
@@ -270,11 +271,10 @@ public class ResourceFile
      * To language model.
      *
      * @param log the log
-     * @param ignoreKeys the ignore keys
-     * @param majorIssueThreshold number of issues to be considered a major problem
+     * @param checks the check configuration
      * @return the language model
      */
-    public LanguageModel toLanguageModel( Log log, List<String> ignoreKeys, int majorIssueThreshold )
+    public LanguageModel toLanguageModel( Log log, CheckConfiguration checks )
     {
         LanguageModel model = new LanguageModel();
         model.setSvnUrl( fullSvnPath );
@@ -307,7 +307,7 @@ public class ResourceFile
             for ( Object o : defaultProperties.keySet() )
             {
                 String key = o.toString();
-                if ( !isIgnoreKey( key, ignoreKeys ) )
+                if ( !isIgnoreKey( key, checks.getIgnoreKeys() ) )
                 {
                     String defaultProperty = defaultProperties.getProperty( key );
                     String translatedProperty = getProperties().getProperty( key );
@@ -326,7 +326,7 @@ public class ResourceFile
             for ( Object o : getProperties().keySet() )
             {
                 String key = o.toString();
-                if ( !isIgnoreKey( key, ignoreKeys ) && defaultProperties.getProperty( key ) == null )
+                if ( !isIgnoreKey( key, checks.getIgnoreKeys() ) && defaultProperties.getProperty( key ) == null )
                 {
                     additionalKeys.put( key, getProperties().getProperty( key ) );
                 }
@@ -352,7 +352,7 @@ public class ResourceFile
         {
             status = StatusClass.OK;
         }
-        else if ( issues.size() < majorIssueThreshold )
+        else if ( issues.size() < checks.getIssuesThreshold() )
         {
             status = StatusClass.MINOR_ISSUES;
         }

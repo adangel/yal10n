@@ -17,7 +17,6 @@ package net.sf.yal10n.analyzer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -118,15 +117,16 @@ public class ResourceFileTest
         final String relativeFile2 = "subdirectory/messages_de.properties";
         final String relativeFile3 = "subdirectory/messages_de_DE.properties";
         DashboardConfiguration config = new DashboardConfiguration();
+        config.getChecks().setIgnoreKeys( Arrays.asList( "ignored.message", "ignored.default.message" ) );
+        config.getChecks().setIssueThreshold( 1 );
         Repository repo = new Repository();
         String svnRepoUrl = "http://svn.foo.com/svn/test-project";
-        List<String> ignoreKeys = Arrays.asList( "ignored.message", "ignored.default.message" );
 
         ResourceFile file = new ResourceFile( config, repo, svnRepoUrl, checkoutPath, relativeFile,
                 new SVNUtilMock( relativeFile ),
                 "http://svn.foo.com/svn/test-project/subdirectory/messages.properties" );
         bundle.addFile( file );
-        LanguageModel languageModel = file.toLanguageModel( new NullLog(), ignoreKeys, 1 );
+        LanguageModel languageModel = file.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertEquals( 4, languageModel.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel.getEncodingStatus() );
@@ -144,7 +144,7 @@ public class ResourceFileTest
         ResourceFile file2 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile2,
                 new SVNUtilMock( relativeFile2 ), null );
         bundle.addFile( file2 );
-        LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), ignoreKeys, 1 );
+        LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
         Assert.assertEquals( "UTF8", languageModel2.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel2.getEncodingStatus() );
@@ -164,7 +164,8 @@ public class ResourceFileTest
         ResourceFile file3 = new ResourceFile( config, repo, svnRepoUrl, "./target/test-classes/unit", relativeFile3,
                 new SVNUtilMock( relativeFile3 ), null );
         bundle.addFile( file3 );
-        LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), ignoreKeys, 5 );
+        config.getChecks().setIssueThreshold( 5 );
+        LanguageModel languageModel3 = file3.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertTrue( languageModel3.isVariant() );
         Assert.assertEquals( "[Wrong Encoding: MALFORMED[1] at line 5 , column 114]",
                 languageModel3.getIssues().toString() );
