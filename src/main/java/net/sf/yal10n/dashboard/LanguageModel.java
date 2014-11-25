@@ -16,6 +16,7 @@ package net.sf.yal10n.dashboard;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -31,6 +32,7 @@ public class LanguageModel
     private String name;
     private String encoding;
     private StatusClass encodingStatus;
+    private int countOfDefaultMessages = -1;
     private int countOfMessages = -1;
     private Map<String, String> notTranslatedMessages = new HashMap<String, String>();
     private Map<String, String> missingMessages = new HashMap<String, String>();
@@ -158,6 +160,26 @@ public class LanguageModel
     public StatusClass getEncodingStatus()
     {
         return this.encodingStatus;
+    }
+
+    /**
+     * Gets the count of default messages.
+     *
+     * @return the count of default messages
+     */
+    public int getCountOfDefaultMessages()
+    {
+        return countOfDefaultMessages;
+    }
+
+    /**
+     * Sets the count of default messages.
+     *
+     * @param countOfDefaultMessages the count of default messages
+     */
+    public void setCountOfDefaultMessages( int countOfDefaultMessages )
+    {
+        this.countOfDefaultMessages = countOfDefaultMessages;
     }
 
     /**
@@ -334,5 +356,38 @@ public class LanguageModel
     public void setExisting( boolean existing )
     {
         this.existing = existing;
+    }
+
+    /**
+     * Gets the string percentage of missing messages.
+     * @return percentage of missing messages
+     */
+    public String getMissingMessagesPercentage()
+    {
+        return countOfDefaultMessages > -1
+            ? String.format( Locale.ENGLISH, "%.2f %%", 100.0 * missingMessages.size() / countOfDefaultMessages )
+            : "n/a";
+    }
+
+    /**
+     * Gets the string percentage of not translated messages.
+     * @return percentage of not translated messages
+     */
+    public String getNotTranslatedMessagesPercentage()
+    {
+        return countOfDefaultMessages > -1
+            ? String.format( Locale.ENGLISH, "%.2f %%", 100.0 * notTranslatedMessages.size() / countOfDefaultMessages )
+            : "n/a";
+    }
+
+    /**
+     * Gets the string percentage of additional messages.
+     * @return percentage of additional messages
+     */
+    public String getAdditionalMessagesPercentage()
+    {
+        return countOfDefaultMessages > -1
+            ? String.format( Locale.ENGLISH, "%.2f %%", 100.0 * additionalMessages.size() / countOfDefaultMessages )
+            : "n/a";
     }
 }

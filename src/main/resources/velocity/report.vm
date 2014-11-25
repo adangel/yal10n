@@ -32,11 +32,26 @@
 
     <div class="row">
       <div class="columns">
-        <div>Checkout: <a href="$report.svnCheckoutUrl">$report.svnCheckoutUrl</a></div>
-        <div>Generation Date: $report.generationDate</div>
-        <div>Maven Coordinates: $report.mavenCoordinates</div>
-        <div>Base Path: $report.basePath</div>
-        <div>Base Name: $report.baseName</div>
+        <p></p>
+        <dl class="accordion" data-accordion>
+            <dd class="accordion-navigation">
+                <a href="#info"><strong>General info for $report.projectName</strong></a>
+                <div id="info" class="content">
+                    <dl>
+                        <dt>Generation Date:</dt>
+                        <dd>$report.generationDate</dd>
+                        <dt>Maven Coordinates:</dt>
+                        <dd>$report.mavenCoordinates</dd>
+                        <dt>Base Path:</dt>
+                        <dd>$report.basePath</dd>
+                        <dt>Base Name:</dt>
+                        <dd>$report.baseName</dd>
+                    </dl>
+                </div>
+            </dd>
+        </dl>
+        <p></p>
+        <div class="panel radius callout">Checkout: <a href="$report.svnCheckoutUrl">$report.svnCheckoutUrl</a></div>
         <p></p>
 
         <table>
@@ -51,7 +66,7 @@
 #foreach( $lang in $report.allLanguages)
           <tr>
             <td><a href="#$lang.name"><span class="has-tip label round $lang.status.foundationClass" data-tooltip aria-haspopup="true" title="$lang.status.message">$lang.name</span></a></td>
-            <td>$lang.encoding</td>
+            <td><span class="label round $lang.encodingStatus.foundationClass">$lang.encoding</span></td>
             <td>$lang.countOfMessages</td>
             <td>$lang.notTranslatedMessages.size()</td>
             <td>$lang.missingMessages.size()</td>
@@ -75,7 +90,6 @@
 
               <div>Overall Status: <span class="label round $lang.status.foundationClass">$lang.status.message</span></div>
               <div>Encoding: <span class="label round $lang.encodingStatus.foundationClass">$lang.encoding</span></div>
-              <div>Total Keys: $lang.countOfMessages</div>
               <p></p>
 
               <dl class="accordion" data-accordion>
@@ -184,8 +198,26 @@
               </dl>
 
               <p></p>
-              <div>Download analyzed version: <a href="../$lang.relativeUrl">$lang.svnInfo</a></div>
-              <div>Download latest version: <a href="$lang.svnUrl">$lang.svnUrl</a></div>
+              <dl class="accordion" data-accordion>
+                <dd class="accordion-navigation">
+                    <a href="#${lang.name}_statistics"><strong>Statistics for ${lang.name}</strong></a>
+                    <div id="${lang.name}_statistics" class="content">
+                        <dl>
+                            <dt>Analyzed version:</dt>
+                            <dd><span><a href="../$lang.relativeUrl">$lang.svnInfo</a></span></dd>
+                            <dt>Latest version:</dt>
+                            <dd><span><a href="$lang.svnUrl">$lang.svnUrl</a></span></dd>
+                            <dt>Total Keys:</dt>
+                            <dd>$lang.countOfMessages</dd>
+                            <dt>Missing Keys:</dt>
+                            <dd>$lang.missingMessages.size() ($lang.missingMessagesPercentage)</dd>
+                            <dt>Not Translated Keys:</dt>
+                            <dd>$lang.notTranslatedMessages.size() ($lang.notTranslatedMessagesPercentage)</dd>
+                            <dt>Additional Keys:</dt>
+                            <dd>$lang.additionalMessages.size() ($lang.additionalMessagesPercentage)</dd>
+                        </dl>
+                    </div>
+              </dl>
 
             </div>
 #end

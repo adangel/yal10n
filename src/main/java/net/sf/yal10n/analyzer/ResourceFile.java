@@ -301,6 +301,11 @@ public class ResourceFile
         Map<String, String> additionalKeys = new HashMap<String, String>();
 
         ResourceFile defaultFile = bundle.getDefaultFile();
+        if ( defaultFile != null )
+        {
+            model.setCountOfDefaultMessages( defaultFile.getProperties().size() );
+        }
+
         if ( defaultFile != null && defaultFile != this )
         {
             Properties defaultProperties = defaultFile.getProperties();

@@ -129,6 +129,7 @@ public class ResourceFileTest
         bundle.addFile( file );
         LanguageModel languageModel = file.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertEquals( 4, languageModel.getCountOfMessages() );
+        Assert.assertEquals( 4, languageModel.getCountOfDefaultMessages() );
         Assert.assertEquals( "UTF8", languageModel.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel.getEncodingStatus() );
         Assert.assertEquals( "default", languageModel.getName() );
@@ -147,6 +148,7 @@ public class ResourceFileTest
         bundle.addFile( file2 );
         LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
+        Assert.assertEquals( 4, languageModel2.getCountOfDefaultMessages() );
         Assert.assertEquals( "UTF8", languageModel2.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel2.getEncodingStatus() );
         Assert.assertEquals( "de", languageModel2.getName() );
