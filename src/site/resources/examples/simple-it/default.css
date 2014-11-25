@@ -7,6 +7,15 @@ table tr:nth-of-type(2n) {
   background: none repeat scroll 0 0 #f0f0f0;
 }
 
+.dashboard > div.dashboard-border {
+   margin: 1rem;
+   padding: 1rem;
+   border: 1px #ccc solid;
+   border-radius: 2rem;
+}
+.dashboard table {
+   width: 100%;
+}
 .dashboard tr:hover td.highlight {
    background: lightblue;
 }

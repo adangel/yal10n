@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tmx version="1.4b">
-    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20141123T203748Z"></header>
+    <header creationtool="yal10n" creationtoolversion="1.0.0-SNAPSHOT" datatype="plaintext" segtype="sentence" adminlang="en-us" srclang="en" creationdate="20141125T193117Z"></header>
     <body>
         <tu tuid="./svnrepos/repo2/trunk/messages:info">
             <prop type="x-svn-base-path">./svnrepos/repo2/trunk/messages</prop>
