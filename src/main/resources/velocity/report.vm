@@ -85,6 +85,10 @@
                   #if( $lang.missingMessages.isEmpty() )
                   <span class="round label success">No missing messages</span>
                   #else
+                  <div class="panel callout radius">
+                    These are messages that are contained in the default file, but not in the file for "${lang.name}".
+                    For these messages, the value in the default locale will be used.
+                  </div>
                   <table>
                     <thead>
                       <tr>
@@ -110,6 +114,11 @@
                   #if( $lang.notTranslatedMessages.isEmpty() )
                   <span class="round label success">No not translated messages</span>
                   #else
+                  <div class="panel callout radius">
+                    These are messages that are contained in both the default file and the file for "${lang.name}".
+                    However, in both files the values are the same. This could be correct, but it could also mean,
+                    that the translation was simply overlooked.
+                  </div>
                   <table>
                     <thead>
                       <tr>
@@ -135,6 +144,10 @@
                   #if( $lang.additionalMessages.isEmpty() )
                   <span class="round label success">No additional messages</span>
                   #else
+                  <div class="panel callout radius">
+                    These are messages that are only contained in the file for "${lang.name}". They don't exist (anymore)
+                    in the default file. They can be safely deleted from the file for "${lang.name}".
+                  </div>
                   <table>
                     <thead>
                       <tr>
