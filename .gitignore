@@ -1,5 +1,9 @@
 .classpath
 .project
 .checkstyle
+.pmd
+.pmdruleset
+.fbExcludeFilterFile
+.externalToolBuilders/
 .settings/
 target/
