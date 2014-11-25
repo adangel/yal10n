@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import net.sf.yal10n.DashboardMojo;
 import net.sf.yal10n.dashboard.BundleModel;
 import net.sf.yal10n.dashboard.LanguageModel;
+import net.sf.yal10n.dashboard.StatusClass;
 import net.sf.yal10n.report.ReportModel;
 import net.sf.yal10n.settings.CheckConfiguration;
 import net.sf.yal10n.settings.DashboardConfiguration;
@@ -356,9 +357,10 @@ public class ResourceBundle
      *
      * @param log the log
      * @param allLanguages the languages to include in the report
+     * @param includeVariants the languages, that should not be handled as variants
      * @return the bundle model
      */
-    public BundleModel toBundleModel( Log log, List<String> allLanguages )
+    public BundleModel toBundleModel( Log log, List<String> allLanguages, List<String> includeVariants )
     {
         BundleModel model = new BundleModel();
 
@@ -387,6 +389,15 @@ public class ResourceBundle
                 langModel.setName( lang );
                 langModel.setExisting( false );
                 langModel.setVariant( ResourceFile.isVariant( lang ) );
+                if ( ( !langModel.isVariant() || includeVariants.contains( lang ) )
+                        && model.getBase() != null && model.getBase().getCountOfMessages() > 0 )
+                {
+                    langModel.setStatus( StatusClass.MAJOR_ISSUES );
+                }
+                else
+                {
+                    langModel.setStatus( StatusClass.NO_STATUS );
+                }
             }
             else
             {

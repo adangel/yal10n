@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import net.sf.yal10n.analyzer.NullLog;
 import net.sf.yal10n.analyzer.ResourceAnalyzer;
@@ -54,9 +55,10 @@ public class TranslationMemoryRendererTest
 
         TranslationMemoryRenderer renderer = new TranslationMemoryRenderer();
         ResourceBundle bundle = createBundle().iterator().next();
-        renderer.render( new NullLog(), bundle, outputDirectory.getCanonicalPath() );
+        renderer.render( new NullLog(), bundle, outputDirectory.getCanonicalPath(), Collections.<String> emptyList() );
 
-        String relativeTmxUrl = bundle.toBundleModel( new NullLog(), bundle.getLanguages() ).getRelativeTmxUrl();
+        String relativeTmxUrl = bundle.toBundleModel( new NullLog(), bundle.getLanguages(),
+                Collections.<String> emptyList() ).getRelativeTmxUrl();
         Assert.assertTrue( new File( completeDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( completeDirectory, relativeTmxUrl ) ),
                 "UTF-8" );

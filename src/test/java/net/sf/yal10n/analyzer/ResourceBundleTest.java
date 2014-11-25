@@ -20,6 +20,7 @@ import java.util.List;
 
 import net.sf.yal10n.dashboard.BundleModel;
 import net.sf.yal10n.dashboard.LanguageModel;
+import net.sf.yal10n.dashboard.StatusClass;
 import net.sf.yal10n.report.ReportModel;
 import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
@@ -39,7 +40,7 @@ public class ResourceBundleTest
     private static ResourceFile file;
     private static ResourceFile fileDe;
     private static String svnUrl = "http://svn-url";
-    private static List<String> allLanguages = Arrays.asList( "de", "fr", "de_DE" );
+    private static List<String> allLanguages = Arrays.asList( "de", "fr", "de_DE", "zh_CN" );
 
     /**
      * Setup a resource bundle for testing.
@@ -134,24 +135,28 @@ public class ResourceBundleTest
     @Test
     public void testBundleModel()
     {
-        BundleModel bundleModel = bundle.toBundleModel( new NullLog(), allLanguages );
+        BundleModel bundleModel = bundle.toBundleModel( new NullLog(), allLanguages, Arrays.asList( "zh_CN" ) );
         Assert.assertNotNull( bundleModel.getBase() );
         Assert.assertEquals( "default", bundleModel.getBase().getName() );
+        Assert.assertEquals( 4, bundleModel.getBase().getCountOfMessages() );
         Assert.assertEquals( "messages", bundleModel.getBundleName() );
         Assert.assertEquals( "Unknown_Project_0_0.html", bundleModel.getRelativeReportUrl() );
         Assert.assertEquals( "Unknown_Project_0_0.tmx", bundleModel.getRelativeTmxUrl() );
-        Assert.assertEquals( 3, bundleModel.getLanguages().size() );
-        assertLanguageModel( bundleModel.getLanguages().get( 0 ), "de", true, false );
-        assertLanguageModel( bundleModel.getLanguages().get( 1 ), "fr", false, false );
-        assertLanguageModel( bundleModel.getLanguages().get( 2 ), "de_DE", false, true );
+        Assert.assertEquals( 4, bundleModel.getLanguages().size() );
+        assertLanguageModel( bundleModel.getLanguages().get( 0 ), "de", true, false, StatusClass.MINOR_ISSUES );
+        assertLanguageModel( bundleModel.getLanguages().get( 1 ), "fr", false, false, StatusClass.MAJOR_ISSUES );
+        assertLanguageModel( bundleModel.getLanguages().get( 2 ), "de_DE", false, true, StatusClass.NO_STATUS );
+        assertLanguageModel( bundleModel.getLanguages().get( 3 ), "zh_CN", false, true, StatusClass.MAJOR_ISSUES );
     }
 
-    private static void assertLanguageModel( LanguageModel model, String name, boolean existing, boolean variant )
+    private static void assertLanguageModel( LanguageModel model, String name, boolean existing, boolean variant,
+            StatusClass status )
     {
         Assert.assertNotNull( model );
         Assert.assertEquals( name, model.getName() );
         Assert.assertEquals( existing, model.isExisting() );
         Assert.assertEquals( variant, model.isVariant() );
+        Assert.assertEquals( status, model.getStatus() );
     }
 
     /**

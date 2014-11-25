@@ -114,7 +114,7 @@ public class DashboardMojo extends BaseMojo
             tmxRenderer.render( bundles, outputDirectory );
             for ( ResourceBundle bundle : bundles )
             {
-                tmxRenderer.render( getLog(), bundle, outputDirectory );
+                tmxRenderer.render( getLog(), bundle, outputDirectory, config.getChecks().getIncludeVariants() );
             }
         }
         else

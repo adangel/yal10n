@@ -106,16 +106,21 @@ public class DashboardRendererTest
         BundleModel bundle1 = new BundleModel();
         bundle1.setProjectName( projectName );
         bundle1.setRelativeReportUrl( reportUrl );
-        bundle1.setBase( createLanguageModel( "default", reportUrl + "/base", reportUrl, true, countOfMessages ) );
-        bundle1.addLanguage( createLanguageModel( "de", reportUrl + "/de", reportUrl, true, countOfMessages ) );
-        bundle1.addLanguage( createLanguageModel( "fr", reportUrl + "/fr", reportUrl, true, countOfMessages ) );
-        bundle1.addLanguage( createLanguageModel( "es", null, null, false, countOfMessages ) );
-        bundle1.addLanguage( createLanguageModel( "de_DE", null, null, false, countOfMessages ) );
+        bundle1.setBase( createLanguageModel( "default", reportUrl + "/base", reportUrl, true, countOfMessages,
+                StatusClass.OK ) );
+        bundle1.addLanguage( createLanguageModel( "de", reportUrl + "/de", reportUrl, true, countOfMessages,
+                StatusClass.MINOR_ISSUES ) );
+        bundle1.addLanguage( createLanguageModel( "fr", reportUrl + "/fr", reportUrl, true, countOfMessages,
+                StatusClass.MAJOR_ISSUES ) );
+        bundle1.addLanguage( createLanguageModel( "es", null, null, false, countOfMessages,
+                StatusClass.MAJOR_ISSUES ) );
+        bundle1.addLanguage( createLanguageModel( "de_DE", null, null, false, countOfMessages,
+                StatusClass.NO_STATUS ) );
         return bundle1;
     }
 
     private LanguageModel createLanguageModel( String name, String svnUrl, String reportUrl,
-        boolean existing, int count )
+        boolean existing, int count, StatusClass status )
     {
         LanguageModel base = new LanguageModel();
         base.setExisting( existing );
@@ -124,6 +129,7 @@ public class DashboardRendererTest
         base.setSvnUrl( svnUrl );
         base.setSvnCheckoutUrl( reportUrl + "/" );
         base.setCountOfMessages( count );
+        base.setStatus( status );
         return base;
     }
 }

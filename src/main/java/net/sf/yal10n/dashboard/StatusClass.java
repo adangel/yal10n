@@ -27,7 +27,10 @@ public enum StatusClass
     MAJOR_ISSUES( "warning", "severity-major", "major issues" ),
 
     /** Only minor issues, e.g. additional messages, etc. */
-    MINOR_ISSUES( "info", "severity-minor", "minor issues" );
+    MINOR_ISSUES( "info", "severity-minor", "minor issues" ),
+
+    /** No status possible, e.g. the file doesn't exist. */
+    NO_STATUS( "", "highlight", "" );
 
     private final String foundationClass;
     private final String dashboardClass;

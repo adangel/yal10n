@@ -4,7 +4,7 @@
     "includes": [ "**/*essages*.properties" ],
     "excludes": [ "**/src/test/**"],
     "createTMX": true,
-    "languages": ["de", "de_DE", "fr", "ja", "nl"],
+    "languages": ["de", "de_DE", "fr", "ja", "nl", "zh_CN"],
     "repositories": [
         {
             "url": "repo1/trunk"

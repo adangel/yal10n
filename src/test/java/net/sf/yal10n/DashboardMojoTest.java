@@ -14,6 +14,7 @@ package net.sf.yal10n;
  * limitations under the License.
  */
 
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -94,7 +95,8 @@ public class DashboardMojoTest
         verify( reportRenderer, times( 1 ) ).prepareOutputDirectory( anyString() );
         verify( reportRenderer, times( 0 ) ).render( (ReportModel) anyObject(), anyString() );
         verify( tmxRenderer, times( 1 ) ).render( (Collection<ResourceBundle>) anyObject(), anyString() );
-        verify( tmxRenderer, times( 0 ) ).render( (Log) anyObject(), (ResourceBundle) anyObject(), anyString() );
+        verify( tmxRenderer, times( 0 ) ).render( (Log) anyObject(), (ResourceBundle) anyObject(), anyString(),
+                anyListOf( String.class ) );
 
         verifyNoMoreInteractions( svn, analyzer, dashboardRenderer, reportRenderer, tmxRenderer );
     }

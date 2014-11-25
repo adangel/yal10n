@@ -114,7 +114,8 @@ public class DashboardModel
                 projects.put( bundle.getRepoId(), bundleModels );
                 projectModels.add( new ProjectModel( bundleModels ) );
             }
-            BundleModel bundleModel = bundle.toBundleModel( log, allLanguagesSorted );
+            BundleModel bundleModel = bundle.toBundleModel( log, allLanguagesSorted,
+                    config.getChecks().getIncludeVariants() );
             bundleModels.add( bundleModel );
             allBundles.add( bundleModel );
         }

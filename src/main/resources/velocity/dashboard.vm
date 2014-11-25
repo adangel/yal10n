@@ -65,14 +65,10 @@
                 </td>
 
 #foreach( $lang in $bundle.languages)
-#if ($lang.existing)
                 <td class="$lang.status.dashboardClass">
+#if ($lang.existing)
                     <a href="reports/$bundle.relativeReportUrl#$lang.name">$lang.name</a>
-#elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
-                <td class="severity-major">
-                    n/a
 #else
-                <td class="highlight">
                     n/a
 #end
                 </td>

@@ -17,6 +17,7 @@ package net.sf.yal10n.tmx;
 import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -169,10 +170,11 @@ public class TranslationMemoryRenderer
      * @param log the log
      * @param bundle the bundle
      * @param outputDirectory the output directory
+     * @param includeVariants the include variants
      */
-    public void render( Log log, ResourceBundle bundle, String outputDirectory )
+    public void render( Log log, ResourceBundle bundle, String outputDirectory, List<String> includeVariants )
     {
-        BundleModel bundleModel = bundle.toBundleModel( log, bundle.getLanguages() );
+        BundleModel bundleModel = bundle.toBundleModel( log, bundle.getLanguages(), includeVariants );
         FileOutputStream stream = null;
         try
         {
