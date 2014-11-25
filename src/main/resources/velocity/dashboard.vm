@@ -24,8 +24,7 @@
       </nav>
     </div>
 
-    <div class="row">
-        <div class="columns">
+    <div class="dashboard-border">
             <p>Generation Date: $dashboard.generationDate</p>
 
             <table>
@@ -61,7 +60,7 @@
                     <a href="reports/$bundle.relativeReportUrl#default">default</a>
 #else
                 <td class="severity-major">
-                    missing
+                    n/a
 #end
                 </td>
 
@@ -71,10 +70,10 @@
                     <a href="reports/$bundle.relativeReportUrl#$lang.name">$lang.name</a>
 #elseif (!$lang.existing && !$lang.variant && ($bundle.base && $bundle.base.countOfMessages > 0))
                 <td class="severity-major">
-                    missing
+                    n/a
 #else
                 <td class="highlight">
-                    missing
+                    n/a
 #end
                 </td>
 #end
@@ -94,12 +93,8 @@
                 <a href="all-translations.tmx">Download complete translation memory</a>
             </p>
 #end
-        </div>
-    </div>
 
-
-    <div class="row">
-        <div class="columns">
+        <div>
             &copy; Powered by <a href="http://yal10n.sf.net">yal10n</a> $dashboard.version
         </div>
     </div>

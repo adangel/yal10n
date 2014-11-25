@@ -51,9 +51,9 @@ public class DashboardRendererTest
         Assert.assertTrue( dashboard.contains( "<a href=\"reports/bundle1#default\">default</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"reports/bundle1#de\">de</a>" ) );
         Assert.assertTrue( dashboard.contains( "<a href=\"reports/bundle1#fr\">fr</a>" ) );
-        Assert.assertTrue( Pattern.compile( "<td class=\"highlight\">\\s*\n\\s*missing", Pattern.MULTILINE )
+        Assert.assertTrue( Pattern.compile( "<td class=\"highlight\">\\s*\n\\s*n/a", Pattern.MULTILINE )
                 .matcher( dashboard ).find() );
-        Assert.assertTrue( Pattern.compile( "<td class=\"severity-major\">\\s*\n\\s*missing", Pattern.MULTILINE )
+        Assert.assertTrue( Pattern.compile( "<td class=\"severity-major\">\\s*\n\\s*n/a", Pattern.MULTILINE )
                 .matcher( dashboard ).find() );
         Assert.assertTrue( dashboard.contains( "<a href=\"bundle1/\">checkout</a>" ) );
         Assert.assertTrue( dashboard.contains( "<td class=\"highlight\">Bundle 2</td>" ) );
