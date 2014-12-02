@@ -103,22 +103,11 @@
                     These are messages that are contained in the default file, but not in the file for "${lang.name}".
                     For these messages, the value in the default locale will be used.
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value in the default locale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        #foreach ($key in $lang.missingMessages.keySet())
-                        <tr>
-                            <td>$esc.html($key)</td>
-                            <td>$esc.html($lang.missingMessages[$key])</td>
-                        </tr>
-                        #end
-                    </tbody>
-                  </table>
+                  <pre>
+#foreach ($key in $lang.missingMessages.keySet())
+$esc.html($key)=$esc.html($lang.missingMessages[$key])
+#end
+                  </pre>
                   #end
                   </div>
                 </dd>
@@ -133,22 +122,11 @@
                     However, in both files the values are the same. This could be correct, but it could also mean,
                     that the translation was simply overlooked.
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value in the default locale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        #foreach ($key in $lang.notTranslatedMessages.keySet())
-                        <tr>
-                            <td>$esc.html($key)</td>
-                            <td>$esc.html($lang.notTranslatedMessages[$key])</td>
-                        </tr>
-                        #end
-                    </tbody>
-                  </table>
+                  <pre>
+#foreach ($key in $lang.notTranslatedMessages.keySet())
+$esc.html($key)=$esc.html($lang.notTranslatedMessages[$key])
+#end
+                  </pre>
                   #end
                   </div>
                 </dd>
@@ -162,22 +140,11 @@
                     These are messages that are only contained in the file for "${lang.name}". They don't exist (anymore)
                     in the default file. They can be safely deleted from the file for "${lang.name}".
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        #foreach ($key in $lang.additionalMessages.keySet())
-                        <tr>
-                            <td>$esc.html($key)</td>
-                            <td>$esc.html($lang.additionalMessages[$key])</td>
-                        </tr>
-                        #end
-                    </tbody>
-                  </table>
+                  <pre>
+#foreach ($key in $lang.additionalMessages.keySet())
+$esc.html($key)=$esc.html($lang.additionalMessages[$key])
+#end
+                  </pre>
                   #end
                   </div>
                 </dd>
