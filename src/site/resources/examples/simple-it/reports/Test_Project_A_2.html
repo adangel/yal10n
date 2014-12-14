@@ -39,7 +39,7 @@
                 <div id="info" class="content">
                     <dl>
                         <dt>Generation Date:</dt>
-                        <dd>Tue Nov 25 20:31:17 CET 2014</dd>
+                        <dd>Sun Dec 14 21:30:31 CET 2014</dd>
                         <dt>Maven Coordinates:</dt>
                         <dd>net.sf.yal10n:test-project-a:1.0.0-SNAPSHOT</dd>
                         <dt>Base Path:</dt>
@@ -66,7 +66,7 @@
           <tr>
             <td><a href="#default"><span class="has-tip label round info" data-tooltip aria-haspopup="true" title="minor issues">default</span></a></td>
             <td><span class="label round success">UTF8_BOM</span></td>
-            <td>5</td>
+            <td>6</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
@@ -74,7 +74,7 @@
           <tr>
             <td><a href="#de"><span class="has-tip label round warning" data-tooltip aria-haspopup="true" title="major issues">de</span></a></td>
             <td><span class="label round success">UTF8_BOM</span></td>
-            <td>5</td>
+            <td>6</td>
             <td>1</td>
             <td>1</td>
             <td>1</td>
@@ -117,6 +117,12 @@
                                     <span class="round label success">No additional messages</span>
                                     </div>
                 </dd>
+                <dd class="accrodion-navigation">
+                  <a href="#default_inconsistent"><strong>Inconsistent Translations:</strong> <span class="round label">0</span></a>
+                  <div id="default_inconsistent" class="content">
+                                    <span class="round label success">No inconsistent translations</span>
+                                    </div>
+                </dd>
                 <dd class="accordion-navigation">
                   <a href="#default_issues"><strong>Issues:</strong> <span class="round label">1</span></a>
                   <div id="default_issues" class="content">
@@ -134,11 +140,11 @@
                     <div id="default_statistics" class="content">
                         <dl>
                             <dt>Analyzed version:</dt>
-                            <dd><span><a href="..//target/checkouts/c9c9f08f6bd09e476f02e52c82d02c3f/project-a/src/main/resources/messages.properties">Revision 1 (2013-02-24 18:26:59 +0100 (Sun, 24 Feb 2013))</a></span></dd>
+                            <dd><span><a href="..//target/checkouts/c9c9f08f6bd09e476f02e52c82d02c3f/project-a/src/main/resources/messages.properties">Revision 4 (2014-12-14 21:17:21 +0100 (Sun, 14 Dec 2014))</a></span></dd>
                             <dt>Latest version:</dt>
                             <dd><span><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages.properties">./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages.properties</a></span></dd>
                             <dt>Total Keys:</dt>
-                            <dd>5</dd>
+                            <dd>6</dd>
                             <dt>Missing Keys:</dt>
                             <dd>0 (0.00 %)</dd>
                             <dt>Not Translated Keys:</dt>
@@ -164,20 +170,9 @@
                     These are messages that are contained in the default file, but not in the file for "de".
                     For these messages, the value in the default locale will be used.
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value in the default locale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                                                <tr>
-                            <td>missing</td>
-                            <td>this message is missing in the other languages</td>
-                        </tr>
-                                            </tbody>
-                  </table>
+                  <pre>
+missing=this message is missing in the other languages
+                  </pre>
                                     </div>
                 </dd>
                 <dd class="accordion-navigation">
@@ -188,20 +183,9 @@
                     However, in both files the values are the same. This could be correct, but it could also mean,
                     that the translation was simply overlooked.
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value in the default locale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                                                <tr>
-                            <td>not.translated</td>
-                            <td>this message is not translated</td>
-                        </tr>
-                                            </tbody>
-                  </table>
+                  <pre>
+not.translated=this message is not translated
+                  </pre>
                                     </div>
                 </dd>
                 <dd class="accordion-navigation">
@@ -211,27 +195,32 @@
                     These are messages that are only contained in the file for "de". They don't exist (anymore)
                     in the default file. They can be safely deleted from the file for "de".
                   </div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                                                <tr>
-                            <td>additional</td>
-                            <td>this is an additional message</td>
-                        </tr>
-                                            </tbody>
-                  </table>
+                  <pre>
+additional=this is an additional message
+                  </pre>
+                                    </div>
+                </dd>
+                <dd class="accrodion-navigation">
+                  <a href="#de_inconsistent"><strong>Inconsistent Translations:</strong> <span class="round label">1</span></a>
+                  <div id="de_inconsistent" class="content">
+                                    <div class="panel callout radius">
+                    These are keys, that have the same message in the default language, but this same message is translated
+                    in different ways in "de". This might indicate a inconsistent translation, but might also be correct.
+                    Please verify.
+                  </div>
+                  <pre>
+#Keys: [ok, yes]
+#Single default message: yes
+#Translations: [Ja, Ok]
+
+                  </pre>
                                     </div>
                 </dd>
                 <dd class="accordion-navigation">
                   <a href="#de_issues"><strong>Issues:</strong> <span class="round label">3</span></a>
                   <div id="de_issues" class="content">
                                     <ul>
-                                      <li>40.00 % missing or not translated keys</li>
+                                      <li>33.33 % missing or not translated keys</li>
                                       <li>There are additional keys</li>
                                       <li>File header missing or not at the beginning of the file</li>
                                     </ul>
@@ -246,17 +235,17 @@
                     <div id="de_statistics" class="content">
                         <dl>
                             <dt>Analyzed version:</dt>
-                            <dd><span><a href="..//target/checkouts/c9c9f08f6bd09e476f02e52c82d02c3f/project-a/src/main/resources/messages_de.properties">Revision 1 (2013-02-24 18:26:59 +0100 (Sun, 24 Feb 2013))</a></span></dd>
+                            <dd><span><a href="..//target/checkouts/c9c9f08f6bd09e476f02e52c82d02c3f/project-a/src/main/resources/messages_de.properties">Revision 4 (2014-12-14 21:17:21 +0100 (Sun, 14 Dec 2014))</a></span></dd>
                             <dt>Latest version:</dt>
                             <dd><span><a href="./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages_de.properties">./svnrepos/repo1/a/trunk/project-a/src/main/resources/messages_de.properties</a></span></dd>
                             <dt>Total Keys:</dt>
-                            <dd>5</dd>
+                            <dd>6</dd>
                             <dt>Missing Keys:</dt>
-                            <dd>1 (20.00 %)</dd>
+                            <dd>1 (16.67 %)</dd>
                             <dt>Not Translated Keys:</dt>
-                            <dd>1 (20.00 %)</dd>
+                            <dd>1 (16.67 %)</dd>
                             <dt>Additional Keys:</dt>
-                            <dd>1 (20.00 %)</dd>
+                            <dd>1 (16.67 %)</dd>
                         </dl>
                     </div>
               </dl>
