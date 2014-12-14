@@ -138,7 +138,7 @@ public class ResourceBundleTest
         BundleModel bundleModel = bundle.toBundleModel( new NullLog(), allLanguages, Arrays.asList( "zh_CN" ) );
         Assert.assertNotNull( bundleModel.getBase() );
         Assert.assertEquals( "default", bundleModel.getBase().getName() );
-        Assert.assertEquals( 4, bundleModel.getBase().getCountOfMessages() );
+        Assert.assertEquals( 5, bundleModel.getBase().getCountOfMessages() );
         Assert.assertEquals( "messages", bundleModel.getBundleName() );
         Assert.assertEquals( "Unknown_Project_0_0.html", bundleModel.getRelativeReportUrl() );
         Assert.assertEquals( "Unknown_Project_0_0.tmx", bundleModel.getRelativeTmxUrl() );

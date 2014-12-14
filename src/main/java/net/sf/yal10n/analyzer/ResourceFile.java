@@ -22,10 +22,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -336,6 +338,8 @@ public class ResourceFile
                     additionalKeys.put( key, getProperties().getProperty( key ) );
                 }
             }
+
+            model.setInconsistentTranslations( determineInconsistentTranslations( defaultFile ) );
         }
 
         model.setNotTranslatedMessages( notTranslatedKeys );
@@ -369,6 +373,45 @@ public class ResourceFile
         model.setIssues( issues );
 
         return model;
+    }
+
+    private Map<String, String[]> determineInconsistentTranslations( ResourceFile defaultFile )
+    {
+        Map<String, List<String>> duplicates = new HashMap<String, List<String>>();
+        Properties defaultProperties = defaultFile.getProperties();
+        for ( Object o : defaultProperties.keySet() )
+        {
+            String key = o.toString();
+            String message = defaultProperties.getProperty( key );
+            List<String> keys = duplicates.get( message );
+            if ( keys == null )
+            {
+                keys = new ArrayList<String>();
+                duplicates.put( message, keys );
+            }
+            keys.add( key );
+        }
+
+        Map<String, String[]> inconsistentTranslations = new HashMap<String, String[]>();
+        for ( Map.Entry<String, List<String>> entry : duplicates.entrySet() )
+        {
+            List<String> keys = entry.getValue();
+            Set<String> messages = new HashSet<String>();
+            for ( String key : keys )
+            {
+                String translation = properties.getProperty( key );
+                if ( translation != null )
+                {
+                    messages.add( translation );
+                }
+            }
+            if ( messages.size() > 1 )
+            {
+                inconsistentTranslations.put( entry.getKey(),
+                        new String[] { String.valueOf( keys ), String.valueOf( messages ) } );
+            }
+        }
+        return inconsistentTranslations;
     }
 
     private List<String> executeChecks( List<String> includeVariants, EncodingResult detectedEncoding,

@@ -37,6 +37,7 @@ public class LanguageModel
     private Map<String, String> notTranslatedMessages = new HashMap<String, String>();
     private Map<String, String> missingMessages = new HashMap<String, String>();
     private Map<String, String> additionalMessages = new HashMap<String, String>();
+    private Map<String, String[]> inconsistentTranslations = new HashMap<String, String[]>();
     private StatusClass status;
     private List<String> issues;
     private boolean variant;
@@ -240,6 +241,26 @@ public class LanguageModel
     public void setAdditionalMessages( Map<String, String> additionalMessages )
     {
         this.additionalMessages = additionalMessages;
+    }
+
+    /**
+     * Gets the inconsistent translations.
+     *
+     * @return the inconsistent translations
+     */
+    public Map<String, String[]> getInconsistentTranslations()
+    {
+        return inconsistentTranslations;
+    }
+
+    /**
+     * Sets the inconsistent translations.
+     *
+     * @param inconsistentTranslations the inconsistent translations
+     */
+    public void setInconsistentTranslations( Map<String, String[]> inconsistentTranslations )
+    {
+        this.inconsistentTranslations = inconsistentTranslations;
     }
 
     /**

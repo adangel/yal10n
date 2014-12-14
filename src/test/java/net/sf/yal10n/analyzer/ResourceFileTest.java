@@ -128,8 +128,8 @@ public class ResourceFileTest
                 "http://svn.foo.com/svn/test-project/subdirectory/messages.properties" );
         bundle.addFile( file );
         LanguageModel languageModel = file.toLanguageModel( new NullLog(), config.getChecks() );
-        Assert.assertEquals( 4, languageModel.getCountOfMessages() );
-        Assert.assertEquals( 4, languageModel.getCountOfDefaultMessages() );
+        Assert.assertEquals( 5, languageModel.getCountOfMessages() );
+        Assert.assertEquals( 5, languageModel.getCountOfDefaultMessages() );
         Assert.assertEquals( "UTF8", languageModel.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel.getEncodingStatus() );
         Assert.assertEquals( "default", languageModel.getName() );
@@ -147,8 +147,8 @@ public class ResourceFileTest
                 new SVNUtilMock( relativeFile2 ), null );
         bundle.addFile( file2 );
         LanguageModel languageModel2 = file2.toLanguageModel( new NullLog(), config.getChecks() );
-        Assert.assertEquals( 4, languageModel2.getCountOfMessages() );
-        Assert.assertEquals( 4, languageModel2.getCountOfDefaultMessages() );
+        Assert.assertEquals( 5, languageModel2.getCountOfMessages() );
+        Assert.assertEquals( 5, languageModel2.getCountOfDefaultMessages() );
         Assert.assertEquals( "UTF8", languageModel2.getEncoding() );
         Assert.assertEquals( StatusClass.OK, languageModel2.getEncodingStatus() );
         Assert.assertEquals( "de", languageModel2.getName() );
@@ -161,6 +161,15 @@ public class ResourceFileTest
         Assert.assertTrue( languageModel2.getMissingMessages().containsKey( "not.translated.missing" ) );
         Assert.assertEquals( 1, languageModel2.getAdditionalMessages().size() );
         Assert.assertTrue( languageModel2.getAdditionalMessages().containsKey( "additional.message" ) );
+        Assert.assertEquals( 1, languageModel2.getInconsistentTranslations().size() );
+        Assert.assertTrue( languageModel2.getInconsistentTranslations()
+                .containsKey( "this is a sample for for unit testing" ) );
+        Assert.assertEquals( "[different.key.same.message, file]", languageModel2.getInconsistentTranslations()
+                .get( "this is a sample for for unit testing" )[0] );
+        Assert.assertEquals( "[this is a sample for for unit testing in locale German inconsistent, "
+                + "this is a sample for for unit testing in locale German]",
+                languageModel2.getInconsistentTranslations()
+                    .get( "this is a sample for for unit testing" )[1] );
         Assert.assertEquals( StatusClass.MAJOR_ISSUES, languageModel2.getStatus() );
         Assert.assertEquals( 2, languageModel2.getIssues().size() );
 
@@ -183,6 +192,6 @@ public class ResourceFileTest
         LanguageModel languageModel4 = file4.toLanguageModel( new NullLog(), config.getChecks() );
         Assert.assertTrue( languageModel4.isVariant() );
         Assert.assertEquals( 1, languageModel4.getIssues().size() );
-        Assert.assertEquals( "[75.00 % missing or not translated keys]", languageModel4.getIssues().toString() );
+        Assert.assertEquals( "[80.00 % missing or not translated keys]", languageModel4.getIssues().toString() );
     }
 }
