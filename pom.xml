@@ -273,6 +273,7 @@ limitations under the License.
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <goals>deploy</goals>
                 </configuration>
             </plugin>
             <plugin>
