@@ -35,7 +35,7 @@ public class LanguageComparatorTest
     @Test
     public void testAlphabetical()
     {
-        Collections.sort( lang, LanguageComparator.ALPHABETICAL.build( Collections.<String> emptyList() ) );
+        Collections.sort( lang, LanguageComparator.ALPHABETICAL.build( Collections.<String>emptyList() ) );
         Assert.assertEquals( "[de, de_DE, en, en_US, zh_CN, zh_TW, zz]", lang.toString() );
     }
 
@@ -46,7 +46,7 @@ public class LanguageComparatorTest
     public void testVariantsLast()
     {
         Comparator<String> comparator = LanguageComparator
-                .ALPHABETICAL_VARIANTS_LAST.build( Collections.<String> emptyList() );
+                .ALPHABETICAL_VARIANTS_LAST.build( Collections.<String>emptyList() );
         Assert.assertTrue( comparator.compare( "de", "de" ) == 0 );
         Assert.assertTrue( comparator.compare( "de", "de_DE" ) < 0 );
         Assert.assertTrue( comparator.compare( "de_DE", "de" ) > 0 );

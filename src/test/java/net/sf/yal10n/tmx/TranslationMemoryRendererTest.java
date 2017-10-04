@@ -55,10 +55,10 @@ public class TranslationMemoryRendererTest
 
         TranslationMemoryRenderer renderer = new TranslationMemoryRenderer();
         ResourceBundle bundle = createBundle().iterator().next();
-        renderer.render( new NullLog(), bundle, outputDirectory.getCanonicalPath(), Collections.<String> emptyList() );
+        renderer.render( new NullLog(), bundle, outputDirectory.getCanonicalPath(), Collections.<String>emptyList() );
 
         String relativeTmxUrl = bundle.toBundleModel( new NullLog(), bundle.getLanguages(),
-                Collections.<String> emptyList() ).getRelativeTmxUrl();
+                Collections.<String>emptyList() ).getRelativeTmxUrl();
         Assert.assertTrue( new File( completeDirectory, relativeTmxUrl ).exists() );
         String fileData = IOUtil.toString( new FileInputStream( new File( completeDirectory, relativeTmxUrl ) ),
                 "UTF-8" );

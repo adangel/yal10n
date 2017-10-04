@@ -335,6 +335,7 @@ limitations under the License.
                     <configLocation>config/maven_checks.xml</configLocation>
                     <headerLocation>${basedir}/config/checkstyle-header-file.txt</headerLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/net/sf/yal10n/HelpMojo.java</excludes>
                 </configuration>
                 <dependencies>
                     <dependency>

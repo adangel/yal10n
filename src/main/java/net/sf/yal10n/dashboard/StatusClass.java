@@ -36,7 +36,7 @@ public enum StatusClass
     private final String dashboardClass;
     private final String message;
 
-    private StatusClass( String foundationClass, String dashboardClass, String message )
+    StatusClass( String foundationClass, String dashboardClass, String message )
     {
         this.foundationClass = foundationClass;
         this.dashboardClass = dashboardClass;
