@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
+
 import net.sf.yal10n.charset.UTF8BOMCharsetProvider;
 import net.sf.yal10n.dashboard.LanguageModel;
 import net.sf.yal10n.dashboard.StatusClass;
@@ -39,10 +44,6 @@ import net.sf.yal10n.settings.DashboardConfiguration;
 import net.sf.yal10n.settings.Repository;
 import net.sf.yal10n.svn.SVNInfo;
 import net.sf.yal10n.svn.SVNUtil;
-
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * A {@link ResourceFile} represents a single locale of a {@link ResourceBundle}.
@@ -396,6 +397,7 @@ public class ResourceFile
         for ( Map.Entry<String, List<String>> entry : duplicates.entrySet() )
         {
             List<String> keys = entry.getValue();
+            Collections.sort( keys );
             Set<String> messages = new HashSet<String>();
             for ( String key : keys )
             {
