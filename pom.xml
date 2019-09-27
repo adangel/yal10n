@@ -70,6 +70,7 @@ limitations under the License.
         <mavenPmdVersion>3.8</mavenPmdVersion>
         <mavenFindbugsVersion>3.0.5</mavenFindbugsVersion>
         <plexusVersion>1.5.5</plexusVersion>
+        <javaVersion>1.6</javaVersion>
     </properties>
 
     <dependencies>
@@ -218,8 +219,8 @@ limitations under the License.
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>${javaVersion}</source>
+                    <target>${javaVersion}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -292,6 +293,9 @@ limitations under the License.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.0-M1</version>
+                <configuration>
+                    <source>${javaVersion}</source>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -484,6 +488,9 @@ limitations under the License.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9</version>
+                <configuration>
+                    <source>${javaVersion}</source>
+                </configuration>
                 <reportSets>
                     <reportSet>
                         <id>default</id>
