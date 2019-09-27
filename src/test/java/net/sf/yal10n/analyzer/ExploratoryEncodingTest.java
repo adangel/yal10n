@@ -154,13 +154,13 @@ public class ExploratoryEncodingTest
         ResourceBundle bundle = PropertyResourceBundle.getBundle( "UTF8BOM", Locale.ROOT );
         Assert.assertEquals( 3, bundle.keySet().size() );
 
-        // Assert.assertEquals("first key", bundle.getString("testkey1"));
-        // note: utf-8 bom read as iso-8859-1
-        Assert.assertEquals( "first key", bundle.getString( "\u00ef\u00bb\u00bftestkey1" ) );
+        // utf-8 bom is part of the first key
+        Assert.assertEquals( "first key", bundle.getString( "\ufefftestkey1" ) );
+        // before java 9: utf-8 bom read as iso-8859-1
+        //Assert.assertEquals( "first key", bundle.getString( "\u00ef\u00bb\u00bftestkey1" ) );
 
         Assert.assertEquals( "second key", bundle.getString( "testkey2" ) );
-        // note: utf-8 read as iso-8859-1
-        Assert.assertEquals( "This file is encoded as UTF-8 with BOM \u00c3\u00a4.",
+        Assert.assertEquals( "This file is encoded as UTF-8 with BOM ä.",
                 bundle.getString( "description" ) );
     }
 
@@ -176,8 +176,7 @@ public class ExploratoryEncodingTest
 
         Assert.assertEquals( "first key", bundle.getString( "testkey1" ) );
         Assert.assertEquals( "second key", bundle.getString( "testkey2" ) );
-        // note: utf-8 read as iso-8859-1
-        Assert.assertEquals( "This file is encoded as UTF-8 with BOM \u00c3\u00a4.",
+        Assert.assertEquals( "This file is encoded as UTF-8 with BOM ä.",
                 bundle.getString( "description" ) );
     }
 
@@ -191,11 +190,11 @@ public class ExploratoryEncodingTest
         ResourceBundle bundle = PropertyResourceBundle.getBundle( "UTF8BOMwithComment", Locale.ROOT );
         Assert.assertEquals( 4, bundle.keySet().size() );
 
-        Assert.assertEquals( "", bundle.getString( "\u00ef\u00bb\u00bf#abc" ) );
+        // utf-8 bom makes the first comment line a property
+        Assert.assertEquals( "", bundle.getString( "\ufeff#abc" ) );
         Assert.assertEquals( "first key", bundle.getString( "testkey1" ) );
         Assert.assertEquals( "second key", bundle.getString( "testkey2" ) );
-        // note: utf-8 read as iso-8859-1
-        Assert.assertEquals( "This file is encoded as UTF-8 with BOM \u00c3\u00a4.",
+        Assert.assertEquals( "This file is encoded as UTF-8 with BOM ä.",
                 bundle.getString( "description" ) );
     }
 
