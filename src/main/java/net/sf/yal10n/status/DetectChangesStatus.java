@@ -18,8 +18,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 /**
  * This class contains the status of the last run of the detect-changes mojo.
@@ -82,9 +83,10 @@ public class DetectChangesStatus
             File f = new File( file ).getCanonicalFile();
             if ( f.exists() )
             {
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.configure( Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
-                status = mapper.reader( DetectChangesStatus.class ).readValue( f );
+                JsonMapper mapper = JsonMapper.builder()
+                        .configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false )
+                        .build();
+                status = mapper.readerFor( DetectChangesStatus.class ).readValue( f );
             }
             else
             {

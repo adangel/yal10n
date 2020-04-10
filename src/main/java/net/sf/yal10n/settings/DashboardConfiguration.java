@@ -18,11 +18,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import net.sf.yal10n.dashboard.LanguageComparator;
 import net.sf.yal10n.svn.SVNUtil;
-
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Configuration for the dashboard-mojo and detect-changes-mojo.
@@ -275,9 +274,10 @@ public class DashboardConfiguration
         try
         {
             File f = new File( file ).getCanonicalFile();
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure( Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
-            DashboardConfiguration config = mapper.reader( DashboardConfiguration.class ).readValue( f );
+            JsonMapper mapper = JsonMapper.builder()
+                    .configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false )
+                    .build();
+            DashboardConfiguration config = mapper.readerFor( DashboardConfiguration.class ).readValue( f );
             return config;
         }
         catch ( Exception e )

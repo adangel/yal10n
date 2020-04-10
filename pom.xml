@@ -71,6 +71,7 @@ limitations under the License.
         <mavenFindbugsVersion>3.0.5</mavenFindbugsVersion>
         <plexusVersion>1.5.5</plexusVersion>
         <javaVersion>1.6</javaVersion>
+        <jackson.version>2.10.0</jackson.version>
     </properties>
 
     <dependencies>
@@ -95,9 +96,9 @@ limitations under the License.
             <version>3.0.15</version>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.11</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
