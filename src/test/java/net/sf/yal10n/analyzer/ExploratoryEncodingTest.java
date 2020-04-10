@@ -27,9 +27,13 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
@@ -38,8 +42,22 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
  */
 public class ExploratoryEncodingTest
 {
+    private static final Pattern JAVA_VERSION_PATTERN = Pattern.compile( "(\\d+)[\\.\\d]*" );
+
     private byte[] data;
     Charset utf8 = Charset.forName( "UTF-8" );
+
+    @BeforeClass
+    public static void assumeAtLeastJava9()
+    {
+        String javaVersion = System.getProperty( "java.version" );
+        Matcher matcher = JAVA_VERSION_PATTERN.matcher( javaVersion );
+        if ( matcher.find() )
+        {
+            int major = Integer.parseInt( matcher.group( 1 ) );
+            Assume.assumeTrue( "Java Runtime needs to be 9+, but was: " + major , major >= 9 );
+        }
+    }
 
     /** 
      * Initialize the unit test - setup the test data.
