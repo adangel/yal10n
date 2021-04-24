@@ -1,9 +1,8 @@
 # yal10n
 
-[![Build Status](https://github.com/adangel/yal10n/actions/workflows/maven/badge.svg)](https://github.com/adangel/yal10n/actions)
+[![Java CI with Maven](https://github.com/adangel/yal10n/actions/workflows/maven.yml/badge.svg)](https://github.com/adangel/yal10n/actions/workflows/maven.yml)
 
 The Yet Another Localization Maven Plugin helps in the localization process of software projects.
-
 
 ## Documentation
 
