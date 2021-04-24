@@ -50,8 +50,8 @@ limitations under the License.
         </license>
     </licenses>
     <ciManagement>
-        <system>BuildHive Cloud Based Jenkins</system>
-        <url>https://buildhive.cloudbees.com/job/adangel/job/yal10n</url>
+        <system>Github Actions</system>
+        <url>https://github.com/adangel/yal10n/actions</url>
     </ciManagement>
 
     <developers>

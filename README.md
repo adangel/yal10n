@@ -1,6 +1,6 @@
 # yal10n
 
-[![Build Status](https://travis-ci.org/adangel/yal10n.svg)](https://travis-ci.org/adangel/yal10n)
+[![Build Status](https://github.com/adangel/yal10n/actions/workflows/maven/badge.svg)](https://github.com/adangel/yal10n/actions)
 
 The Yet Another Localization Maven Plugin helps in the localization process of software projects.
 
