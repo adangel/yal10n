@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.velocity.tools.generic.EscapeTool;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * This class represents a diff produced by subversion.
@@ -237,21 +237,20 @@ public class UnifiedDiff
      */
     public String asHtmlSnippet()
     {
-        EscapeTool escapeTool = new EscapeTool();
         final String lightYellow = "#ffff80";
         final String lightRed = "#f08080";
         final String lightGreen = "#90ee90";
         final String lightGrey = "#d3d3d3";
         final String darkCyan = "#008b8b";
-
+        
         final String firstColumnStyle = " style=\"padding: 0 0.5em 0 0.5em; text-align: right;\"";
 
         StringBuilder out = new StringBuilder();
         out.append( "<div style=\"margin: 10px; border: 1px #aaaaaa solid; border-radius: 10px; padding: 5px;\">\n" );
         out.append( "<table border=\"0\" width=\"100%\" cellspacing=\"0\">\n" );
         out.append( "<tr><td" ).append( firstColumnStyle ).append( ">&nbsp;</td>" );
-        out.append( "<td><strong>" ).append( escapeTool.html( originalName ) ).append( "</strong></td>" );
-        out.append( "<td><strong>" ).append( escapeTool.html( newName ) ).append( "</strong></td>" );
+        out.append( "<td><strong>" ).append( StringEscapeUtils.escapeHtml4( originalName ) ).append( "</strong></td>" );
+        out.append( "<td><strong>" ).append( StringEscapeUtils.escapeHtml4( newName ) ).append( "</strong></td>" );
         out.append( "</tr>\n" );
 
         for ( Hunk hunk : hunks )
@@ -265,9 +264,9 @@ public class UnifiedDiff
             for ( int i = hunk.firstLineNumber; i < hunk.lastLineNumber; i++ )
             {
                 Character indicator = hunk.indicators.get( i );
-                String currentLine = escapeTool.html( hunk.commonLines.get( i ) );
-                String originalLine = escapeTool.html( hunk.origLines.get( i ) );
-                String newLine = escapeTool.html( hunk.newLines.get( i ) );
+                String currentLine = StringEscapeUtils.escapeHtml4( hunk.commonLines.get( i ) );
+                String originalLine = StringEscapeUtils.escapeHtml4( hunk.origLines.get( i ) );
+                String newLine = StringEscapeUtils.escapeHtml4( hunk.newLines.get( i ) );
 
                 if ( originalLine == null || originalLine.isEmpty() )
                 {
